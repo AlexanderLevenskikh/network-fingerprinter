@@ -1,0 +1,7 @@
+/node_modules/
+/.idea/*
+*.log
+/dist/
+.awcache
+.jest-cache
+/config/config.json
