@@ -1,25 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { IFlowEntity } from '../../Entities/Flow/IFlowEntity';
 import { SearchResponse } from 'elasticsearch';
+import { mapFlowEntityToView } from '../../Mappers/Flow/FlowEntityToView';
+import { IFlowView } from './IFlowView';
 
 @Injectable()
 export class FlowViewProvider {
     constructor(private readonly elasticsearchService: ElasticsearchService) {}
 
-    async getFlows(): Promise<IFlowEntity[]> {
+    async getFlows(): Promise<IFlowView[]> {
         return this.elasticsearchService
-            .search({
+            .search<IFlowEntity>({
                 index: 'filebeat-*',
                 from: 20,
-                size: 2,
+                size: 1,
             })
-            .pipe(map(this.mapSearchResponseToFlowEntities))
+            .pipe(map(FlowViewProvider.mapSearchResponseToFlowViews))
             .toPromise();
     }
 
-    private mapSearchResponseToFlowEntities(response: SearchResponse<any>): IFlowEntity[] {
-        return response.hits.hits.map(hit => hit._source as IFlowEntity);
+    private static mapSearchResponseToFlowViews(response: SearchResponse<any>): IFlowView[] {
+        return response[0].hits.hits.map(hit => mapFlowEntityToView(hit._source));
     }
 }

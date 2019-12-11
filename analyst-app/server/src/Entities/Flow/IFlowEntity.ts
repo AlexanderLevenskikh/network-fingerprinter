@@ -24,9 +24,29 @@ interface IAgent {
 }
 
 interface IDestination {
+    geo: IGeo;
+    as: IAs;
     port: number;
     ip: string;
     locality: string;
+}
+
+interface IAs {
+    number: number;
+    organization: IOrganization;
+}
+
+interface IOrganization {
+    name: string;
+}
+
+interface IGeo {
+    continent_name: string;
+    region_iso_code: string;
+    city_name: string;
+    country_iso_code: string;
+    region_name: string;
+    location: Location;
 }
 
 interface ISource {
@@ -87,6 +107,10 @@ interface INetflow {
     flow_end_sys_up_time: number;
     destination_transport_port: number;
     source_transport_port: number;
+    flow_start_milliseconds: Date;
+    tcp_options: number;
+    flow_end_reason: number;
+    flow_end_milliseconds: Date;
 }
 
 interface IEcs {
