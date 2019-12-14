@@ -44,6 +44,42 @@ services:
     depends_on:
       - elasticsearch
 
+  packetbeat:
+    build:
+      context: beats/packetbeat/
+      args:
+        ELK_VERSION: $ELK_VERSION
+    user: root
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    command: bash -c "
+      chmod +x /usr/share/scripts/await.sh
+      && /usr/share/scripts/await.sh -t 100 http://kibana:5601/login -- echo 'Kibana is up'
+      && packetbeat setup -e
+      && packetbeat -e
+      "
+    # https://github.com/docker/swarmkit/issues/1951
+    hostname: "{{.Node.Hostname}}-packetbeat"
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ./beats/packetbeat/config/packetbeat.yml
+        target: /usr/share/packetbeat/packetbeat.yml
+        read_only: true
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+      - type: bind
+        source: ./scripts
+        target: /usr/share/scripts
+    networks:
+      - elk
+    network_mode: host
+    depends_on:
+      - elasticsearch
+      - kibana
+
   filebeat:
     build:
       context: beats/filebeat/
