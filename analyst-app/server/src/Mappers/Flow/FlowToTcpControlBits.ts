@@ -15,6 +15,10 @@ const bitIndexToTcpControlBitMap: { [key: number]: FlowTcpControlBit} = {
 };
 
 export function mapFlowToTcpControlBits(tcpControlBits: number): FlowTcpControlBit[] {
+    if (!tcpControlBits) {
+        return [];
+    }
+
     const word = numberToWord(tcpControlBits);
     const bits = word.split('');
 

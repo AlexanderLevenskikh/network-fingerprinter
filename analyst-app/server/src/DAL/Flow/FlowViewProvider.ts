@@ -14,14 +14,25 @@ export class FlowViewProvider {
         return this.elasticsearchService
             .search<IFlowEntity>({
                 index: 'filebeat-*',
-                from: 20,
-                size: 1,
+                size: 10,
+                body: {
+                    query: {
+                        bool: {
+                            filter: {
+                                term: {
+                                    'netflow.type': 'netflow_flow',
+                                },
+                            },
+                        },
+                    },
+                },
             })
             .pipe(map(FlowViewProvider.mapSearchResponseToFlowViews))
             .toPromise();
     }
 
     private static mapSearchResponseToFlowViews(response: SearchResponse<any>): IFlowView[] {
-        return response[0].hits.hits.map(hit => mapFlowEntityToView(hit._source));
+        return response[0].hits.hits
+            .map(hit => mapFlowEntityToView(hit._source));
     }
 }
