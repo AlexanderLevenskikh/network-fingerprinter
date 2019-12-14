@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { FlowViewProvider } from '../../flow/flow.view.provider';
+import { FlowViewProvider } from '../../DAL/Flow/FlowViewProvider';
 
 @Controller('api/flow')
 export class FlowController {

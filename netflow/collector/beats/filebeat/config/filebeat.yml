@@ -1,0 +1,27 @@
+filebeat.inputs:
+  - type: netflow
+    max_message_size: 10KiB
+    host: "0.0.0.0:2055"
+    protocols: [ v9, ipfix ]
+    expiration_timeout: 30m
+    queue_size: 8192
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload_enabled: false
+
+setup.kibana:
+  host: "kibana:5601"
+  username: 'elastic'
+  password: '12345'
+
+output.elasticsearch:
+  hosts: [ "elasticsearch:9200" ]
+  username: 'elastic'
+  password: '12345'
+
+processors:
+  - add_host_metadata: ~
+  - add_docker_metadata: ~
+
+
