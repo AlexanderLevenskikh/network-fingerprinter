@@ -73,8 +73,6 @@ services:
       - type: bind
         source: ./scripts
         target: /usr/share/scripts
-    networks:
-      - elk
     network_mode: host
     depends_on:
       - elasticsearch
