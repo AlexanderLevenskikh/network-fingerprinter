@@ -3,7 +3,7 @@ version: '3.2'
 services:
   p0f:
     build:
-      context: p0f/
+      context: ../netflow/sensor/p0f
     restart: always
     network_mode: 'host'
     read_only: true

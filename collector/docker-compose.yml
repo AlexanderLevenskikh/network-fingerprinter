@@ -3,7 +3,7 @@ version: '3.2'
 services:
   elasticsearch:
     build:
-      context: elasticsearch/
+      context: elasticsearch
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
@@ -28,7 +28,7 @@ services:
 
   kibana:
     build:
-      context: kibana/
+      context: kibana
       args:
         ELK_VERSION: $ELK_VERSION
     volumes:
@@ -46,7 +46,7 @@ services:
 
   packetbeat:
     build:
-      context: beats/packetbeat/
+      context: beats/packetbeat
       args:
         ELK_VERSION: $ELK_VERSION
     user: root
@@ -80,7 +80,7 @@ services:
 
   filebeat:
     build:
-      context: beats/filebeat/
+      context: beats/filebeat
       args:
         ELK_VERSION: $ELK_VERSION
     user: root
