@@ -1,4 +1,3 @@
-
                         =============================
                         p0f v3: passive fingerprinter
                         =============================
@@ -205,6 +204,10 @@ command-line options:
                systems, especially in daemon mode. See section 7 for more info.
 
 More arcane settings (you probably don't need to touch these):
+
+  -j         - Log in JSON format.
+
+  -l         - Line buffered mode for logging to output file.
 
   -p         - puts the interface specified with -i in promiscuous mode. If
                supported by the firmware, the card will also process frames not

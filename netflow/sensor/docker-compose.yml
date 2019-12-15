@@ -8,6 +8,6 @@ services:
     network_mode: 'host'
     read_only: true
     volumes:
-      - type: volume
+      - type: bind
         source: /data/p0f/log
         target: /var/log/p0f
