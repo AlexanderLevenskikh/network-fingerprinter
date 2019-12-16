@@ -3,6 +3,8 @@ import { FlowController } from '../Controllers/FlowController';
 import { FlowViewProvider } from '../DAL/Flow/FlowViewProvider';
 import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ElasticsearchConfigService } from '../DAL/Elastic/ElasticsearchConfigService';
+import { PacketViewProvider } from '../DAL/Packet/PacketViewProvider';
+import { PacketController } from '../Controllers/PacketController';
 
 @Module({
     imports: [
@@ -10,7 +12,7 @@ import { ElasticsearchConfigService } from '../DAL/Elastic/ElasticsearchConfigSe
             useClass: ElasticsearchConfigService,
         }),
     ],
-    controllers: [FlowController],
-    providers: [FlowViewProvider],
+    controllers: [PacketController],
+    providers: [PacketViewProvider],
 })
-export class FlowModule {}
+export class PacketModule {}
