@@ -1,6 +1,6 @@
-import {IPacketEntity} from '../../Entities/Packet/IPacketEntity';
-import {IPacketView} from '../../DAL/Packet/IPacketView';
-import {mapPacketTransportLayerProtocolToEnum} from './PacketTransportLayerProtocolToEnum';
+import { IPacketEntity } from '../../Entities/Packet/IPacketEntity';
+import { IPacketView } from '../../DAL/Packet/IPacketView';
+import { mapPacketTransportLayerProtocolToEnum } from './PacketTransportLayerProtocolToEnum';
 import { mapPacketEtherType } from './PacketEtherType';
 import { mapPacketApplicationLayerProtocol } from './PacketApplicationLayerProtocol';
 import { PacketViewTransportLayerProto } from '../../DAL/Packet/PacketViewTransportLayerProto';

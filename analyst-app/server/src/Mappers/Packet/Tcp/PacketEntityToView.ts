@@ -1,30 +1,12 @@
-import {IPacketEntity} from '../../Entities/Packet/IPacketEntity';
-import {IPacketView} from '../../DAL/Packet/IPacketView';
-import {mapPacketTransportLayerProtocolToEnum} from './PacketTransportLayerProtocolToEnum';
-import { mapPacketEtherType } from './PacketEtherType';
-import { mapPacketApplicationLayerProtocol } from './PacketApplicationLayerProtocol';
-import { PacketViewTransportLayerProto } from '../../DAL/Packet/PacketViewTransportLayerProto';
 import { ITcpPacketView } from '../../../DAL/Packet/Tcp/ITcpPacketView';
+import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
+import { mapPacketEntityIpLayerToView } from './PacketEntityIpLayerToView';
 
 export function mapPacketEntityToTcpPacketView(entity: IPacketEntity): ITcpPacketView {
-    const { layers, timestamp } = entity;
-    const { dns, eth, frame, ip, ssh, tcp, udp } = layers;
-    const { eth_eth_type } = eth;
-
-    const etherType = mapPacketEtherType(Number.parseInt(eth_eth_type, 16));
-
-    let transportLayerProto = PacketViewTransportLayerProto.None;
-    if (ip) {
-        const { ip_ip_proto } = ip;
-
-        transportLayerProto = mapPacketTransportLayerProtocolToEnum(ip_ip_proto);
-    }
-
-    const applicationLayerProto = mapPacketApplicationLayerProtocol(layers);
+    const { layers: { eth, frame, ip, tcp } } = entity;
 
     return {
-        etherType,
-        transportLayerProto,
-        applicationLayerProto,
+        ip: mapPacketEntityIpLayerToView(ip),
+        tcp:
     };
 }

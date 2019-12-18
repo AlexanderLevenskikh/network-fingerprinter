@@ -3,9 +3,10 @@ import { FlowModule } from './Modules/FlowModule';
 import { PacketModule } from './Modules/PacketModule';
 
 @Module({
-  imports: [
-      FlowModule,
-      PacketModule,
-  ],
+    imports: [
+        FlowModule,
+        PacketModule,
+    ],
 })
-export class AppModule {}
+export class AppModule {
+}

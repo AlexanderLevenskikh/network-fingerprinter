@@ -1,5 +1,5 @@
-import {notEmpty} from '../../Shared/Utils/notEmpty';
-import {PacketViewTransportLayerProto} from '../../DAL/Packet/PacketViewTransportLayerProto';
+import { notEmpty } from '../../Shared/Utils/notEmpty';
+import { PacketViewTransportLayerProto } from '../../DAL/Packet/PacketViewTransportLayerProto';
 
 const map: { [key: string]: PacketViewTransportLayerProto } = {
     6: PacketViewTransportLayerProto.Tcp,

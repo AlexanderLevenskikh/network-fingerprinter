@@ -13,4 +13,5 @@ import { ElasticsearchConfigService } from '../DAL/Elastic/ElasticsearchConfigSe
     controllers: [FlowController],
     providers: [FlowViewProvider],
 })
-export class FlowModule {}
+export class FlowModule {
+}

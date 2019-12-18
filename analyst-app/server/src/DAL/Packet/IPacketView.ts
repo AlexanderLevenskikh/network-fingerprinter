@@ -1,6 +1,6 @@
-import {PacketViewEtherType} from "./PacketViewEtherType";
-import {PacketViewTransportLayerProto} from "./PacketViewTransportLayerProto";
-import {PacketViewApplicationLayerProto} from "./PacketViewApplicationLayerProto";
+import { PacketViewEtherType } from './PacketViewEtherType';
+import { PacketViewTransportLayerProto } from './PacketViewTransportLayerProto';
+import { PacketViewApplicationLayerProto } from './PacketViewApplicationLayerProto';
 
 export interface IPacketView {
     etherType: PacketViewEtherType;

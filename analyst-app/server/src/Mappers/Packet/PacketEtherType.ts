@@ -9,7 +9,7 @@ const etherTypeMap: IMap<PacketViewEtherType> = {
 };
 
 export function mapPacketEtherType(etherType: number): PacketViewEtherType {
-    const mappedEtherType = etherTypeMap[ etherType ];
+    const mappedEtherType = etherTypeMap[etherType];
 
     if (!mappedEtherType) {
         return PacketViewEtherType.Unknown;

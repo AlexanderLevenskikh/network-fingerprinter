@@ -2,7 +2,7 @@ import { FlowTcpControlBit } from '../../DAL/Flow/FlowTcpControlBit';
 import { numberToWord } from '../../Shared/Utils/numberToWord';
 import { notEmpty } from '../../Shared/Utils/notEmpty';
 
-const bitIndexToTcpControlBitMap: { [key: number]: FlowTcpControlBit} = {
+const bitIndexToTcpControlBitMap: { [key: number]: FlowTcpControlBit } = {
     7: FlowTcpControlBit.NS,
     8: FlowTcpControlBit.CWR,
     9: FlowTcpControlBit.ECE,
