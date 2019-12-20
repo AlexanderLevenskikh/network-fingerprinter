@@ -26,6 +26,20 @@ export interface IPacketEntityTcp {
     tcp_tcp_checksum: string;
     tcp_tcp_checksum_status: string;
     tcp_tcp_urgent_pointer: string;
+    tcp_tcp_options?: string;
+    tcp_options_tcp_options_mss?: string;
+    tcp_options_mss_tcp_option_kind?: string;
+    tcp_options_mss_tcp_option_len?: string;
+    tcp_options_mss_tcp_options_mss_val?: string;
+    tcp_options_tcp_options_wscale?: string;
+    tcp_options_wscale_tcp_option_kind?: string;
+    tcp_options_wscale_tcp_option_len?: string;
+    tcp_options_wscale_tcp_options_wscale_shift?: string;
+    tcp_options_wscale_tcp_options_wscale_multiplier?: string;
+    tcp_options_tcp_options_sack_perm?: string;
+    tcp_options_sack_perm_tcp_option_kind?: string;
+    tcp_options_sack_perm_tcp_option_len?: string;
+
     tcp_tcp_analysis?: any;
     tcp_analysis_tcp_analysis_bytes_in_flight: string;
     tcp_analysis_tcp_analysis_push_bytes_sent: string;

@@ -2,6 +2,7 @@ import { IPacketEntityIp } from '../../../Entities/Packet/IPacketEntityIp';
 import { ITcpPacketIpDataView } from '../../../DAL/Packet/Tcp/ITcpPacketIpDataView';
 import { isNormalInteger } from '../../../Shared/Utils/isNormalInteger';
 import { TcpPacketViewIpVersion } from '../../../DAL/Packet/Tcp/TcpPacketViewIpVersion';
+import {parseIntNullable} from "../../../Shared/Utils/parseIntNullable";
 
 export function mapPacketEntityIpLayerToView(entity: IPacketEntityIp): ITcpPacketIpDataView {
     const {
@@ -9,7 +10,7 @@ export function mapPacketEntityIpLayerToView(entity: IPacketEntityIp): ITcpPacke
         ip_flags_ip_flags_rb, ip_flags_ip_flags_df, ip_flags_ip_flags_mf,
         ip_ip_version,
     } = entity;
-    const ttl = isNormalInteger(ip_ip_ttl) ? Number.parseInt(ip_ip_ttl, 10) : null;
+    const ttl = parseIntNullable(ip_ip_ttl);
     const identifier = Number.parseInt(ip_ip_id, 16);
     const ecn = ip_dsfield_ip_dsfield_ecn === '1';
 
