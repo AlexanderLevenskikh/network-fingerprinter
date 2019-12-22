@@ -5,6 +5,7 @@ import Icon from 'antd/es/icon';
 import { useDispatch } from 'react-redux';
 import { StreamsRouterActions } from 'root/streams/actions/router';
 import { fetchWrapper, HttpClientMethod, HttpClientResponseType } from 'root/api/httpClient';
+import styles from './styles.less';
 
 interface IProps {
 }
@@ -36,11 +37,23 @@ export const AppLayout: FC<IProps> = () => {
 
     return (
         <Layout>
-            <Sider trigger={ null } collapsible collapsed={ collapsed }>
-                <div className="logo" />
+            <Sider
+                trigger={ null }
+                collapsible
+                collapsed={ collapsed }
+                className={ styles.sider }
+            >
+                <div className={ styles.logo }>
+
+                </div>
+                <Icon
+                    className={ styles.trigger }
+                    type={ collapsed ? 'menu-unfold' : 'menu-fold' }
+                    onClick={ toggle }
+                />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
                     <Menu.Item key="1" onClick={ onClickStreams }>
-                        <Icon type="user" />
+                        <Icon type="branches" />
                         <span>
                             Потоки
                         </span>
@@ -49,11 +62,7 @@ export const AppLayout: FC<IProps> = () => {
             </Sider>
             <Layout>
                 <Header style={{ background: '#fff', padding: 0 }}>
-                    <Icon
-                        className="trigger"
-                        type={ collapsed ? 'menu-unfold' : 'menu-fold' }
-                        onClick={ toggle }
-                    />
+
                 </Header>
                 <Content
                     style={{
