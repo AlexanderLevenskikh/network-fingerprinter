@@ -14,6 +14,7 @@ import { webpackDevServerHMRPlugin } from "./plugins/devServerHMR";
 import { webpackDevServerPart } from "./devServer";
 import { webpackContext } from './context';
 import { webpackTSXRule } from './rules/typescriptJSX';
+import { webpackLessRule } from './rules/less';
 
 export enum WebpackModeEnum {
     Production = 'production',
@@ -30,7 +31,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
     const isProductionMode = mode === WebpackModeEnum.Production;
     const isProductionApi = Boolean(config.isProdApi);
-    const publicPath = '/';
+    const publicPath = '/static';
 
     const entryPoint = path.resolve(
         './src',
@@ -68,9 +69,14 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
             include: /src/,
             configFile,
         }),
-        webpackCssRule({
+        webpackLessRule({
             isProduction: isProductionMode,
             include: /src/,
+            postCSSConfigDirPath: webpackContext,
+        }),
+        webpackCssRule({
+            isProduction: isProductionMode,
+            include: /src|antd/,
             postCSSConfigDirPath: webpackContext,
         }),
         webpackFileRule({

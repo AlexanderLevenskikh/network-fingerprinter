@@ -9,6 +9,15 @@ module.exports = function(api) {
         "@babel/react",
     ];
     const plugins = [
+        [
+            "import",
+            {
+                "customName": (name) => {
+                    return `antd/es/${name}`;
+                },
+                "libraryName": "antd",
+            },
+        ],
         "@babel/plugin-proposal-class-properties",
         [
             "babel-plugin-transform-builtin-extend", {
