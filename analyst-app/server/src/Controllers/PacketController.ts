@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { PacketViewProvider } from '../DAL/Packet/PacketViewProvider';
+import { PacketViewProvider, PacketViewProviderTransportLayerProto } from '../DAL/Packet/PacketViewProvider';
 
 @Controller('api/packet')
 export class PacketController {
@@ -12,8 +12,13 @@ export class PacketController {
     }
 
     @Get('list/tcp/streams')
-    async getTcpPackets(): Promise<any> {
-        return this.packetViewProvider.getTcpPacketsGroupedByStreams();
+    async getTcpPacketsStreams(): Promise<any> {
+        return this.packetViewProvider.getPacketsGroupedByStreams(PacketViewProviderTransportLayerProto.Tcp);
+    }
+
+    @Get('list/udp/streams')
+    async getUdpPacketStreams(): Promise<any> {
+        return this.packetViewProvider.getPacketsGroupedByStreams(PacketViewProviderTransportLayerProto.Udp);
     }
 
     @Get('list/tcp/handshake')

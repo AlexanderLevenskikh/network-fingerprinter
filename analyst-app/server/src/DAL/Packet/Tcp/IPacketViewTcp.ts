@@ -1,7 +1,6 @@
-import { IPacketViewIpLayer } from '../Ip/IPacketViewIpLayer';
 import { IPacketViewTcpLayer } from './IPacketViewTcpLayer';
+import { IPacketViewIp } from '../Ip/IPacketViewIp';
 
-export interface IPacketViewTcp {
-    ip: IPacketViewIpLayer;
+export interface IPacketViewTcp extends IPacketViewIp {
     tcp: IPacketViewTcpLayer;
 }

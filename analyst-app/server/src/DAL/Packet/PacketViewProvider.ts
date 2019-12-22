@@ -8,6 +8,14 @@ import { mapPacketEntityToView } from '../../Mappers/Packet/PacketEntityToView';
 import { mapPacketEntityToTcpPacketView } from '../../Mappers/Packet/Tcp/PacketEntityToView';
 import { IPacketViewTcp } from './Tcp/IPacketViewTcp';
 import { IMap } from '../../Shared/Types/IMap';
+import { IPacketViewUdp } from './Udp/IPacketViewUdp';
+import { mapPacketEntityToUdpPacketView } from '../../Mappers/Packet/Udp/PacketEntityToView';
+import { IPacketViewIp } from './Ip/IPacketViewIp';
+
+export enum PacketViewProviderTransportLayerProto {
+    Udp,
+    Tcp,
+}
 
 @Injectable()
 export class PacketViewProvider {
@@ -49,20 +57,30 @@ export class PacketViewProvider {
             .toPromise();
     }
 
-    async getTcpPacketsGroupedByStreams(): Promise<IMap<IPacketViewTcp[]>> {
+    async getPacketsGroupedByStreams<T extends IPacketViewIp>(
+        transportLayerProto: PacketViewProviderTransportLayerProto,
+    ): Promise<IMap<T[]>> {
+        const streamField = transportLayerProto === PacketViewProviderTransportLayerProto.Tcp
+            ? 'layers.tcp.tcp_tcp_stream.keyword'
+            : 'layers.udp.udp_udp_stream.keyword';
+
+        const mapper = PacketViewProvider.createSearchResponseToPacketViewsGroupedByStreamsMapper<T>(
+            transportLayerProto,
+        );
+
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 0,
                 body: {
                     aggs: {
-                        by_tcp_stream: {
+                        by_stream: {
                             composite: {
                                 sources : [
                                     {
-                                        tcp_stream: {
+                                        stream: {
                                             terms: {
-                                                field: 'layers.tcp.tcp_tcp_stream.keyword',
+                                                field: streamField,
                                             },
                                         },
                                     },
@@ -79,7 +97,7 @@ export class PacketViewProvider {
                     },
                 },
             })
-            .pipe(map(PacketViewProvider.mapSearchResponseToTcpPacketViewsGroupedByStreams))
+            .pipe(map(mapper))
             .toPromise();
     }
 
@@ -138,15 +156,23 @@ export class PacketViewProvider {
             .map(bucket => bucket.key.ip);
     }
 
-    private static mapSearchResponseToTcpPacketViewsGroupedByStreams(response: SearchResponse<any>): IMap<IPacketViewTcp[]> {
-        return response[0]
-            .aggregations
-            .by_tcp_stream
-            .buckets
-            .reduce((result, bucket) => ({
-                ...result,
-                [ bucket.key.tcp_stream ]: bucket.tops.hits.hits.map(hit => mapPacketEntityToTcpPacketView(hit._source)),
-            }), {});
+    private static createSearchResponseToPacketViewsGroupedByStreamsMapper<T extends IPacketViewIp>(
+        transportLayerProto: PacketViewProviderTransportLayerProto,
+    ) {
+        const entityMapper = transportLayerProto === PacketViewProviderTransportLayerProto.Tcp
+            ? mapPacketEntityToTcpPacketView
+            : mapPacketEntityToUdpPacketView;
+
+        return (response: SearchResponse<any>): IMap<T[]> => {
+            return response[0]
+                .aggregations
+                .by_stream
+                .buckets
+                .reduce((result, bucket) => ({
+                    ...result,
+                    [ bucket.key.stream ]: bucket.tops.hits.hits.map(hit => entityMapper(hit._source)),
+                }), {});
+        };
     }
 
     private static mapSearchResponseToTcpPacketViews(response: SearchResponse<any>): IPacketViewTcp[] {
