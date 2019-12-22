@@ -6,14 +6,17 @@ module.exports = function(api) {
             corejs: 3,
         }],
         "@babel/typescript",
+        "@babel/react",
     ];
     const plugins = [
         "@babel/plugin-proposal-class-properties",
         [
             "babel-plugin-transform-builtin-extend", {
-                globals: ["Error", "Array"],
-            },
+            globals: ["Error", "Array"],
+        },
         ],
+        "@babel/plugin-proposal-optional-chaining",
+        "@babel/plugin-proposal-nullish-coalescing-operator",
     ];
     return {
         presets,

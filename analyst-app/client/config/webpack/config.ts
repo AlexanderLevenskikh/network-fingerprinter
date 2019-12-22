@@ -12,6 +12,8 @@ import { webpackHTMLPlugin } from "./plugins/html";
 import { webpackForkTsCheckerPlugin } from "./plugins/forkTsChecker";
 import { webpackDevServerHMRPlugin } from "./plugins/devServerHMR";
 import { webpackDevServerPart } from "./devServer";
+import { webpackContext } from './context';
+import { webpackTSXRule } from './rules/typescriptJSX';
 
 export enum WebpackModeEnum {
     Production = 'production',
@@ -31,7 +33,7 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
     const publicPath = '/';
 
     const entryPoint = path.resolve(
-        'src',
+        './src',
         'app',
         'entry',
         isProductionApi ? 'prod.tsx' : 'fake.tsx',
@@ -45,18 +47,23 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
     const output = webpackOutputPart({
         publicPath,
         filename: isProductionMode ? '[name].[hash].js' : '[name].js',
-        path: path.resolve('dist'),
+        path: path.resolve(webpackContext, 'dist'),
     });
 
     const devtool = isProductionMode ? false : 'inline-source-map';
 
     const optimization = webpackOptimizationPart(isProductionMode);
 
-    const title = 'Телеграм';
+    const title = 'Passive OS Fingerprinting';
 
-    const configFile = path.resolve('babel.config.js');
+    const configFile = path.resolve(webpackContext, 'babel.config.js');
 
     const rules = [
+        webpackTSXRule({
+            wds,
+            include: /src/,
+            configFile,
+        }),
         webpackTypescriptRule({
             include: /src/,
             configFile,
@@ -64,7 +71,7 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
         webpackCssRule({
             isProduction: isProductionMode,
             include: /src/,
-            postCSSConfigDirPath: __dirname,
+            postCSSConfigDirPath: webpackContext,
         }),
         webpackFileRule({
             include: /src/,
@@ -79,25 +86,23 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
         webpackMiniCssPlugin('[name].[contenthash].css'),
         webpackHTMLPlugin({
             title,
-            templatePath: path.resolve('templates/index.html'),
+            templatePath: path.resolve(webpackContext, 'templates/index.html'),
         }),
-        webpackForkTsCheckerPlugin(path.resolve('tsconfig.json')),
+        webpackForkTsCheckerPlugin(path.resolve(webpackContext, 'tsconfig.json')),
         ...(wds ? [ webpackDevServerHMRPlugin() ] : []),
-        new BundleAnalyzerPlugin(),
     ];
 
     const resolve = {
         extensions: [ '.ts', '.tsx', '.js', '.jsx', '.json' ],
         alias: {
             ...(wds ? { 'react-dom': '@hot-loader/react-dom' } : {}),
-            'root': path.resolve('./src'),
+            'root': path.resolve(webpackContext, 'src'),
         },
     };
 
     const devServer = webpackDevServerPart(isProductionApi);
 
     return {
-        context: process.cwd(),
         mode,
         entry,
         output,
