@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState, Suspense } from 'react';
 import Menu from 'antd/es/menu';
 import { Layout } from 'antd';
 import Icon from 'antd/es/icon';
@@ -6,6 +6,8 @@ import { useDispatch } from 'react-redux';
 import { StreamsRouterActions } from 'root/streams/actions/router';
 import { fetchWrapper, HttpClientMethod, HttpClientResponseType } from 'root/api/httpClient';
 import styles from './styles.less';
+import { LanguageSelector } from 'root/shared/components/LanguageSelector';
+import { useTranslation } from 'react-i18next';
 
 interface IProps {
 }
@@ -24,6 +26,7 @@ export const AppLayout: FC<IProps> = () => {
         () => dispatch(StreamsRouterActions.streamsList()),
         [ dispatch ],
     );
+    const { t, i18n } = useTranslation();
 
     useEffect(() => {
         fetchWrapper({
@@ -55,14 +58,16 @@ export const AppLayout: FC<IProps> = () => {
                     <Menu.Item key="1" onClick={ onClickStreams }>
                         <Icon type="branches" />
                         <span>
-                            Потоки
+                            { t('menuStreams') }
                         </span>
                     </Menu.Item>
                 </Menu>
             </Sider>
             <Layout>
                 <Header style={{ background: '#fff', padding: 0 }}>
-
+                    <Suspense fallback={null}>
+                        <LanguageSelector/>
+                    </Suspense>
                 </Header>
                 <Content
                     style={{

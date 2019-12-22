@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { initStore } from 'root/app/initStore';
 import { App } from 'root/app/component';
+import '../../i18n';
 
 initApp();
 
@@ -18,7 +19,6 @@ function initApp() {
         );
     };
 
-    // TODO implement
     const render = () => {
         if (root) {
             ReactDOM.render(
