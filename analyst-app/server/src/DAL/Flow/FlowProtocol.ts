@@ -1,5 +1,5 @@
 export enum FlowProtocol {
-    Icmp= 'Icmp',
+    Icmp = 'Icmp',
     IcmpV6 = 'IcmpV6',
     IPv4 = 'IPv4',
     IPv6 = 'IPv6',
