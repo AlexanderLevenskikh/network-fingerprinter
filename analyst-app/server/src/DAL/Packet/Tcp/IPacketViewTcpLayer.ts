@@ -14,4 +14,5 @@ export interface IPacketViewTcpLayer {
     sequenceNumber: Nullable<number>;
     ackNumber: Nullable<number>;
     urgPointer: Nullable<number>;
+    streamId: number;
 }

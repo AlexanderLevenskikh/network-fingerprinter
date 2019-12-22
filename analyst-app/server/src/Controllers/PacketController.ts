@@ -11,8 +11,13 @@ export class PacketController {
         return this.packetViewProvider.getPackets();
     }
 
-    @Get('list/tcp')
+    @Get('list/tcp/streams')
     async getTcpPackets(): Promise<any> {
+        return this.packetViewProvider.getTcpPacketsGroupedByStreams();
+    }
+
+    @Get('list/tcp/handshake')
+    async getTcpHandshakePackets(): Promise<any> {
         return this.packetViewProvider.getHandshakeTcpPackets();
     }
 

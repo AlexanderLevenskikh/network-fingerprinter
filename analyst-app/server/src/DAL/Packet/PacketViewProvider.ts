@@ -7,6 +7,7 @@ import { SearchResponse } from 'elasticsearch';
 import { mapPacketEntityToView } from '../../Mappers/Packet/PacketEntityToView';
 import { mapPacketEntityToTcpPacketView } from '../../Mappers/Packet/Tcp/PacketEntityToView';
 import { IPacketViewTcp } from './Tcp/IPacketViewTcp';
+import { IMap } from '../../Shared/Types/IMap';
 
 @Injectable()
 export class PacketViewProvider {
@@ -48,45 +49,37 @@ export class PacketViewProvider {
             .toPromise();
     }
 
-    async getDistinctHosts(isOutgoing: boolean): Promise<string[]> {
-        const field = `layers.ip.${isOutgoing ? 'ip_ip_src' : 'ip_ip_dst'}.keyword`;
-
-        return this.elasticsearchService
-            .search({
-                index: 'packets-*',
-                body: {
-                    aggs: {
-                        host: {
-                            composite: {
-                                sources: [
-                                    {
-                                        ip: { terms: { field } },
-                                    },
-                                ],
-                            }
-                        },
-                    },
-                    size: 0,
-                }
-            })
-            .pipe(map(PacketViewProvider.mapSearchResponseToHosts))
-            .toPromise();
-    }
-
-    async getTcpPackets(): Promise<IPacketViewTcp[]> {
+    async getTcpPacketsGroupedByStreams(): Promise<IMap<IPacketViewTcp[]>> {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
-                size: 1000,
+                size: 0,
                 body: {
-                    query: {
-                        exists: {
-                            field: 'layers.tcp',
+                    aggs: {
+                        by_tcp_stream: {
+                            composite: {
+                                sources : [
+                                    {
+                                        tcp_stream: {
+                                            terms: {
+                                                field: 'layers.tcp.tcp_tcp_stream.keyword',
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                            aggs: {
+                                tops: {
+                                    top_hits: {
+                                        size: 1,
+                                    },
+                                },
+                            },
                         },
                     },
                 },
             })
-            .pipe(map(PacketViewProvider.mapSearchResponseToTcpPacketViews))
+            .pipe(map(PacketViewProvider.mapSearchResponseToTcpPacketViewsGroupedByStreams))
             .toPromise();
     }
 
@@ -107,18 +100,66 @@ export class PacketViewProvider {
             .toPromise();
     }
 
+    async getDistinctHosts(isOutgoing: boolean): Promise<string[]> {
+        const field = `layers.ip.${isOutgoing ? 'ip_ip_src' : 'ip_ip_dst'}.keyword`;
+
+        return this.elasticsearchService
+            .search({
+                index: 'packets-*',
+                size: 0,
+                body: {
+                    query: {
+                        exists: {
+                            field: 'layers.tcp',
+                        },
+                    },
+                    aggs: {
+                        host: {
+                            composite: {
+                                sources: [
+                                    {
+                                        ip: { terms: { field } },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+            })
+            .pipe(map(PacketViewProvider.mapSearchResponseToHosts))
+            .toPromise();
+    }
+
     private static mapSearchResponseToHosts(response: SearchResponse<any>): string[] {
-        return response[0].aggregations.host.buckets
+        return response[0]
+            .aggregations
+            .host
+            .buckets
             .map(bucket => bucket.key.ip);
     }
 
+    private static mapSearchResponseToTcpPacketViewsGroupedByStreams(response: SearchResponse<any>): IMap<IPacketViewTcp[]> {
+        return response[0]
+            .aggregations
+            .by_tcp_stream
+            .buckets
+            .reduce((result, bucket) => ({
+                ...result,
+                [ bucket.key.tcp_stream ]: bucket.tops.hits.hits.map(hit => mapPacketEntityToTcpPacketView(hit._source)),
+            }), {});
+    }
+
     private static mapSearchResponseToTcpPacketViews(response: SearchResponse<any>): IPacketViewTcp[] {
-        return response[0].hits.hits
+        return response[0]
+            .hits
+            .hits
             .map(hit => mapPacketEntityToTcpPacketView(hit._source));
     }
 
     private static mapSearchResponseToPacketViews(response: SearchResponse<any>): IPacketView[] {
-        return response[0].hits.hits
+        return response[0]
+            .hits
+            .hits
             .map(hit => mapPacketEntityToView(hit._source));
     }
 }
