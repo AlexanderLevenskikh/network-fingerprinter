@@ -9,7 +9,7 @@ export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): IPacket
         tcp_flags_tcp_flags_ack, tcp_flags_tcp_flags_cwr, tcp_flags_tcp_flags_ecn,
         tcp_flags_tcp_flags_fin, tcp_flags_tcp_flags_ns, tcp_flags_tcp_flags_push, tcp_flags_tcp_flags_res,
         tcp_flags_tcp_flags_str, tcp_flags_tcp_flags_reset, tcp_flags_tcp_flags_syn,
-        tcp_flags_tcp_flags_urg,
+        tcp_flags_tcp_flags_urg, tcp_tcp_srcport, tcp_tcp_dstport,
     } = entity;
 
     const maximumSegmentSize = parseIntNullable(tcp_options_mss_tcp_options_mss_val);
@@ -20,6 +20,8 @@ export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): IPacket
     const urgPointer = parseIntNullable(tcp_tcp_urgent_pointer);
 
     return {
+        sourcePort: Number.parseInt(tcp_tcp_srcport, 10),
+        destinationPort: Number.parseInt(tcp_tcp_dstport, 10),
         maximumSegmentSize,
         windowSize,
         windowScalingFactor,

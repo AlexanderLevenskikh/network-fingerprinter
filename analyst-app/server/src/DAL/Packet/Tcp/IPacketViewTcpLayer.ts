@@ -3,6 +3,8 @@ import { Nullable } from '../../../Shared/Types/Nullable';
 import {IPacketViewTcpFlags} from './IPacketViewTcpFlags';
 
 export interface IPacketViewTcpLayer {
+    sourcePort: number;
+    destinationPort: number;
     maximumSegmentSize: Nullable<number>;
     windowSize: Nullable<number>;
     windowScalingFactor: Nullable<number>;

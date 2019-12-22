@@ -13,6 +13,66 @@ export class PacketViewProvider {
     constructor(private readonly elasticsearchService: ElasticsearchService) {
     }
 
+    async getHandshakeTcpPackets(): Promise<IPacketViewTcp[]> {
+        return this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                size: 1000,
+                body: {
+                    query: {
+                        bool: {
+                            should: [
+                                {
+                                    bool: {
+                                        must: [
+                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
+                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '0' } },
+                                        ],
+                                    },
+                                },
+                                {
+                                    bool: {
+                                        must: [
+                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
+                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '1' } },
+                                        ],
+                                    },
+                                },
+                            ],
+                            minimum_should_match: 1,
+                        },
+                    },
+                },
+            })
+            .pipe(map(PacketViewProvider.mapSearchResponseToTcpPacketViews))
+            .toPromise();
+    }
+
+    async getDistinctHosts(isOutgoing: boolean): Promise<string[]> {
+        const field = `layers.ip.${isOutgoing ? 'ip_ip_src' : 'ip_ip_dst'}.keyword`;
+
+        return this.elasticsearchService
+            .search({
+                index: 'packets-*',
+                body: {
+                    aggs: {
+                        host: {
+                            composite: {
+                                sources: [
+                                    {
+                                        ip: { terms: { field } },
+                                    },
+                                ],
+                            }
+                        },
+                    },
+                    size: 0,
+                }
+            })
+            .pipe(map(PacketViewProvider.mapSearchResponseToHosts))
+            .toPromise();
+    }
+
     async getTcpPackets(): Promise<IPacketViewTcp[]> {
         return this.elasticsearchService
             .search<IPacketEntity>({
@@ -45,6 +105,11 @@ export class PacketViewProvider {
             })
             .pipe(map(PacketViewProvider.mapSearchResponseToPacketViews))
             .toPromise();
+    }
+
+    private static mapSearchResponseToHosts(response: SearchResponse<any>): string[] {
+        return response[0].aggregations.host.buckets
+            .map(bucket => bucket.key.ip);
     }
 
     private static mapSearchResponseToTcpPacketViews(response: SearchResponse<any>): IPacketViewTcp[] {

@@ -13,6 +13,16 @@ export class PacketController {
 
     @Get('list/tcp')
     async getTcpPackets(): Promise<any> {
-        return this.packetViewProvider.getTcpPackets();
+        return this.packetViewProvider.getHandshakeTcpPackets();
+    }
+
+    @Get('list/src_ips')
+    async getSrcIps(): Promise<any> {
+        return this.packetViewProvider.getDistinctHosts(true);
+    }
+
+    @Get('list/dst_ips')
+    async getDstIps(): Promise<any> {
+        return this.packetViewProvider.getDistinctHosts(false);
     }
 }
