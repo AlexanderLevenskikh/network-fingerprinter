@@ -3,14 +3,11 @@ import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { map } from 'rxjs/operators';
 import { IPacketEntity } from '../../Entities/Packet/IPacketEntity';
 import { IPacketView } from './IPacketView';
-import { SearchResponse } from 'elasticsearch';
-import { mapPacketEntityToView } from '../../Mappers/Packet/PacketEntityToView';
-import { mapPacketEntityToTcpPacketView } from '../../Mappers/Packet/Tcp/PacketEntityToView';
 import { IPacketViewTcp } from './Tcp/IPacketViewTcp';
-import { IMap } from '../../Shared/Types/IMap';
-import { IPacketViewUdp } from './Udp/IPacketViewUdp';
-import { mapPacketEntityToUdpPacketView } from '../../Mappers/Packet/Udp/PacketEntityToView';
-import { IPacketViewIp } from './Ip/IPacketViewIp';
+import { PacketViewProviderQueries } from './PacketViewProviderQueries';
+import { PacketViewProviderMappers } from './PacketViewProviderMappers';
+import { IPacketViewTcpHandshakeGroup } from './Tcp/IPacketViewTcpHandshakeGroup';
+import { IPacketViewTcpStreamWithFingerprint } from './Tcp/IPacketViewTcpStreamWithFingerprint';
 
 export enum PacketViewProviderTransportLayerProto {
     Udp,
@@ -22,86 +19,33 @@ export class PacketViewProvider {
     constructor(private readonly elasticsearchService: ElasticsearchService) {
     }
 
-    async getHandshakeTcpPackets(): Promise<IPacketViewTcp[]> {
+    getHandshakeTcpPackets = async (): Promise<IPacketViewTcp[]> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 1000,
                 body: {
                     query: {
-                        bool: {
-                            should: [
-                                {
-                                    bool: {
-                                        must: [
-                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
-                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '0' } },
-                                        ],
-                                    },
-                                },
-                                {
-                                    bool: {
-                                        must: [
-                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
-                                            { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '1' } },
-                                        ],
-                                    },
-                                },
-                            ],
-                            minimum_should_match: 1,
-                        },
+                        ...PacketViewProviderQueries.tcpSynOrSynAck,
                     },
                 },
             })
-            .pipe(map(PacketViewProvider.mapSearchResponseToTcpPacketViews))
+            .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
             .toPromise();
-    }
+    };
 
-    async getPacketsGroupedByStreams<T extends IPacketViewIp>(
-        transportLayerProto: PacketViewProviderTransportLayerProto,
-    ): Promise<IMap<T[]>> {
-        const streamField = transportLayerProto === PacketViewProviderTransportLayerProto.Tcp
-            ? 'layers.tcp.tcp_tcp_stream.keyword'
-            : 'layers.udp.udp_udp_stream.keyword';
+    getTcpStreamsWithFingerprints = async (): Promise<IPacketViewTcpStreamWithFingerprint[]> => {
+        const streamIds = await this.getStreamIds(PacketViewProviderTransportLayerProto.Tcp);
+        const handshakeGroupsPromises = streamIds.map(this.getHandshakeGroupByStreamId);
+        const handshakeGroups = await Promise.all(handshakeGroupsPromises);
 
-        const mapper = PacketViewProvider.createSearchResponseToPacketViewsGroupedByStreamsMapper<T>(
-            transportLayerProto,
-        );
+        return handshakeGroups.map(group => ({
+            ...group,
+            os: 'windows',
+        }));
+    };
 
-        return this.elasticsearchService
-            .search<IPacketEntity>({
-                index: 'packets-*',
-                size: 0,
-                body: {
-                    aggs: {
-                        by_stream: {
-                            composite: {
-                                sources : [
-                                    {
-                                        stream: {
-                                            terms: {
-                                                field: streamField,
-                                            },
-                                        },
-                                    },
-                                ],
-                            },
-                            aggs: {
-                                tops: {
-                                    top_hits: {
-                                        size: 1,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-            })
-            .pipe(map(mapper))
-            .toPromise();
-    }
-
-    async getPackets(): Promise<IPacketView[]> {
+    getPackets = async (): Promise<IPacketView[]> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
@@ -114,11 +58,11 @@ export class PacketViewProvider {
                     },
                 },
             })
-            .pipe(map(PacketViewProvider.mapSearchResponseToPacketViews))
+            .pipe(map(PacketViewProviderMappers.toPacketViews))
             .toPromise();
-    }
+    };
 
-    async getDistinctHosts(isOutgoing: boolean): Promise<string[]> {
+    getDistinctHosts = async (isOutgoing: boolean): Promise<string[]> => {
         const field = `layers.ip.${isOutgoing ? 'ip_ip_src' : 'ip_ip_dst'}.keyword`;
 
         return this.elasticsearchService
@@ -144,48 +88,73 @@ export class PacketViewProvider {
                     },
                 },
             })
-            .pipe(map(PacketViewProvider.mapSearchResponseToHosts))
+            .pipe(map(PacketViewProviderMappers.toHosts))
             .toPromise();
-    }
+    };
 
-    private static mapSearchResponseToHosts(response: SearchResponse<any>): string[] {
-        return response[0]
-            .aggregations
-            .host
-            .buckets
-            .map(bucket => bucket.key.ip);
-    }
+    private getHandshakeGroupByStreamId = async (streamId: number): Promise<IPacketViewTcpHandshakeGroup> => {
+        const synPacket = await this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                size: 1,
+                body: {
+                    query: {
+                        ...PacketViewProviderQueries.buildTcpSynByStreamIdQuery(streamId),
+                    },
+                },
+            })
+            .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
+            .toPromise();
 
-    private static createSearchResponseToPacketViewsGroupedByStreamsMapper<T extends IPacketViewIp>(
-        transportLayerProto: PacketViewProviderTransportLayerProto,
-    ) {
-        const entityMapper = transportLayerProto === PacketViewProviderTransportLayerProto.Tcp
-            ? mapPacketEntityToTcpPacketView
-            : mapPacketEntityToUdpPacketView;
+        const synAckPacket = await this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                size: 1,
+                body: {
+                    query: {
+                        ...PacketViewProviderQueries.buildTcpSynAckByStreamIdQuery(streamId),
+                    },
+                },
+            })
+            .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
+            .toPromise();
 
-        return (response: SearchResponse<any>): IMap<T[]> => {
-            return response[0]
-                .aggregations
-                .by_stream
-                .buckets
-                .reduce((result, bucket) => ({
-                    ...result,
-                    [ bucket.key.stream ]: bucket.tops.hits.hits.map(hit => entityMapper(hit._source)),
-                }), {});
+        return {
+            syn: synPacket.length > 0 ? synPacket[ 0 ] : null,
+            synAck: synAckPacket.length > 0 ? synAckPacket[ 0 ] : null,
         };
-    }
+    };
 
-    private static mapSearchResponseToTcpPacketViews(response: SearchResponse<any>): IPacketViewTcp[] {
-        return response[0]
-            .hits
-            .hits
-            .map(hit => mapPacketEntityToTcpPacketView(hit._source));
-    }
+    private getStreamIds = async (
+        transportLayerProto: PacketViewProviderTransportLayerProto,
+    ): Promise<number[]> => {
+        const streamField = transportLayerProto === PacketViewProviderTransportLayerProto.Tcp
+            ? 'layers.tcp.tcp_tcp_stream.keyword'
+            : 'layers.udp.udp_udp_stream.keyword';
 
-    private static mapSearchResponseToPacketViews(response: SearchResponse<any>): IPacketView[] {
-        return response[0]
-            .hits
-            .hits
-            .map(hit => mapPacketEntityToView(hit._source));
-    }
+        return this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                size: 0,
+                body: {
+                    aggs: {
+                        by_stream: {
+                            composite: {
+                                sources : [
+                                    {
+                                        stream: {
+                                            terms: {
+                                                field: streamField,
+                                            },
+                                        },
+                                    },
+                                ],
+                            },
+                        },
+                    },
+                },
+            })
+            .pipe(map(PacketViewProviderMappers.toStreamIds))
+            .toPromise();
+    };
 }
