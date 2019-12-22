@@ -1,10 +1,9 @@
 import { IPacketEntityIp } from '../../../Entities/Packet/IPacketEntityIp';
-import { ITcpPacketIpDataView } from '../../../DAL/Packet/Tcp/ITcpPacketIpDataView';
-import { isNormalInteger } from '../../../Shared/Utils/isNormalInteger';
-import { TcpPacketViewIpVersion } from '../../../DAL/Packet/Tcp/TcpPacketViewIpVersion';
-import {parseIntNullable} from "../../../Shared/Utils/parseIntNullable";
+import { IPacketViewIpLayer } from '../../../DAL/Packet/Ip/IPacketViewIpLayer';
+import { PacketViewIpVersion } from '../../../DAL/Packet/Ip/PacketViewIpVersion';
+import { parseIntNullable } from '../../../Shared/Utils/parseIntNullable';
 
-export function mapPacketEntityIpLayerToView(entity: IPacketEntityIp): ITcpPacketIpDataView {
+export function mapPacketEntityIpLayerToView(entity: IPacketEntityIp): IPacketViewIpLayer {
     const {
         ip_ip_ttl, ip_ip_id, ip_dsfield_ip_dsfield_ecn,
         ip_flags_ip_flags_rb, ip_flags_ip_flags_df, ip_flags_ip_flags_mf,
@@ -18,7 +17,7 @@ export function mapPacketEntityIpLayerToView(entity: IPacketEntityIp): ITcpPacke
     const dontFragment = ip_flags_ip_flags_df === '1';
     const moreFragments = ip_flags_ip_flags_mf === '1';
 
-    const version = ip_ip_version === '4' ? TcpPacketViewIpVersion.IPv4 : TcpPacketViewIpVersion.IPv6;
+    const version = ip_ip_version === '4' ? PacketViewIpVersion.IPv4 : PacketViewIpVersion.IPv6;
 
     return {
         version,

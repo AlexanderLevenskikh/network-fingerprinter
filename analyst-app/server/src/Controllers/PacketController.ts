@@ -7,7 +7,12 @@ export class PacketController {
     }
 
     @Get('list')
-    async getFlows(): Promise<any> {
+    async getPackets(): Promise<any> {
         return this.packetViewProvider.getPackets();
+    }
+
+    @Get('list/tcp')
+    async getTcpPackets(): Promise<any> {
+        return this.packetViewProvider.getTcpPackets();
     }
 }

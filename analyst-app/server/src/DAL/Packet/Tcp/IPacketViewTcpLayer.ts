@@ -1,13 +1,13 @@
-import { TcpPacketViewTcpOption } from './TcpPacketViewTcpOption';
+import { PacketViewTcpOption } from './PacketViewTcpOption';
 import { Nullable } from '../../../Shared/Types/Nullable';
-import {ITcpPacketViewTcpFlags} from "./ITcpPacketViewTcpFlags";
+import {IPacketViewTcpFlags} from './IPacketViewTcpFlags';
 
-export interface ITcpPacketTcpDataView {
+export interface IPacketViewTcpLayer {
     maximumSegmentSize: Nullable<number>;
     windowSize: Nullable<number>;
     windowScalingFactor: Nullable<number>;
-    tcpOptions: TcpPacketViewTcpOption[];
-    tcpFlags: ITcpPacketViewTcpFlags;
+    tcpOptions: PacketViewTcpOption[];
+    tcpFlags: IPacketViewTcpFlags;
     explicitEndOfOptionsInBytes: Nullable<number>;
     sequenceNumber: Nullable<number>;
     ackNumber: Nullable<number>;

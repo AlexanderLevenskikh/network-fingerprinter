@@ -1,8 +1,8 @@
-import {IPacketEntityTcp} from '../../../Entities/Packet/IPacketEntityTcp';
-import {ITcpPacketTcpDataView} from '../../../DAL/Packet/Tcp/ITcpPacketTcpDataView';
-import {parseIntNullable} from "../../../Shared/Utils/parseIntNullable";
+import { IPacketEntityTcp } from '../../../Entities/Packet/IPacketEntityTcp';
+import { parseIntNullable } from '../../../Shared/Utils/parseIntNullable';
+import { IPacketViewTcpLayer } from '../../../DAL/Packet/Tcp/IPacketViewTcpLayer';
 
-export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): ITcpPacketTcpDataView {
+export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): IPacketViewTcpLayer {
     const {
         tcp_options_mss_tcp_options_mss_val, tcp_tcp_window_size_value,
         tcp_options_wscale_tcp_options_wscale_shift, tcp_tcp_seq, tcp_tcp_ack, tcp_tcp_urgent_pointer,
@@ -18,7 +18,6 @@ export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): ITcpPac
     const sequenceNumber = parseIntNullable(tcp_tcp_seq);
     const ackNumber = parseIntNullable(tcp_tcp_ack);
     const urgPointer = parseIntNullable(tcp_tcp_urgent_pointer);
-
 
     return {
         maximumSegmentSize,

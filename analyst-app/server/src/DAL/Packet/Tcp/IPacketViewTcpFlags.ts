@@ -1,4 +1,4 @@
-export interface ITcpPacketViewTcpFlags {
+export interface IPacketViewTcpFlags {
     res: boolean;
     ns: boolean;
     cwr: boolean;
