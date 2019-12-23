@@ -4,32 +4,12 @@ import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { useDispatch, useSelector } from 'react-redux';
 import { StreamsListActions } from 'root/streams/actions/list';
 import { StreamListSelectors } from 'root/streams/selectors/list';
+import { useTranslation } from 'react-i18next';
+import { I18nNamespace } from 'root/i18n/resources/namespaces';
+import { createColumnsConfiguration } from 'root/streams/components/list/columnConfiguration';
 
 interface IProps {
 }
-
-const columns = [
-    {
-        title: 'Fingerprint',
-        dataIndex: 'os',
-        sorter: true,
-        width: '20%',
-    },
-    {
-        title: 'SYN',
-        dataIndex: 'syn',
-        sorter: true,
-        render: syn => `${syn?.ip.sourceIp}:${syn?.tcp.sourcePort} - ${syn?.ip.destinationIp}:${syn?.tcp.destinationPort}`,
-        width: '20%',
-    },
-    {
-        title: 'SYN+ACK',
-        dataIndex: 'synAck',
-        sorter: true,
-        render: synAck => `${synAck?.ip.sourceIp}:${synAck?.tcp.sourcePort} - ${synAck?.ip.destinationIp}:${synAck?.tcp.destinationPort}`,
-        width: '20%',
-    },
-];
 
 export const StreamsList: FC<IProps> = () => {
     const streams = useSelector(StreamListSelectors.list);
@@ -37,6 +17,8 @@ export const StreamsList: FC<IProps> = () => {
     useEffect(() => {
         dispatch(StreamsListActions.FetchList());
     }, [ dispatch ]);
+    const { t } = useTranslation(I18nNamespace.streams);
+    const columns = createColumnsConfiguration(t);
 
     return (
         <Table<ITcpStreamView>

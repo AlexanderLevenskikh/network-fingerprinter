@@ -11,7 +11,7 @@ i18n
         resources: i18nResources,
         debug: true,
         /* can have multiple namespace, in case you want to divide a huge translation into smaller pieces and load them on demand */
-        ns: ['main'],
+        ns: ['main', 'streams'],
         defaultNS: 'main',
         keySeparator: false,
         interpolation: {

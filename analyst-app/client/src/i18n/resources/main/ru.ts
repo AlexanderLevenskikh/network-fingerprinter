@@ -1,3 +1,5 @@
+import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
+
 export const i18MainNsRuResources = {
-    menuStreamsLabel: 'Потоки',
+    [ I18MainNsKeys.menuStreamsLabel ]: 'Потоки',
 };

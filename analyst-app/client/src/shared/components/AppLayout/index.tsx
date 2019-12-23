@@ -8,6 +8,7 @@ import styles from './styles.less';
 import { LanguageSelector } from 'root/shared/components/LanguageSelector';
 import { useTranslation } from 'react-i18next';
 import { StreamsList } from 'root/streams/components/list';
+import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
 
 interface IProps {
 }
@@ -47,7 +48,7 @@ export const AppLayout: FC<IProps> = () => {
                     <Menu.Item key="1" onClick={ onClickStreams }>
                         <Icon type="branches" />
                         <span>
-                            { t('menuStreamsLabel') }
+                            { t(I18MainNsKeys.menuStreamsLabel) }
                         </span>
                     </Menu.Item>
                 </Menu>
