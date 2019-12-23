@@ -103,6 +103,7 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
         alias: {
             ...(wds ? { 'react-dom': '@hot-loader/react-dom' } : {}),
             'root': path.resolve(webpackContext, 'src'),
+            'DAL': path.resolve(webpackContext, '..', 'server', 'DAL'),
         },
     };
 
