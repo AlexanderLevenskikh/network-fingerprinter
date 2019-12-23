@@ -120,6 +120,7 @@ export class PacketViewProvider {
             .toPromise();
 
         return {
+            id: streamId,
             syn: synPacket.length > 0 ? synPacket[ 0 ] : null,
             synAck: synAckPacket.length > 0 ? synAckPacket[ 0 ] : null,
         };

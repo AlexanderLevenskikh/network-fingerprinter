@@ -1,11 +1,9 @@
 import i18n from 'i18next'
-import Backend from 'i18next-xhr-backend'
 import { initReactI18next } from 'react-i18next'
 import { Languages } from 'root/shared/constants/languages';
 import { i18nResources } from 'root/i18n/resources';
 
 i18n
-    .use(Backend)
     .use(initReactI18next)
     .init({
         lng: Languages.ru,
