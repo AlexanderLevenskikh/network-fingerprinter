@@ -1,3 +1,3 @@
-export class StreamsRouterState {
+export class StreamRouterState {
 
 }

@@ -27,7 +27,7 @@
     "target": "es5",
     "paths": {
       "root/*": ["./*"],
-      "DAL/*": ["../server/DAL/*"]
+      "DAL/*": ["../../server/src/DAL/*"]
     },
     "skipLibCheck": true
   },

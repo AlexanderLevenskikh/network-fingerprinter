@@ -11,8 +11,6 @@ export class PacketController {
         return this.packetViewProvider.getPackets();
     }
 
-
-
     @Get('list/src_ips')
     async getSrcIps(): Promise<any> {
         return this.packetViewProvider.getDistinctHosts(true);

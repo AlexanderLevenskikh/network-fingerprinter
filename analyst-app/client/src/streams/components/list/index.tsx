@@ -1,6 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Table } from 'antd';
-import { fetchWrapper, HttpClientMethod, HttpClientResponseType } from 'root/api/httpClient';
+import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
+import { useDispatch, useSelector } from 'react-redux';
+import { StreamsListActions } from 'root/streams/actions/list';
+import { StreamListSelectors } from 'root/streams/selectors/list';
 
 interface IProps {
 }
@@ -29,21 +32,16 @@ const columns = [
 ];
 
 export const StreamsList: FC<IProps> = () => {
-    const [ streams, setStreams ] = useState(undefined);
+    const streams = useSelector(StreamListSelectors.list);
+    const dispatch = useDispatch();
     useEffect(() => {
-        fetchWrapper({
-            controller: '/api/packet',
-            action: '/list/tcp/streams',
-            method: HttpClientMethod.GET,
-            request: {},
-            responseType: HttpClientResponseType.JSON,
-        }).then(setStreams);
-    }, []);
+        dispatch(StreamsListActions.FetchList());
+    }, [ dispatch ]);
 
     return (
-        <Table<any>
+        <Table<ITcpStreamView>
             columns={ columns }
-            rowKey={record => record.id}
+            rowKey={record => record.streamId.toString()}
             dataSource={ streams }
             loading={false}
         />

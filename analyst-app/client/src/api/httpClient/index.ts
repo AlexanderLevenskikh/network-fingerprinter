@@ -117,7 +117,7 @@ export function createHttpClient<T>() {
     };
 }
 
-export const fetchWrapper = createHttpClient();
+export const httpClient = createHttpClient();
 
 async function parseJSON(response: Response): Promise<any> {
     const text = await response.text();
