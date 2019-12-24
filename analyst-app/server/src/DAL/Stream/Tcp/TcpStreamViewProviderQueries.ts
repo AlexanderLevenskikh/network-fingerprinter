@@ -23,21 +23,28 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
-    static queryAllTcpStreamIds = {
-        aggs: {
-            by_stream: {
-                composite: {
-                    sources : [
-                        {
-                            stream: {
-                                terms: {
-                                    field: 'layers.tcp.tcp_tcp_stream.keyword',
-                                },
-                            },
-                        },
-                    ],
+    static buildTcpStreamIdsQuery(size: number) {
+        return {
+            aggs: {
+                by_stream: {
+                    composite: {
+                        size,
+                        sources : [
+                            { streamId: { terms: { field: 'layers.tcp.tcp_tcp_stream.keyword' } } },
+                        ],
+                    },
                 },
             },
-        },
+        }
+    }
+
+    static buildTcpStreamQuery(streamId: number) {
+        return {
+            bool: {
+                filter: [
+                    { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                ],
+            },
+        }
     }
 }

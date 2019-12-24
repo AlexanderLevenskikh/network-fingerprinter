@@ -15,10 +15,10 @@ export class TcpStreamViewProvider {
 
     getTcpStreams = async (): Promise<ITcpStreamView[]> => {
         const streamIds = await this.getStreamIds();
-        const handshakeGroupsPromises = streamIds.map(this.getTcpHandshakePacketsByStreamId);
-        const handshakeGroups = await Promise.all(handshakeGroupsPromises);
+        const handshakePacketsPromises = streamIds.map(this.getTcpHandshakePacketsByStreamId);
+        const handshakePackets = await Promise.all(handshakePacketsPromises);
 
-        return handshakeGroups.map(group => ({
+        return handshakePackets.map(group => ({
             ...group,
             os: 'windows',
         }));
@@ -58,13 +58,13 @@ export class TcpStreamViewProvider {
         };
     };
 
-    private getStreamIds = async (): Promise<number[]> => {
+    private getStreamIds = async (size: number = 15): Promise<number[]> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 0,
                 body: {
-                    ...TcpStreamViewProviderQueries.queryAllTcpStreamIds,
+                    ...TcpStreamViewProviderQueries.buildTcpStreamIdsQuery(size),
                 },
             })
             .pipe(map(TcpStreamViewProviderMappers.toStreamIds))
