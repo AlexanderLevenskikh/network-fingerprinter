@@ -1,34 +1,35 @@
 import 'root/app/general.css';
-import { Airgram } from '@airgram/web'
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { initStore } from 'root/app/initStore';
+import { App } from 'root/app/component';
+import '../../i18n';
+import { ProdDependencies } from 'root/app/dependencies/prod';
 
 initApp();
 
 function initApp() {
     const root = document.getElementById('root');
+    const dependencies = new ProdDependencies();
+    const store = initStore(dependencies);
+    const renderApp = () => {
+        return (
+            <Provider store={ store }>
+                <App/>
+            </Provider>
+        );
+    };
 
-    // TODO implement
     const render = () => {
-        console.log('Rendering...')
+        if (root) {
+            ReactDOM.render(
+                renderApp(),
+                root,
+            );
+        }
     };
 
     render();
 }
 
-const airgram = new Airgram({
-    apiId,
-    apiHash,
-    jsLogVerbosityLevel,
-    logVerbosityLevel
-})
-
-airgram.use(async (ctx, next) => {
-    if ('request' in ctx) {
-        console.log('🚀 [Airgram Request]:', ctx.request)
-    } else if (ctx.update) {
-        console.log('🚀 [Airgram Update]:', ctx.update)
-    }
-    await next()
-    if ('request' in ctx) {
-        console.log('🚀 [Airgram Response]:', ctx.request.method, ctx.response)
-    }
-})

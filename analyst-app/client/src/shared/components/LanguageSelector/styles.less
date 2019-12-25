@@ -1,0 +1,15 @@
+:local {
+  .flag {
+    width: 35px;
+    cursor: pointer;
+    filter: grayscale(100%);
+
+    &.active {
+      filter: none;
+    }
+
+    &:hover:not(.active) {
+      filter: grayscale(50%);
+    }
+  }
+}

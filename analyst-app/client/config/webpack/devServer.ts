@@ -1,10 +1,12 @@
 import { Configuration } from 'webpack-dev-server';
+import * as path from 'path';
 
 export const webpackDevServerPart = (historyApiFallback: boolean): Configuration => {
     return {
         host: '0.0.0.0',
+        contentBase: path.join(__dirname, 'static'),
         public: 'localhost:8080',
-        publicPath: '/',
+        publicPath: '/static/',
         headers: {
             'Access-Control-Allow-Origin': '*',
         },
@@ -22,9 +24,12 @@ export const webpackDevServerPart = (historyApiFallback: boolean): Configuration
         },
         historyApiFallback: {
             rewrites: [
-                { from: /./, to: '/app/index.html' },
+                { from: /./, to: '/static/index.html' },
             ],
         },
         hot: true,
+        proxy: {
+            '/api': 'http://localhost:3000'
+        }
     };
 };

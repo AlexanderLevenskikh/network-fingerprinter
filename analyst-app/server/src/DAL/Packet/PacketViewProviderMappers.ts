@@ -1,8 +1,12 @@
-import { SearchResponse } from 'elasticsearch';
+import { CountResponse, SearchResponse } from 'elasticsearch';
 import { IPacketViewTcp } from './Tcp/IPacketViewTcp';
 import { mapPacketEntityToTcpPacketView } from '../../Mappers/Packet/Tcp/PacketEntityToView';
 import { IPacketView } from './IPacketView';
 import { mapPacketEntityToView } from '../../Mappers/Packet/PacketEntityToView';
+import { ITcpStreamMetaData } from '../Stream/Tcp/ITcpStreamMetaData';
+import { max } from 'rxjs/operators';
+import { IPacketViewFrame } from './Frame/IPacketViewEthLayer';
+import { TcpStreamViewApplicationProtocol } from '../Stream/Tcp/TcpStreamViewApplicationProtocol';
 
 export class PacketViewProviderMappers {
     public static toPacketViews(response: SearchResponse<any>): IPacketView[] {
@@ -25,18 +29,5 @@ export class PacketViewProviderMappers {
             .host
             .buckets
             .map(bucket => bucket.key.ip);
-    }
-
-    public static toStreamIds(response: SearchResponse<any>): number[] {
-        return response[0]
-            .aggregations
-            .by_stream
-            .buckets
-            .map(bucket => Number.parseInt(bucket.key.stream, 10))
-            .sort(PacketViewProviderMappers.toStreamIdsAscOrder);
-    }
-
-    private static toStreamIdsAscOrder(id1: number, id2: number) {
-        return id1 - id2;
     }
 }
