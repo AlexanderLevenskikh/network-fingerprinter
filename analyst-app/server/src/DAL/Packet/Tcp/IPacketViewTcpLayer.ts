@@ -1,6 +1,6 @@
-import { PacketViewTcpOption } from './PacketViewTcpOption';
 import { Nullable } from '../../../Shared/Types/Nullable';
-import {IPacketViewTcpFlags} from './IPacketViewTcpFlags';
+import { IPacketViewTcpFlags } from './IPacketViewTcpFlags';
+import { IPacketViewTcpOption } from './IPacketViewTcpOption';
 
 export interface IPacketViewTcpLayer {
     streamId: number;
@@ -9,9 +9,8 @@ export interface IPacketViewTcpLayer {
     maximumSegmentSize: Nullable<number>;
     windowSize: Nullable<number>;
     windowScalingFactor: Nullable<number>;
-    tcpOptions: PacketViewTcpOption[];
+    tcpOptions: IPacketViewTcpOption[];
     tcpFlags: IPacketViewTcpFlags;
-    explicitEndOfOptionsInBytes: Nullable<number>;
     sequenceNumber: Nullable<number>;
     ackNumber: Nullable<number>;
     urgPointer: Nullable<number>;

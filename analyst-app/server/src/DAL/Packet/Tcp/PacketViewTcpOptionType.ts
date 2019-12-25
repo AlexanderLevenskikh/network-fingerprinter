@@ -1,4 +1,4 @@
-export enum PacketViewTcpOption {
+export enum PacketViewTcpOptionType {
     eol = 'eol',
     nop = 'nop',
     mss = 'mss',
