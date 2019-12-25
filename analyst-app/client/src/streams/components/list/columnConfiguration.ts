@@ -43,7 +43,7 @@ export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStream
         },
         {
             title: t(I18StreamsNsKeys.listPacketsCountColumnTitle),
-            dataIndex: 'os',
+            dataIndex: 'packetsCount',
             sorter: true,
             width: '10%',
         },

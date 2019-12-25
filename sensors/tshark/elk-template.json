@@ -86,6 +86,9 @@
               },
               "tcp_tcp_window_size": {
                 "type": "integer"
+              },
+              "tcp_tcp_stream": {
+                "type": "integer"
               }
             }
           }

@@ -27,6 +27,19 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
+    static buildTcpPacketSampleByStreamIdQuery(streamId: number) {
+        return {
+            query: {
+                bool: {
+                    filter: [
+                        { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                        { exists: { field: 'layers.tcp.tcp_tcp_payload' } },
+                    ],
+                },
+            },
+        };
+    }
+
     static buildTcpStreamMetaDataQuery(streamId: number) {
         return {
             query: {
@@ -36,7 +49,6 @@ export class TcpStreamViewProviderQueries {
                     ],
                 },
             },
-            size: 0,
             aggs: {
                 min_epoch: {
                     min: {
@@ -59,12 +71,22 @@ export class TcpStreamViewProviderQueries {
                     composite: {
                         size,
                         sources : [
-                            { streamId: { terms: { field: 'layers.tcp.tcp_tcp_stream.keyword' } } },
+                            { streamId: { terms: { field: 'layers.tcp.tcp_tcp_stream' } } },
                         ],
                     },
                 },
             },
         }
+    }
+
+    static buildTcpStreamDocumentCountQuery(streamId: number) {
+        return {
+            query: {
+                term: {
+                    'layers.tcp.tcp_tcp_stream': streamId,
+                },
+            },
+        };
     }
 
     static buildTcpStreamQuery(streamId: number) {

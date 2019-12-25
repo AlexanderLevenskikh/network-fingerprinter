@@ -31,7 +31,8 @@
     "object-literal-sort-keys": false,
     "no-trailing-whitespace": false,
     "no-bitwise": false,
-    "semicolon": false
+    "semicolon": false,
+    "whitespace": false
   },
   "rulesDirectory": []
 }

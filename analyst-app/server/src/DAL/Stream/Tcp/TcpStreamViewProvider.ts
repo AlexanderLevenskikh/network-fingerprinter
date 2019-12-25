@@ -8,6 +8,9 @@ import { TcpStreamViewProviderQueries } from './TcpStreamViewProviderQueries';
 import { TcpStreamViewProviderMappers } from './TcpStreamViewProviderMappers';
 import { ITcpStreamView } from './ITcpStreamView';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
+import { getApplicationLayerProtocolByFrame } from '../../../Mappers/Stream/Frame/ApplicationLayerProtocolByFrame';
+import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
+import { Nullable } from '../../../Shared/Types/Nullable';
 
 @Injectable()
 export class TcpStreamViewProvider {
@@ -16,13 +19,23 @@ export class TcpStreamViewProvider {
 
     getTcpStreams = async (): Promise<ITcpStreamView[]> => {
         const streamIds = await this.getStreamIds();
-        const streamPromises: Array<Promise<ITcpStreamView>> = streamIds.map(async (streamId) => {
-            const handshakePackets = await this.getTcpHandshakePacketsByStreamId(streamId);
+        const streamPromises = streamIds.map(async (streamId): Promise<ITcpStreamView> => {
+            const { syn } = await this.getTcpHandshakePacketsByStreamId(streamId);
+            const sample = await this.getTcpSamplePacketByStreamId(streamId);
             const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
+            const packetsCount = await this.getTcpStreamDocumentsCount(streamId);
 
             return {
-                ...handshakePackets,
+                streamId,
                 ...streamMetaData,
+                sourceMac: (syn && syn.eth) ? syn.eth.sourceMac : null,
+                sourceIp: (syn && syn.ip) ? syn.ip.sourceIp : null,
+                sourcePort: (syn && syn.tcp) ? syn.tcp.sourcePort : null,
+                destinationMac: (syn && syn.eth) ? syn.eth.destinationMac : null,
+                destinationIp: (syn && syn.ip) ? syn.ip.destinationIp : null,
+                destinationPort: (syn && syn.tcp) ? syn.tcp.destinationPort : null,
+                packetsCount,
+                applicationLayerProtocol: (sample && sample.frame) ? getApplicationLayerProtocolByFrame(sample.frame) : null,
                 os: 'x',
             }
         });
@@ -59,6 +72,21 @@ export class TcpStreamViewProvider {
         };
     };
 
+    private getTcpSamplePacketByStreamId = async (streamId: number): Promise<Nullable<IPacketViewTcp>> => {
+        const sample = await this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                size: 1,
+                body: {
+                    ...TcpStreamViewProviderQueries.buildTcpPacketSampleByStreamIdQuery(streamId),
+                },
+            })
+            .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
+            .toPromise();
+
+        return sample.length > 0 ? sample[ 0 ] : null;
+    };
+
     private getTcpStreamMetaDataByStreamId = async (streamId: number): Promise<ITcpStreamMetaData> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
@@ -67,7 +95,17 @@ export class TcpStreamViewProvider {
                     ...TcpStreamViewProviderQueries.buildTcpStreamMetaDataQuery(streamId),
                 },
             })
-            .pipe(map(PacketViewProviderMappers.toTcpStreamMetaData))
+            .pipe(map(TcpStreamViewProviderMappers.toTcpStreamMetaData))
+            .toPromise();
+    };
+
+    private getTcpStreamDocumentsCount = async (streamId: number): Promise<number> => {
+        return this.elasticsearchService
+            .count({
+                index: 'packets-*',
+                body: TcpStreamViewProviderQueries.buildTcpStreamDocumentCountQuery(streamId),
+            })
+            .pipe(map(TcpStreamViewProviderMappers.toTcpStreamDocumentCount))
             .toPromise();
     };
 
