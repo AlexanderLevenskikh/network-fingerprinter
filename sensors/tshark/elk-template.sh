@@ -6,8 +6,15 @@ fi
 curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -d '
 {
   "index_patterns": ["packets-*"],
+  "settings": {
+    "mapping": {
+      "total_fields": {
+        "limit": "10000"
+      }
+    }
+  },
   "mappings": {
-      "dynamic": "false",
+      "dynamic": true,
       "properties": {
         "timestamp": {
           "type": "date"
@@ -22,6 +29,9 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
                 "frame_frame_protocols": {
                   "type": "text",
                   "analyzer": "simple"
+                },
+                "frame_frame_time_epoch": {
+                  "type": "float"
                 }
               }
             },
