@@ -1,0 +1,18 @@
+export enum TcpSignatureQuirks {
+    dontFragment,
+    ipIdIsZero,
+    ecnSupport,
+    mustBeZeroFieldIsNotZero,
+    flowIdIsNotZero,
+    sequenceNumberIsZero,
+    ackFlagUsed,
+    ackIsZero,
+    urgFlagUsed,
+    urgIsZero,
+    pushFlagUsed,
+    ownTimestampIsZero,
+    nonZeroPeerTimestamp,
+    nonZeroDataInOptionsSegment,
+    excessiveWindowScalingFactor,
+    malformedTcpOptions,
+}
