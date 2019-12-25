@@ -7,13 +7,13 @@ export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStream
     return [
         {
             title: t(I18StreamsNsKeys.listStartDateTimeColumnTitle),
-            dataIndex: 'os',
+            dataIndex: 'startDateTime',
             sorter: true,
             width: '10%',
         },
         {
             title: t(I18StreamsNsKeys.listEndDateTimeColumnTitle),
-            dataIndex: 'os',
+            dataIndex: 'endDateTime',
             sorter: true,
             width: '10%',
         },

@@ -7,6 +7,7 @@ import { PacketViewProviderMappers } from '../../Packet/PacketViewProviderMapper
 import { TcpStreamViewProviderQueries } from './TcpStreamViewProviderQueries';
 import { TcpStreamViewProviderMappers } from './TcpStreamViewProviderMappers';
 import { ITcpStreamView } from './ITcpStreamView';
+import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 
 @Injectable()
 export class TcpStreamViewProvider {
@@ -15,13 +16,17 @@ export class TcpStreamViewProvider {
 
     getTcpStreams = async (): Promise<ITcpStreamView[]> => {
         const streamIds = await this.getStreamIds();
-        const handshakePacketsPromises = streamIds.map(this.getTcpHandshakePacketsByStreamId);
-        const handshakePackets = await Promise.all(handshakePacketsPromises);
+        const streamPromises: Array<Promise<ITcpStreamView>> = streamIds.map(async (streamId) => {
+            const handshakePackets = await this.getTcpHandshakePacketsByStreamId(streamId);
+            const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
 
-        return handshakePackets.map(group => ({
-            ...group,
-            os: 'windows',
-        }));
+            return {
+                ...handshakePackets,
+                ...streamMetaData,
+                os: 'x',
+            }
+        });
+        return await Promise.all(streamPromises);
     };
 
     private getTcpHandshakePacketsByStreamId = async (streamId: number): Promise<ITcpStreamHandshakePackets> => {
@@ -30,9 +35,7 @@ export class TcpStreamViewProvider {
                 index: 'packets-*',
                 size: 1,
                 body: {
-                    query: {
-                        ...TcpStreamViewProviderQueries.buildTcpSynByStreamIdQuery(streamId),
-                    },
+                    ...TcpStreamViewProviderQueries.buildTcpSynByStreamIdQuery(streamId),
                 },
             })
             .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
@@ -43,9 +46,7 @@ export class TcpStreamViewProvider {
                 index: 'packets-*',
                 size: 1,
                 body: {
-                    query: {
-                        ...TcpStreamViewProviderQueries.buildTcpSynAckByStreamIdQuery(streamId),
-                    },
+                    ...TcpStreamViewProviderQueries.buildTcpSynAckByStreamIdQuery(streamId),
                 },
             })
             .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
@@ -56,6 +57,18 @@ export class TcpStreamViewProvider {
             syn: synPacket.length > 0 ? synPacket[ 0 ] : null,
             synAck: synAckPacket.length > 0 ? synAckPacket[ 0 ] : null,
         };
+    };
+
+    private getTcpStreamMetaDataByStreamId = async (streamId: number): Promise<ITcpStreamMetaData> => {
+        return this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                body: {
+                    ...TcpStreamViewProviderQueries.buildTcpStreamMetaDataQuery(streamId),
+                },
+            })
+            .pipe(map(PacketViewProviderMappers.toTcpStreamMetaData))
+            .toPromise();
     };
 
     private getStreamIds = async (size: number = 15): Promise<number[]> => {
