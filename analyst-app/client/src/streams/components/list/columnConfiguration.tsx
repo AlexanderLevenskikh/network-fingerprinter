@@ -2,6 +2,7 @@ import { ColumnProps } from 'antd/lib/table';
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { TFunction } from 'i18next';
 import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
+import React from 'react';
 
 export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStreamView>[] {
     return [
@@ -31,13 +32,15 @@ export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStream
         },
         {
             title: t(I18StreamsNsKeys.listSourceFingerprintCountColumnTitle),
-            dataIndex: 'os',
+            dataIndex: 'sourceFingerprint',
+            render: (text, record, index) => (<span>{ JSON.stringify(text) }</span>),
             sorter: true,
             width: '15%',
         },
         {
             title: t(I18StreamsNsKeys.listDestinationFingerprintCountColumnTitle),
-            dataIndex: 'os',
+            dataIndex: 'destinationFingerprint',
+            render: (text, record, index) => (<span>{ JSON.stringify(text) }</span>),
             sorter: true,
             width: '15%',
         },

@@ -11,7 +11,9 @@ import { TcpStreamViewProvider } from '../DAL/Stream/Tcp/TcpStreamViewProvider';
         }),
     ],
     controllers: [TcpStreamController],
-    providers: [TcpStreamViewProvider],
+    providers: [
+        TcpStreamViewProvider,
+    ],
 })
 export class TcpStreamModule {
 }

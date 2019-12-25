@@ -11,6 +11,7 @@ import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 import { getApplicationLayerProtocolByFrame } from '../../../Mappers/Stream/Frame/ApplicationLayerProtocolByFrame';
 import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
 import { Nullable } from '../../../Shared/Types/Nullable';
+import { FingerprinterPacketType, tcpFingerprintProcessor } from '../../../Processors/Fingerprinter/Tcp/Tcp';
 
 @Injectable()
 export class TcpStreamViewProvider {
@@ -20,10 +21,12 @@ export class TcpStreamViewProvider {
     getTcpStreams = async (): Promise<ITcpStreamView[]> => {
         const streamIds = await this.getStreamIds();
         const streamPromises = streamIds.map(async (streamId): Promise<ITcpStreamView> => {
-            const { syn } = await this.getTcpHandshakePacketsByStreamId(streamId);
+            const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
             const sample = await this.getTcpSamplePacketByStreamId(streamId);
             const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
             const packetsCount = await this.getTcpStreamDocumentsCount(streamId);
+            const sourceFingerprint = syn ? tcpFingerprintProcessor(syn, FingerprinterPacketType.Syn) : null;
+            const destinationFingerprint = synAck ? tcpFingerprintProcessor(synAck, FingerprinterPacketType.SynAck) : null;
 
             return {
                 streamId,
@@ -31,12 +34,13 @@ export class TcpStreamViewProvider {
                 sourceMac: (syn && syn.eth) ? syn.eth.sourceMac : null,
                 sourceIp: (syn && syn.ip) ? syn.ip.sourceIp : null,
                 sourcePort: (syn && syn.tcp) ? syn.tcp.sourcePort : null,
+                sourceFingerprint,
                 destinationMac: (syn && syn.eth) ? syn.eth.destinationMac : null,
                 destinationIp: (syn && syn.ip) ? syn.ip.destinationIp : null,
                 destinationPort: (syn && syn.tcp) ? syn.tcp.destinationPort : null,
+                destinationFingerprint,
                 packetsCount,
                 applicationLayerProtocol: (sample && sample.frame) ? getApplicationLayerProtocolByFrame(sample.frame) : null,
-                os: 'x',
             }
         });
         return await Promise.all(streamPromises);
