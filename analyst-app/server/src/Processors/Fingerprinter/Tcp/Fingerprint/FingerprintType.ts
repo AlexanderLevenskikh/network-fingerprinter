@@ -1,4 +1,4 @@
 export enum FingerprintType {
-    General = 'General',
+    Generic = 'Generic',
     Specific = 'Specific',
 }

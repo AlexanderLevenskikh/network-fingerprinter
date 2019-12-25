@@ -1,4 +1,4 @@
-import { IMap } from '../../../../../Shared/Types/IMap';
+import { IMap } from '../../../../Shared/Types/IMap';
 
 export const synAckP0fSignatures: IMap<string[]> = {
     // Linux

@@ -1,4 +1,6 @@
+import { TcpSignatureTcpOptionType } from './TcpSignatureTcpOptionType';
+
 export interface ITcpSignatureTcpOption {
-    type: ITcpSignatureTcpOption;
+    type: TcpSignatureTcpOptionType;
     payload?: any;
 }
