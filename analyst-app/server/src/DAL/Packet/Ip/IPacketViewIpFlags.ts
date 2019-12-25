@@ -1,5 +1,5 @@
 export interface IPacketViewIpFlags {
-    zeroBit: boolean;
+    zeroBitIsZero: boolean;
     dontFragment: boolean;
     moreFragments: boolean;
 }

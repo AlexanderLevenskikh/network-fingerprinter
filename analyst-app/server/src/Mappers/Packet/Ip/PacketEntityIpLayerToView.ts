@@ -13,7 +13,7 @@ export function mapPacketEntityIpLayerToView(entity: IPacketEntityIp): IPacketVi
     const identifier = Number.parseInt(ip_ip_id, 16);
     const ecn = ip_dsfield_ip_dsfield_ecn === '1';
 
-    const zeroBit = ip_flags_ip_flags_rb === '1';
+    const zeroBitIsZero = ip_flags_ip_flags_rb === '0';
     const dontFragment = ip_flags_ip_flags_df === '1';
     const moreFragments = ip_flags_ip_flags_mf === '1';
 
@@ -27,7 +27,7 @@ export function mapPacketEntityIpLayerToView(entity: IPacketEntityIp): IPacketVi
         identifier,
         ecn,
         ipFlags: {
-            zeroBit,
+            zeroBitIsZero,
             dontFragment,
             moreFragments,
         },

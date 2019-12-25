@@ -14,6 +14,6 @@ export enum TcpSignatureQuirks {
     ownTimestampIsZero,
     nonZeroPeerTimestamp,
     nonZeroDataInOptionsSegment,
-    excessiveWindowScalingFactor,
+    excessiveWindowScalingFactor, // > 14
     malformedTcpOptions,
 }
