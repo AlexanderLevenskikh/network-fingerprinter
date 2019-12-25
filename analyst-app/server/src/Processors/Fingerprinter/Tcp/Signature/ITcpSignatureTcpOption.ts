@@ -1,6 +1,6 @@
-import { TcpSignatureTcpOptionType } from './TcpSignatureTcpOptionType';
+import { PacketViewTcpOptionType } from '../../../../DAL/Packet/Tcp/PacketViewTcpOptionType';
 
 export interface ITcpSignatureTcpOption {
-    type: TcpSignatureTcpOptionType;
+    type: PacketViewTcpOptionType;
     payload?: any;
 }

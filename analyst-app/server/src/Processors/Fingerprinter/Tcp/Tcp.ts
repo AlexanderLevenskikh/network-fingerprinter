@@ -47,7 +47,22 @@ export function tcpFingerprintProcessor(
                 return isExact ? windowSize === value : maximumSegmentSize * value === windowSize;
             },
             () => signature.scalingFactor ? signature.scalingFactor === packet.tcp.windowScalingFactor : true,
-            // TODO TcpOptions
+            () => {
+                const { tcpOptions: signatureOptions } = signature;
+                const { tcpOptions: packetOptions } = packet.tcp;
+
+                if (signatureOptions.length !== packetOptions.length) {
+                    return false;
+                }
+
+                // If payload is not primitive, checking fails
+                return signatureOptions.every((signatureOption, index) => {
+                    return (
+                        signatureOption.type === packetOptions[index].type
+                        && (!signatureOption.payload || signatureOption.payload === packetOptions[index].payload)
+                    )
+                })
+            },
             () => {
                 const { quirks } = signature;
                 const {

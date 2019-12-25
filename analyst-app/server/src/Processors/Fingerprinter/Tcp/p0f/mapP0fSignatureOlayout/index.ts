@@ -1,5 +1,5 @@
-import { TcpSignatureTcpOptionType } from '../../Signature/TcpSignatureTcpOptionType';
 import { ITcpSignatureTcpOption } from '../../Signature/ITcpSignatureTcpOption';
+import { PacketViewTcpOptionType } from '../../../../../DAL/Packet/Tcp/PacketViewTcpOptionType';
 
 export function mapP0fSignatureOlayout(olayout: string): ITcpSignatureTcpOption[] {
     if (!olayout) {
@@ -11,18 +11,18 @@ export function mapP0fSignatureOlayout(olayout: string): ITcpSignatureTcpOption[
     return olayoutArray.map(item => {
         const eolMatch = item.match(/^eol\+(\d+)$/);
         const optionsMap = {
-            mss: TcpSignatureTcpOptionType.mss,
-            nop: TcpSignatureTcpOptionType.nop,
-            sack: TcpSignatureTcpOptionType.sack,
-            sok: TcpSignatureTcpOptionType.sok,
-            ts: TcpSignatureTcpOptionType.ts,
-            unknown: TcpSignatureTcpOptionType.unknown,
-            ws: TcpSignatureTcpOptionType.ws,
+            mss: PacketViewTcpOptionType.mss,
+            nop: PacketViewTcpOptionType.nop,
+            sack: PacketViewTcpOptionType.sack,
+            sok: PacketViewTcpOptionType.sok,
+            ts: PacketViewTcpOptionType.ts,
+            unknown: PacketViewTcpOptionType.unknown,
+            ws: PacketViewTcpOptionType.ws,
         };
 
         if (eolMatch) {
             return {
-                type: TcpSignatureTcpOptionType.eol,
+                type: PacketViewTcpOptionType.eol,
                 payload: Number.parseInt(eolMatch[1], 10),
             }
         }

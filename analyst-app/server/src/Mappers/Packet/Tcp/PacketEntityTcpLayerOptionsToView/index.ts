@@ -1,6 +1,5 @@
 import { PacketViewTcpOptionType } from '../../../../DAL/Packet/Tcp/PacketViewTcpOptionType';
 import { IPacketViewTcpOption } from '../../../../DAL/Packet/Tcp/IPacketViewTcpOption';
-import { isEmpty } from '../../../../Shared/Utils/isEmpty';
 
 const optionsMap = {
     0: PacketViewTcpOptionType.eol,

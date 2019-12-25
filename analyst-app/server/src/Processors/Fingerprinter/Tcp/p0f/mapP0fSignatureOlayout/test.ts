@@ -1,6 +1,6 @@
 import { mapP0fSignatureOlayout } from './index';
 import { ITcpSignatureTcpOption } from '../../Signature/ITcpSignatureTcpOption';
-import { TcpSignatureTcpOptionType } from '../../Signature/TcpSignatureTcpOptionType';
+import { PacketViewTcpOptionType } from '../../../../../DAL/Packet/Tcp/PacketViewTcpOptionType';
 
 describe('mapP0fSignatureOlayout', () => {
     it('options list', () => {
@@ -9,12 +9,12 @@ describe('mapP0fSignatureOlayout', () => {
         const olayout = mapP0fSignatureOlayout(olayoutStr);
 
         const expectedResult: ITcpSignatureTcpOption[] = [
-            { type: TcpSignatureTcpOptionType.ws },
-            { type: TcpSignatureTcpOptionType.nop },
-            { type: TcpSignatureTcpOptionType.mss },
-            { type: TcpSignatureTcpOptionType.sok },
-            { type: TcpSignatureTcpOptionType.nop },
-            { type: TcpSignatureTcpOptionType.nop },
+            { type: PacketViewTcpOptionType.ws },
+            { type: PacketViewTcpOptionType.nop },
+            { type: PacketViewTcpOptionType.mss },
+            { type: PacketViewTcpOptionType.sok },
+            { type: PacketViewTcpOptionType.nop },
+            { type: PacketViewTcpOptionType.nop },
         ];
         expect(olayout).toEqual(expectedResult);
     });
@@ -25,11 +25,11 @@ describe('mapP0fSignatureOlayout', () => {
         const olayout = mapP0fSignatureOlayout(olayoutStr);
 
         const expectedResult: ITcpSignatureTcpOption[] = [
-            { type: TcpSignatureTcpOptionType.mss },
-            { type: TcpSignatureTcpOptionType.ws },
-            { type: TcpSignatureTcpOptionType.sok },
-            { type: TcpSignatureTcpOptionType.nop },
-            { type: TcpSignatureTcpOptionType.eol, payload: 13 },
+            { type: PacketViewTcpOptionType.mss },
+            { type: PacketViewTcpOptionType.ws },
+            { type: PacketViewTcpOptionType.sok },
+            { type: PacketViewTcpOptionType.nop },
+            { type: PacketViewTcpOptionType.eol, payload: 13 },
         ];
         expect(olayout).toEqual(expectedResult);
     });
