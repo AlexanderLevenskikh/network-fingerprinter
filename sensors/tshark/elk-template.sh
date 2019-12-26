@@ -31,7 +31,7 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
                   "analyzer": "simple"
                 },
                 "frame_frame_time_epoch": {
-                  "type": "float"
+                  "type": "double"
                 }
               }
             },
@@ -94,6 +94,9 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
                   "type": "integer"
                 },
                 "tcp_tcp_window_size": {
+                  "type": "integer"
+                },
+                "tcp_tcp_stream": {
                   "type": "integer"
                 }
               }
