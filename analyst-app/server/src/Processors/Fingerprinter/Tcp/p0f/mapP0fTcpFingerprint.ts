@@ -1,19 +1,19 @@
 import { ITcpFingerprint } from '../Fingerprint/ITcpFingerprint';
-import { FingerprintType } from '../Fingerprint/FingerprintType';
-import { FingerprintClass } from '../Fingerprint/FingerprintClass';
+import { TcpFingerprintType } from '../Fingerprint/TcpFingerprintType';
+import { TcpFingerprintClass } from '../Fingerprint/TcpFingerprintClass';
 
 export function mapP0fTcpFingerprint(fingerprint: string): ITcpFingerprint {
     const [
         labelType, labelClass, labelName, labelFlavour,
     ] = fingerprint.split(':');
 
-    const fingerprintType = labelType === 's' ? FingerprintType.Specific : FingerprintType.Generic;
+    const fingerprintType = labelType === 's' ? TcpFingerprintType.Specific : TcpFingerprintType.Generic;
 
-    let fingerprintClass = FingerprintClass.Other;
+    let fingerprintClass = TcpFingerprintClass.Other;
     if (labelClass === 'unix') {
-        fingerprintClass = FingerprintClass.Unix;
+        fingerprintClass = TcpFingerprintClass.Unix;
     } else if (labelClass === 'win') {
-        fingerprintClass = FingerprintClass.Windows;
+        fingerprintClass = TcpFingerprintClass.Windows;
     }
     return  {
         type: fingerprintType,

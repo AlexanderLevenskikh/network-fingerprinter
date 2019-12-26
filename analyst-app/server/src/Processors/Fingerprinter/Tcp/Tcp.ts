@@ -10,16 +10,16 @@ import { TcpSignatureQuirks } from './Signature/TcpSignatureQuirks';
 import { isEmpty } from '../../../Shared/Utils/isEmpty';
 import { Nullable } from '../../../Shared/Types/Nullable';
 
-export enum FingerprinterPacketType {
+export enum TcpFingerprintProcessorPacketType {
     Syn,
     SynAck,
 }
 
 export function tcpFingerprintProcessor(
     packet: IPacketViewTcp,
-    type: FingerprinterPacketType,
+    type: TcpFingerprintProcessorPacketType,
 ): Nullable<ITcpFingerprint> {
-    const signatures = type === FingerprinterPacketType.Syn ? synSignatures : synAckSignatures;
+    const signatures = type === TcpFingerprintProcessorPacketType.Syn ? synSignatures : synAckSignatures;
     const signatureMatch = signatures.find(signature => {
         const checks = [
             () => {

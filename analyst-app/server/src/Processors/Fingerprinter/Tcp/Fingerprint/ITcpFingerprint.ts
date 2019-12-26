@@ -1,9 +1,9 @@
-import { FingerprintType } from './FingerprintType';
-import { FingerprintClass } from './FingerprintClass';
+import { TcpFingerprintType } from './TcpFingerprintType';
+import { TcpFingerprintClass } from './TcpFingerprintClass';
 
 export interface ITcpFingerprint {
-    type: FingerprintType;
-    class: FingerprintClass;
+    type: TcpFingerprintType;
+    class: TcpFingerprintClass;
     name: string;
     flavour: string;
 }

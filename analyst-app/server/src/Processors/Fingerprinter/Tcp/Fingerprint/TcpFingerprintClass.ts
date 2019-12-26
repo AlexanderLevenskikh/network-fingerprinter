@@ -1,4 +1,4 @@
-export enum FingerprintClass {
+export enum TcpFingerprintClass {
     Windows = 'Windows',
     Unix = 'Unix',
     Other = 'Other',

@@ -11,7 +11,7 @@ import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 import { getApplicationLayerProtocolByFrame } from '../../../Mappers/Stream/Frame/ApplicationLayerProtocolByFrame';
 import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
 import { Nullable } from '../../../Shared/Types/Nullable';
-import { FingerprinterPacketType, tcpFingerprintProcessor } from '../../../Processors/Fingerprinter/Tcp/Tcp';
+import { TcpFingerprintProcessorPacketType, tcpFingerprintProcessor } from '../../../Processors/Fingerprinter/Tcp/Tcp';
 
 @Injectable()
 export class TcpStreamViewProvider {
@@ -25,8 +25,8 @@ export class TcpStreamViewProvider {
             const sample = await this.getTcpSamplePacketByStreamId(streamId);
             const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
             const packetsCount = await this.getTcpStreamDocumentsCount(streamId);
-            const sourceFingerprint = syn ? tcpFingerprintProcessor(syn, FingerprinterPacketType.Syn) : null;
-            const destinationFingerprint = synAck ? tcpFingerprintProcessor(synAck, FingerprinterPacketType.SynAck) : null;
+            const sourceFingerprint = syn ? tcpFingerprintProcessor(syn, TcpFingerprintProcessorPacketType.Syn) : null;
+            const destinationFingerprint = synAck ? tcpFingerprintProcessor(synAck, TcpFingerprintProcessorPacketType.SynAck) : null;
 
             return {
                 streamId,
