@@ -23,7 +23,7 @@ export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): IPacket
     const tcpOptions = mapPacketEntityTcpLayerOptionsToView(tcp_tcp_options);
 
     return {
-        streamId: Number.parseInt(tcp_tcp_stream, 10),
+        streamId: tcp_tcp_stream,
         sourcePort: Number.parseInt(tcp_tcp_srcport, 10),
         destinationPort: Number.parseInt(tcp_tcp_dstport, 10),
         maximumSegmentSize,

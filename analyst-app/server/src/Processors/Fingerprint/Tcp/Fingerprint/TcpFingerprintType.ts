@@ -1,4 +1,4 @@
-export enum FingerprintType {
+export enum TcpFingerprintType {
     Generic = 'Generic',
     Specific = 'Specific',
 }

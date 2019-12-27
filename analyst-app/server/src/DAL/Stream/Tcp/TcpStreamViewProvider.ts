@@ -1,9 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ITcpStreamHandshakePackets } from './ITcpStreamHandshakePackets';
 import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
 import { map } from 'rxjs/operators';
-import { PacketViewProviderMappers } from '../../Packet/PacketViewProviderMappers';
 import { TcpStreamViewProviderQueries } from './TcpStreamViewProviderQueries';
 import { TcpStreamViewProviderMappers } from './TcpStreamViewProviderMappers';
 import { ITcpStreamView } from './ITcpStreamView';
@@ -11,22 +10,43 @@ import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 import { getApplicationLayerProtocolByFrame } from '../../../Mappers/Stream/Frame/ApplicationLayerProtocolByFrame';
 import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
 import { Nullable } from '../../../Shared/Types/Nullable';
-import { FingerprinterPacketType, tcpFingerprintProcessor } from '../../../Processors/Fingerprinter/Tcp/Tcp';
+import { tcpFingerprintProcessor, TcpFingerprintProcessorPacketType } from '../../../Processors/Fingerprint/Tcp/Tcp';
+import { TcpPacketViewProviderMappers } from '../../Packet/Tcp/TcpPacketViewProviderMappers';
+import { HttpStreamViewProvider } from '../Http/HttpStreamViewProvider';
+import {
+    httpFingerprintProcessor,
+    HttpFingerprintProcessorPacketType
+} from '../../../Processors/Fingerprint/Http/Http';
+import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
 
 @Injectable()
 export class TcpStreamViewProvider {
-    constructor(private readonly elasticsearchService: ElasticsearchService) {
-    }
+    constructor(
+        private readonly elasticsearchService: ElasticsearchService,
+        private readonly httpStreamViewProvider: HttpStreamViewProvider,
+    ) {}
 
     getTcpStreams = async (): Promise<ITcpStreamView[]> => {
         const streamIds = await this.getStreamIds();
         const streamPromises = streamIds.map(async (streamId): Promise<ITcpStreamView> => {
             const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
+            const { request, response } = await this.httpStreamViewProvider.getHttpRequestAndResponsePacketsByStream(streamId);
             const sample = await this.getTcpSamplePacketByStreamId(streamId);
             const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
             const packetsCount = await this.getTcpStreamDocumentsCount(streamId);
-            const sourceFingerprint = syn ? tcpFingerprintProcessor(syn, FingerprinterPacketType.Syn) : null;
-            const destinationFingerprint = synAck ? tcpFingerprintProcessor(synAck, FingerprinterPacketType.SynAck) : null;
+
+            const sourceTcpFingerprint = syn ? tcpFingerprintProcessor(syn, TcpFingerprintProcessorPacketType.Syn) : null;
+            const sourceHttpFingerprints = request ? httpFingerprintProcessor(request, HttpFingerprintProcessorPacketType.Request) : null;
+            const sourceFingerprints: IFingerprints = {
+                tcp: sourceTcpFingerprint,
+                http: sourceHttpFingerprints,
+            };
+            const destinationTcpFingerprint = synAck ? tcpFingerprintProcessor(synAck, TcpFingerprintProcessorPacketType.SynAck) : null;
+            const destinationHttpFingerprints = response ? httpFingerprintProcessor(response, HttpFingerprintProcessorPacketType.Response) : null;
+            const destinationFingerprints: IFingerprints = {
+                tcp: destinationTcpFingerprint,
+                http: destinationHttpFingerprints,
+            };
 
             return {
                 streamId,
@@ -34,11 +54,11 @@ export class TcpStreamViewProvider {
                 sourceMac: (syn && syn.eth) ? syn.eth.sourceMac : null,
                 sourceIp: (syn && syn.ip) ? syn.ip.sourceIp : null,
                 sourcePort: (syn && syn.tcp) ? syn.tcp.sourcePort : null,
-                sourceFingerprint,
+                sourceFingerprints,
                 destinationMac: (syn && syn.eth) ? syn.eth.destinationMac : null,
                 destinationIp: (syn && syn.ip) ? syn.ip.destinationIp : null,
                 destinationPort: (syn && syn.tcp) ? syn.tcp.destinationPort : null,
-                destinationFingerprint,
+                destinationFingerprints,
                 packetsCount,
                 applicationLayerProtocol: (sample && sample.frame) ? getApplicationLayerProtocolByFrame(sample.frame) : null,
             }
@@ -55,7 +75,7 @@ export class TcpStreamViewProvider {
                     ...TcpStreamViewProviderQueries.buildTcpSynByStreamIdQuery(streamId),
                 },
             })
-            .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
+            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
             .toPromise();
 
         const synAckPacket = await this.elasticsearchService
@@ -66,7 +86,7 @@ export class TcpStreamViewProvider {
                     ...TcpStreamViewProviderQueries.buildTcpSynAckByStreamIdQuery(streamId),
                 },
             })
-            .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
+            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
             .toPromise();
 
         return {
@@ -85,7 +105,7 @@ export class TcpStreamViewProvider {
                     ...TcpStreamViewProviderQueries.buildTcpPacketSampleByStreamIdQuery(streamId),
                 },
             })
-            .pipe(map(PacketViewProviderMappers.toTcpPacketViews))
+            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
             .toPromise();
 
         return sample.length > 0 ? sample[ 0 ] : null;
