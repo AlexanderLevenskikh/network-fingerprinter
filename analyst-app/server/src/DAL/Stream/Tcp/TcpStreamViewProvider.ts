@@ -18,12 +18,15 @@ import {
     HttpFingerprintProcessorPacketType
 } from '../../../Processors/Fingerprint/Http/Http';
 import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
+import { TlsPacketViewProvider } from '../../Packet/Tls/tls-packet-view-provider.service';
+import { tlsFingerprintProcessor } from '../../../Processors/Fingerprint/Tls/Tls';
 
 @Injectable()
 export class TcpStreamViewProvider {
     constructor(
         private readonly elasticsearchService: ElasticsearchService,
         private readonly httpStreamViewProvider: HttpStreamViewProvider,
+        private readonly tlsPacketViewProvider: TlsPacketViewProvider,
     ) {}
 
     getTcpStreams = async (): Promise<ITcpStreamView[]> => {
@@ -31,15 +34,18 @@ export class TcpStreamViewProvider {
         const streamPromises = streamIds.map(async (streamId): Promise<ITcpStreamView> => {
             const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
             const { request, response } = await this.httpStreamViewProvider.getHttpRequestAndResponsePacketsByStream(streamId);
+            const tlsClientHello = await this.tlsPacketViewProvider.getClientHelloByStreamId(streamId);
             const sample = await this.getTcpSamplePacketByStreamId(streamId);
             const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
             const packetsCount = await this.getTcpStreamDocumentsCount(streamId);
 
             const sourceTcpFingerprint = syn ? tcpFingerprintProcessor(syn, TcpFingerprintProcessorPacketType.Syn) : null;
             const sourceHttpFingerprints = request ? httpFingerprintProcessor(request, HttpFingerprintProcessorPacketType.Request) : null;
+            const sourceTlsFingerprints = tlsClientHello ? tlsFingerprintProcessor(tlsClientHello) : null;
             const sourceFingerprints: IFingerprints = {
                 tcp: sourceTcpFingerprint,
                 http: sourceHttpFingerprints,
+                tls: sourceTlsFingerprints,
             };
             const destinationTcpFingerprint = synAck ? tcpFingerprintProcessor(synAck, TcpFingerprintProcessorPacketType.SynAck) : null;
             const destinationHttpFingerprints = response ? httpFingerprintProcessor(response, HttpFingerprintProcessorPacketType.Response) : null;

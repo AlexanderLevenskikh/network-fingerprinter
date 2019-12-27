@@ -1,4 +1,4 @@
-export enum TlsExtension {
+export enum TlsPacketViewExtension {
     server_name = 0,
     max_fragment_length = 1,
     client_certificate_url = 2,

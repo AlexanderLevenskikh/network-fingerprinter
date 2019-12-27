@@ -6,6 +6,7 @@ import { IPacketEntitySsh } from './IPacketEntitySsh';
 import { IPacketEntityUdp } from './IPacketEntityUdp';
 import { IPacketEntityDns } from './IPacketEntityDns';
 import { IPacketEntityHttp } from './IPacketEntityHttp';
+import { IPacketEntityTls } from './IPacketEntityTls';
 
 export interface IPacketEntityLayers {
     frame: IPacketEntityFrame;
@@ -16,4 +17,5 @@ export interface IPacketEntityLayers {
     dns?: IPacketEntityDns;
     ssh?: IPacketEntitySsh;
     http?: IPacketEntityHttp;
+    tls?: IPacketEntityTls;
 }
