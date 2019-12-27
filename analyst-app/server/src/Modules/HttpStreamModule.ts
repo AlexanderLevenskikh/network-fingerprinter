@@ -3,7 +3,6 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ElasticsearchConfigService } from '../DAL/Elastic/ElasticsearchConfigService';
 import { TcpStreamController } from '../Controllers/TcpStreamController';
 import { TcpStreamViewProvider } from '../DAL/Stream/Tcp/TcpStreamViewProvider';
-import { HttpStreamModule } from './HttpStreamModule';
 import { HttpStreamViewProvider } from '../DAL/Stream/Http/HttpStreamViewProvider';
 
 @Module({
@@ -12,11 +11,10 @@ import { HttpStreamViewProvider } from '../DAL/Stream/Http/HttpStreamViewProvide
             useClass: ElasticsearchConfigService,
         }),
     ],
-    controllers: [TcpStreamController],
+    controllers: [],
     providers: [
-        TcpStreamViewProvider,
         HttpStreamViewProvider,
     ],
 })
-export class TcpStreamModule {
+export class HttpStreamModule {
 }

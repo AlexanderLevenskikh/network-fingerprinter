@@ -2,7 +2,7 @@ export interface IPacketEntityTcp {
     tcp_tcp_srcport: string;
     tcp_tcp_dstport: string;
     tcp_tcp_port: string[];
-    tcp_tcp_stream: string;
+    tcp_tcp_stream: number;
     tcp_tcp_len: string;
     tcp_tcp_seq: string;
     tcp_tcp_nxtseq: string;

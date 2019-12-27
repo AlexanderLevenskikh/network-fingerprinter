@@ -1,7 +1,7 @@
 import { TcpStreamViewApplicationProtocol } from './TcpStreamViewApplicationProtocol';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 import { Nullable } from '../../../Shared/Types/Nullable';
-import { ITcpFingerprint } from '../../../Processors/Fingerprinter/Tcp/Fingerprint/ITcpFingerprint';
+import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
 
 export interface ITcpStreamView extends ITcpStreamMetaData {
     streamId: number;
@@ -9,11 +9,11 @@ export interface ITcpStreamView extends ITcpStreamMetaData {
     sourceIp: string; // From tcp SYN
     sourcePort: number; // From tcp SYN
     sourceMac: string; // From tcp SYN
-    sourceFingerprint: ITcpFingerprint;
+    sourceFingerprints: IFingerprints;
     destinationIp: string; // From tcp SYN
     destinationPort: number; // From tcp SYN
     destinationMac: string; // From tcp SYN
-    destinationFingerprint: ITcpFingerprint;
+    destinationFingerprints: IFingerprints;
     applicationLayerProtocol: Nullable<TcpStreamViewApplicationProtocol>; // From tcp SYN (frame_protocols)
     // sensorId: number; // Add metadata to sensor output
 }

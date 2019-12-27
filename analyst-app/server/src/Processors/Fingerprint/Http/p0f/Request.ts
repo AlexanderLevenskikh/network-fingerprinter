@@ -189,6 +189,7 @@ export const httpRequestP0fSignatures: IMap<string[]> = {
     ],
     's:!:curl:': [
         '1:User-Agent,Host,Accept=[*/*]:Connection,Accept-Encoding,Accept-Language,Accept-Charset:curl/',
+        '1:Host,User-Agent,Accept=[*/*]:Connection,Accept-Encoding,Accept-Language,Accept-Charset:curl/',
     ],
     's:!:links:': [
         '1:Host,User-Agent,Accept=[*/*],Accept-Encoding=[gzip, deflate, bzip2],Accept-Charset=[us-ascii],Accept-Language=[;q=0.1],Connection=[Keep-Alive]::Links',

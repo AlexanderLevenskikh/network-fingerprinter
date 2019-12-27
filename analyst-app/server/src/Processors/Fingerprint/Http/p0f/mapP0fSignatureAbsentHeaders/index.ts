@@ -1,5 +1,5 @@
 import { PacketViewHttpHeaderName } from '../../../../../DAL/Packet/Http/PacketViewHttpHeaderName';
-import { httpSignatureHeaderNameMap } from '../mapP0fSignatureHeaders/map';
+import { mapHttpTextHeaderNameToView } from '../../../../../Mappers/Packet/Http/HttpTextHeaderNameToView';
 
 export function mapP0fSignatureAbsentHeaders(habsent: string): PacketViewHttpHeaderName[] {
     if (!habsent) {
@@ -8,5 +8,5 @@ export function mapP0fSignatureAbsentHeaders(habsent: string): PacketViewHttpHea
 
     return habsent
         .split(',')
-        .map(header => httpSignatureHeaderNameMap[ header ] || PacketViewHttpHeaderName.Unknown)
+        .map(mapHttpTextHeaderNameToView)
 }

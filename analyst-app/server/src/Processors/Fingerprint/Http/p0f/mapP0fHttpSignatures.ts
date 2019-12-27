@@ -4,6 +4,7 @@ import { mapP0fFingerprint } from './mapP0fFingerprint';
 import { PacketViewHttpVersion } from '../../../../DAL/Packet/Http/PacketViewHttpVersion';
 import { mapP0fSignatureHeaders } from './mapP0fSignatureHeaders';
 import { mapP0fSignatureAbsentHeaders } from './mapP0fSignatureAbsentHeaders';
+import { HttpSignatureVersion } from '../Signature/HttpSignatureVersion';
 
 export function mapP0fHttpSignatures(p0fSIgnatures: IMap<string[]>): IHttpSignature[] {
     return Object.keys(p0fSIgnatures).reduce((result, label) => {
@@ -17,11 +18,12 @@ export function mapP0fHttpSignatures(p0fSIgnatures: IMap<string[]>): IHttpSignat
                 ver, horder, habsent, expsw,
             ] = signatureStr.split(':');
 
-            let version = PacketViewHttpVersion.Unknown;
+            // wildcard case
+            let version = HttpSignatureVersion.Any;
             if (ver === '0') {
-                version = PacketViewHttpVersion.Http1_0;
+                version = HttpSignatureVersion.Http1_0;
             } else if (ver === '1') {
-                version = PacketViewHttpVersion.Http1_1;
+                version = HttpSignatureVersion.Http1_1;
             }
 
             const orderedHeaders = mapP0fSignatureHeaders(horder);
