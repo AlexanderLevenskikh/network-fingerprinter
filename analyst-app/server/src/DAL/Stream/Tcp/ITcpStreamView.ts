@@ -15,5 +15,6 @@ export interface ITcpStreamView extends ITcpStreamMetaData {
     destinationMac: string; // From tcp SYN
     destinationFingerprints: IFingerprints;
     applicationLayerProtocol: Nullable<TcpStreamViewApplicationProtocol>; // From tcp SYN (frame_protocols)
+    serverNameIndication?: string; // from TLS
     // sensorId: number; // Add metadata to sensor output
 }

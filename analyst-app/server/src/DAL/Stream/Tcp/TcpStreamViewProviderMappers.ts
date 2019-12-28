@@ -3,6 +3,10 @@ import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 
 export class TcpStreamViewProviderMappers {
     public static toStreamIds(response: SearchResponse<any>): number[] {
+        if (!response[0].aggregations) {
+            return [];
+        }
+
         return response[0]
             .aggregations
             .by_stream

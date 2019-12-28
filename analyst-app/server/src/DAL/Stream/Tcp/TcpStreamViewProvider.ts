@@ -67,6 +67,7 @@ export class TcpStreamViewProvider {
                 destinationFingerprints,
                 packetsCount,
                 applicationLayerProtocol: (sample && sample.frame) ? getApplicationLayerProtocolByFrame(sample.frame) : null,
+                serverNameIndication: (tlsClientHello && tlsClientHello.tls) ? tlsClientHello.tls.serverNameIndication : null,
             }
         });
         return await Promise.all(streamPromises);

@@ -4,4 +4,5 @@ export interface IPacketViewTlsLayer {
     extensions: number[];
     supportedEllipticGroups: number[];
     ellipticPointFormats: number[];
+    serverNameIndication?: string;
 }

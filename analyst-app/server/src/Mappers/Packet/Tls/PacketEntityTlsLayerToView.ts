@@ -7,7 +7,7 @@ export function mapPacketEntityTlsLayerToView(entity: IPacketEntityTls): IPacket
         text_tls_handshake_extension_type, tls_handshake_ciphersuites_tls_handshake_ciphersuite,
         tls_handshake_extensions_ec_point_formats_tls_handshake_extensions_ec_point_format,
         tls_handshake_extensions_supported_groups_tls_handshake_extensions_supported_group,
-        tls_handshake_tls_handshake_version,
+        tls_handshake_tls_handshake_version, text_tls_handshake_extensions_server_name,
     } = entity;
 
     const mapInt = (x: string[] | string, radix: number = 10) => {
@@ -31,5 +31,6 @@ export function mapPacketEntityTlsLayerToView(entity: IPacketEntityTls): IPacket
             16,
         ),
         ellipticPointFormats: mapInt(tls_handshake_extensions_ec_point_formats_tls_handshake_extensions_ec_point_format),
+        serverNameIndication: text_tls_handshake_extensions_server_name,
     }
 }

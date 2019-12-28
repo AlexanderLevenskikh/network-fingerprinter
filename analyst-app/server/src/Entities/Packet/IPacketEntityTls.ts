@@ -4,4 +4,5 @@ export interface IPacketEntityTls {
     text_tls_handshake_extension_type?: string[] | string;
     tls_handshake_extensions_supported_groups_tls_handshake_extensions_supported_group?: string[] | string;
     tls_handshake_extensions_ec_point_formats_tls_handshake_extensions_ec_point_format?: string[] | string;
+    text_tls_handshake_extensions_server_name?: string;
 }
