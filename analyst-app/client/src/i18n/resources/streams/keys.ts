@@ -7,7 +7,7 @@ export enum I18StreamsNsKeys {
     listDestinationColumnTitle = 'listDestinationColumnTitle',
     listAddressColumnTitle = 'listSideColumnTitle',
     listFingerprintColumnTitle = 'listFingerprintColumnTitle',
-    listPacketsCountColumnTitle = 'listPacketsCountColumnTitle',
+    listPacketsCountColumnSubTitle = 'listPacketsCountColumnTitle',
     listSensorIdColumnTitle = 'listSensorIdColumnTitle',
     listPortNumberColumnSubTitle = 'listPortNumberColumnSubTitle',
 }

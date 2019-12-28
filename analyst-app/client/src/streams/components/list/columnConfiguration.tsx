@@ -6,9 +6,15 @@ import React from 'react';
 import { renderStreamDateTime } from 'root/streams/components/list/columns/renderDateTime';
 import { renderStreamSide } from 'root/streams/components/list/columns/side/renderSide';
 import { renderFingerprint } from 'root/streams/components/list/columns/fingerprint/renderFingerprint';
+import { renderInfo } from 'root/streams/components/list/columns/info/renderInfo';
 
 export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStreamView>[] {
     return [
+        {
+            title: '',
+            width: '14%',
+            render: text => renderInfo(text, t),
+        },
         {
             title: t(I18StreamsNsKeys.listDateTimeColumnTitle),
             children: [
@@ -60,26 +66,15 @@ export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStream
                     title: t(I18StreamsNsKeys.listSourceColumnTitle),
                     dataIndex: 'sourceFingerprints',
                     render: (text) => renderFingerprint({ fingerprints: text, t }),
-                    width: '17%',
+                    width: '19%',
                 },
                 {
                     title: t(I18StreamsNsKeys.listDestinationColumnTitle),
                     dataIndex: 'destinationFingerprints',
                     render: (text) => renderFingerprint({ fingerprints: text, t }),
-                    width: '17%',
+                    width: '19%',
                 },
             ],
-        },
-        {
-            title: t(I18StreamsNsKeys.listPacketsCountColumnTitle),
-            dataIndex: 'packetsCount',
-            sorter: true,
-            width: '8%',
-        },
-        {
-            title: t(I18StreamsNsKeys.listSensorIdColumnTitle),
-            dataIndex: 'os',
-            width: '10%',
         },
     ];
 }

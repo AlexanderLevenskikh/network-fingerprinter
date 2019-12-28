@@ -10,6 +10,6 @@ export const i18StreamsNsRuResources = {
     [ I18StreamsNsKeys.listAddressColumnTitle ]: 'MAC, IP, Порт',
     [ I18StreamsNsKeys.listPortNumberColumnSubTitle ]: 'Порт',
     [ I18StreamsNsKeys.listFingerprintColumnTitle ]: 'Цифровой отпечаток',
-    [ I18StreamsNsKeys.listPacketsCountColumnTitle ]: 'Количество пакетов',
+    [ I18StreamsNsKeys.listPacketsCountColumnSubTitle ]: 'Пакетов',
     [ I18StreamsNsKeys.listSensorIdColumnTitle ]: 'ID сенсора',
 };

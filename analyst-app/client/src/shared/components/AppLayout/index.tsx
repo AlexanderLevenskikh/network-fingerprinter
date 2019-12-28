@@ -16,11 +16,6 @@ interface IProps {
 const { Sider, Header, Content } = Layout;
 
 export const AppLayout: FC<IProps> = () => {
-    const [ collapsed, setCollapsed ] = useState(false);
-    const toggle = useCallback(
-        () => setCollapsed(!collapsed),
-        [ collapsed ]
-    );
     const dispatch = useDispatch();
     const onClickStreams = useCallback(
         () => dispatch(StreamsRouterActions.streamsList()),
