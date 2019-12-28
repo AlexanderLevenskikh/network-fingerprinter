@@ -30,35 +30,28 @@ export const AppLayout: FC<IProps> = () => {
 
     return (
         <Layout>
-            <Sider
-                trigger={ null }
-                collapsible
-                collapsed={ collapsed }
-                className={ styles.sider }
-            >
-                <div className={ styles.logo }>
-
-                </div>
-                <Icon
-                    className={ styles.trigger }
-                    type={ collapsed ? 'menu-unfold' : 'menu-fold' }
-                    onClick={ toggle }
-                />
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['1']}>
-                    <Menu.Item key="1" onClick={ onClickStreams }>
+            <Header className={ styles.header }>
+                <Menu
+                    theme="dark"
+                    mode="horizontal"
+                    defaultSelectedKeys={['2']}
+                    style={{ lineHeight: '64px' }}
+                >
+                    <Menu.Item
+                        key="1"
+                        onClick={ onClickStreams }
+                    >
                         <Icon type="branches" />
                         <span>
                             { t(I18MainNsKeys.menuStreamsLabel) }
                         </span>
                     </Menu.Item>
                 </Menu>
-            </Sider>
+                <Suspense fallback={null}>
+                    <LanguageSelector/>
+                </Suspense>
+            </Header>
             <Layout>
-                <Header style={{ background: '#fff', padding: 0 }}>
-                    <Suspense fallback={null}>
-                        <LanguageSelector/>
-                    </Suspense>
-                </Header>
                 <Content
                     style={{
                         margin: '24px 16px',
