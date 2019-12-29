@@ -36,7 +36,7 @@ export function* searchStreamSaga(action: any) {
             {
                 query: {
                     ...filteredSearchParamsDraft,
-                    skip: 0,
+                    current: 1,
                 },
             },
         ));

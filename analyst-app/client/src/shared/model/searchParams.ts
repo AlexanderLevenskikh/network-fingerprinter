@@ -1,17 +1,17 @@
 export class SearchParamsModel {
     [ key: string ]: any;
 
-    skip: number = 0;
+    current: number = 1;
     take: number = 15;
 
-    constructor(skip: string | number = 0, take: string | number = 15) {
-        let skipNumber = 0;
+    constructor(current: string | number = 0, take: string | number = 15) {
+        let currentNumber = 0;
         let takeNumber = 15;
 
-        if (typeof skip === 'string') {
-            skipNumber = Number.parseInt(skip);
+        if (typeof current === 'string') {
+            currentNumber = Number.parseInt(current);
         } else {
-            skipNumber = skip;
+            currentNumber = current;
         }
         if (typeof take === 'string') {
             takeNumber = Number.parseInt(take);
@@ -19,7 +19,7 @@ export class SearchParamsModel {
             takeNumber = take;
         }
 
-        this.skip = skipNumber;
+        this.current = currentNumber;
         this.take = takeNumber;
     }
 

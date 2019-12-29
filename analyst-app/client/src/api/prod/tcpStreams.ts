@@ -19,4 +19,20 @@ export class TcpStreamsApi implements ITcpStreamsApi {
             responseType: HttpClientResponseType.JSON,
         });
     }
+
+    getTcpStreamListTotal(
+        searchParams: TcpStreamsSearchParamsModel,
+    ): Promise<number> {
+        return httpClient({
+            controller: 'api/stream/tcp/total',
+            action: 'list',
+            method: HttpClientMethod.GET,
+            request: {
+                query: {
+                    ...searchParams,
+                }
+            },
+            responseType: HttpClientResponseType.JSON,
+        });
+    }
 }

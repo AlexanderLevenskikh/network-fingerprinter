@@ -5,4 +5,8 @@ export interface ITcpStreamsApi {
     getTcpStreamList(
         searchParams: TcpStreamsSearchParamsModel,
     ): Promise<ITcpStreamView[]>;
+
+    getTcpStreamListTotal(
+        searchParams: TcpStreamsSearchParamsModel,
+    ): Promise<number>;
 }

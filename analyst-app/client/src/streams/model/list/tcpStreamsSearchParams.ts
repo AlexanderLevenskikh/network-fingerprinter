@@ -12,7 +12,7 @@ export class TcpStreamsSearchParamsModel extends SearchParamsModel {
     destinationPort?: string;
 
     constructor(query: Partial<TcpStreamsSearchParamsModel>) {
-        super(query.skip, query.take);
+        super(query.current, query.take);
 
         this.streamId = query.streamId ||undefined;
         this.dateTimeFrom = query.dateTimeFrom ||undefined;

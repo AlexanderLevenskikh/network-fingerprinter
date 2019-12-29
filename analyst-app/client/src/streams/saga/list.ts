@@ -30,8 +30,12 @@ export function* fetchStreamListSaga() {
         const searchParams = isTcp ? tcpStreamsSearchParams : udpStreamsSearchParams;
 
         const streams = yield call(tcpStreamApi.getTcpStreamList, searchParams);
+        const streamsTotal = yield call(tcpStreamApi.getTcpStreamListTotal, searchParams);
 
-        yield put(StreamsListActions.FetchListSucceed({ streams }));
+        yield put(StreamsListActions.FetchListSucceed({
+            streams,
+            streamsTotal,
+        }));
     } catch (error) {
         yield put(StreamsListActions.FetchListFailed({ error }));
     }

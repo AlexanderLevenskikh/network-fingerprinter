@@ -2,7 +2,7 @@ import { SearchParamsModel } from 'root/shared/model/searchParams';
 
 export function filterQuery(query: SearchParamsModel): SearchParamsModel {
     const baseQuery: SearchParamsModel = {
-        skip: 0,
+        current: 1,
         take: 15,
     };
 

@@ -14,12 +14,13 @@ export const streamListReducer = (state = initialState, action: ReducerActions):
             };
         }
         case StreamsListActionTypes.FetchListSucceed: {
-            const { streams } = action.payload;
+            const { streams, streamsTotal } = action.payload;
 
             return {
                 ...state,
                 streamsLoading: false,
                 streams,
+                streamsTotal,
             }
         }
 
