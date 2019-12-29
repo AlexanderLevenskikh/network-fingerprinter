@@ -37,7 +37,7 @@ export function createHttpClient<T>() {
     return async (options: IHttpClientOptions): Promise<any> => {
         const { request, responseType, method } = options;
 
-        let url = `${ options.controller }/${ options.action }`;
+        let url = `/${ options.controller }/${ options.action }`;
         if (request.query) {
             url = `${ url }${ stringifyNonEmptyParams(request.query) }`;
         }

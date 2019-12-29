@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ITcpStreamHandshakePackets } from './ITcpStreamHandshakePackets';
 import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
@@ -15,11 +15,15 @@ import { TcpPacketViewProviderMappers } from '../../Packet/Tcp/TcpPacketViewProv
 import { HttpStreamViewProvider } from '../Http/HttpStreamViewProvider';
 import {
     httpFingerprintProcessor,
-    HttpFingerprintProcessorPacketType
+    HttpFingerprintProcessorPacketType,
 } from '../../../Processors/Fingerprint/Http/Http';
 import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
 import { TlsPacketViewProvider } from '../../Packet/Tls/tls-packet-view-provider.service';
 import { tlsFingerprintProcessor } from '../../../Processors/Fingerprint/Tls/Tls';
+import { ITcpStreamFilter } from './ITcpStreamFilter';
+import { compareIsoDates } from '../../../Shared/Utils/compareIsoDates';
+import { filter } from '../../../Shared/Utils/filter';
+import { TcpStreamFilterDateOrder } from './TcpStreamFilterDateOrder';
 
 @Injectable()
 export class TcpStreamViewProvider {
@@ -29,9 +33,25 @@ export class TcpStreamViewProvider {
         private readonly tlsPacketViewProvider: TlsPacketViewProvider,
     ) {}
 
-    getTcpStreams = async (): Promise<ITcpStreamView[]> => {
+    getTcpStreamsTotal = async (query: ITcpStreamFilter): Promise<number> => {
+        const streamsFilter = this.createStreamsFilter(query);
+        const streamIds = await filter(await this.getStreamIds(), streamsFilter);
+
+        return streamIds.length;
+    };
+
+    getTcpStreams = async (query: ITcpStreamFilter): Promise<ITcpStreamView[]> => {
+        const streamsFilter = this.createStreamsFilter(query);
         const streamIds = await this.getStreamIds();
-        const streamPromises = streamIds.map(async (streamId): Promise<ITcpStreamView> => {
+        const sortedStreamIds = await this.sortStreams(query, streamIds);
+        const filteredStreamIds = await filter(sortedStreamIds, streamsFilter);
+
+        const current = query.current ? Number.parseInt(query.current, 10) - 1 : 0;
+        const take = query.take ? Number.parseInt(query.take, 10) : 15;
+        const skip = current * take;
+        const skippedStreamIds = filteredStreamIds.slice(skip, skip + take);
+
+        const streamPromises = skippedStreamIds.map(async (streamId: number): Promise<ITcpStreamView> => {
             const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
             const { request, response } = await this.httpStreamViewProvider.getHttpRequestAndResponsePacketsByStream(streamId);
             const tlsClientHello = await this.tlsPacketViewProvider.getClientHelloByStreamId(streamId);
@@ -70,7 +90,106 @@ export class TcpStreamViewProvider {
                 serverNameIndication: (tlsClientHello && tlsClientHello.tls) ? tlsClientHello.tls.serverNameIndication : null,
             }
         });
+
         return await Promise.all(streamPromises);
+    };
+
+    private sortStreams = async (query: ITcpStreamFilter, streamIds: number[]) => {
+        if (
+            query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Asc
+            && query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Desc
+            && query.dateTimeToOrder !== TcpStreamFilterDateOrder.Asc
+            && query.dateTimeToOrder !== TcpStreamFilterDateOrder.Desc
+        ) {
+            return streamIds;
+        }
+
+        const streamPromises = streamIds.map(async (streamId: number): Promise<any> => {
+            const meta = await this.getTcpStreamMetaDataByStreamId(streamId);
+
+            return {
+                streamId,
+                ...meta,
+            }
+        });
+        const streamsMetaData = await Promise.all(streamPromises);
+
+        if (query.dateTimeFromOrder === TcpStreamFilterDateOrder.Asc) {
+            streamsMetaData.sort((a, b) => compareIsoDates(a.startDateTime, b.startDateTime));
+        }
+        if (query.dateTimeFromOrder === TcpStreamFilterDateOrder.Desc) {
+            streamsMetaData.sort((a, b) => -1 * compareIsoDates(a.startDateTime, b.startDateTime));
+        }
+        if (query.dateTimeToOrder === TcpStreamFilterDateOrder.Asc) {
+            streamsMetaData.sort((a, b) => compareIsoDates(a.endDateTime, b.endDateTime));
+        }
+        if (query.dateTimeToOrder === TcpStreamFilterDateOrder.Desc) {
+            streamsMetaData.sort((a, b) => -1 * compareIsoDates(a.endDateTime, b.endDateTime));
+        }
+
+        return streamsMetaData.map(x => x.streamId);
+    };
+
+    private createStreamsFilter = (query: ITcpStreamFilter) => {
+        return async (streamId: number) => {
+            if (query.dateTimeFrom || query.dateTimeTo) {
+                const { endDateTime, startDateTime } = await this.getTcpStreamMetaDataByStreamId(streamId);
+
+                if (query.dateTimeFrom) {
+                    if (!startDateTime) {
+                        return false;
+                    }
+                    const comparisionResult = compareIsoDates(startDateTime, query.dateTimeFrom);
+
+                    if (comparisionResult < 0) {
+                        return false;
+                    }
+                }
+
+                if (query.dateTimeTo) {
+                    if (!endDateTime) {
+                        return false;
+                    }
+                    const comparisionResult = compareIsoDates(query.dateTimeTo, endDateTime);
+
+                    if (comparisionResult < 0) {
+                        return false;
+                    }
+                }
+            }
+
+            const { syn } = await this.getTcpHandshakePacketsByStreamId(streamId);
+
+            if (!syn) {
+                return !(query.sourceIp || query.sourceMac || query.sourcePort
+                    || query.destinationIp || query.destinationMac || query.destinationPort);
+            }
+
+            const {
+                tcp: { sourcePort, destinationPort },
+                ip: { sourceIp, destinationIp },
+                eth: { destinationMac, sourceMac },
+            } = syn;
+
+            if (query.sourceIp && !query.sourceIp.includes(sourceIp)) {
+                return false;
+            }
+            if (query.sourcePort && !query.sourcePort.includes(sourcePort.toString())) {
+                return false;
+            }
+            if (query.sourceMac && !query.sourceMac.includes(sourceMac)) {
+                return false;
+            }
+
+            if (query.destinationIp && !query.destinationIp.includes(destinationIp)) {
+                return false;
+            }
+            if (query.destinationPort && !query.destinationPort.includes(destinationPort.toString())) {
+                return false;
+            }
+
+            return !(query.destinationMac && !query.destinationMac.includes(destinationMac));
+        };
     };
 
     private getTcpHandshakePacketsByStreamId = async (streamId: number): Promise<ITcpStreamHandshakePackets> => {

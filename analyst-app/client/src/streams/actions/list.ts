@@ -4,6 +4,7 @@ import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 
 interface IFetchListSucceedPayload {
     streams: ITcpStreamView[];
+    streamsTotal: number;
 }
 
 export enum StreamsListActionTypes {

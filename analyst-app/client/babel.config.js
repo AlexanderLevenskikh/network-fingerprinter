@@ -28,6 +28,7 @@ module.exports = function(api) {
         "@babel/plugin-proposal-nullish-coalescing-operator",
     ];
     return {
+        sourceType: 'unambiguous',
         presets,
         plugins,
     };

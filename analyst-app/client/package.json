@@ -44,7 +44,6 @@
     "@types/redux-first-router": "2.1.4",
     "@types/redux-first-router-link": "1.4.4",
     "@types/redux-logger": "3.0.7",
-    "@types/redux-saga": "^0.10.5",
     "@types/terser-webpack-plugin": "2.2.0",
     "@types/webpack": "4.39.8",
     "@types/webpack-dev-server": "3.4.0",

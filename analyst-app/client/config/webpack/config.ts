@@ -1,17 +1,17 @@
 import { Configuration } from 'webpack';
 import path from 'path';
 import config from '../index';
-import { webpackOutputPart } from "./output";
-import { webpackOptimizationPart } from "./optimization";
-import { webpackTypescriptRule } from "./rules/typescript";
-import { webpackCssRule } from "./rules/css";
-import { webpackFileRule } from "./rules/file";
-import { webpackDefinePlugin } from "./plugins/define";
-import { webpackMiniCssPlugin } from "./plugins/miniCss";
-import { webpackHTMLPlugin } from "./plugins/html";
-import { webpackForkTsCheckerPlugin } from "./plugins/forkTsChecker";
-import { webpackDevServerHMRPlugin } from "./plugins/devServerHMR";
-import { webpackDevServerPart } from "./devServer";
+import { webpackOutputPart } from './output';
+import { webpackOptimizationPart } from './optimization';
+import { webpackTypescriptRule } from './rules/typescript';
+import { webpackCssRule } from './rules/css';
+import { webpackFileRule } from './rules/file';
+import { webpackDefinePlugin } from './plugins/define';
+import { webpackMiniCssPlugin } from './plugins/miniCss';
+import { webpackHTMLPlugin } from './plugins/html';
+import { webpackForkTsCheckerPlugin } from './plugins/forkTsChecker';
+import { webpackDevServerHMRPlugin } from './plugins/devServerHMR';
+import { webpackDevServerPart } from './devServer';
 import { webpackContext } from './context';
 import { webpackTSXRule } from './rules/typescriptJSX';
 import { webpackLessRule } from './rules/less';
@@ -80,7 +80,7 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
             postCSSConfigDirPath: webpackContext,
         }),
         webpackFileRule({
-            include: /src/,
+            include: /src|icons/,
         }),
     ];
 
