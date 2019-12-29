@@ -4,6 +4,7 @@ import { StreamsListActions, StreamsListActionTypes } from 'root/streams/actions
 import { StreamsRouterActionTypes } from 'root/streams/actions/router';
 import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
+import { mapSearchParamsToDto } from 'root/streams/mappers/search/tcpSearchParams';
 
 export function* streamListSagaArray() {
     yield spawn(watchStreamListSaga);
@@ -28,9 +29,10 @@ export function* fetchStreamListSaga() {
         const tcpStreamsSearchParams = yield select(StreamRouterSelectors.tcpStreamsSearchParams);
         const udpStreamsSearchParams = yield select(StreamRouterSelectors.udpStreamsSearchParams);
         const searchParams = isTcp ? tcpStreamsSearchParams : udpStreamsSearchParams;
+        const mappedSearchParams = mapSearchParamsToDto(searchParams);
 
-        const streams = yield call(tcpStreamApi.getTcpStreamList, searchParams);
-        const streamsTotal = yield call(tcpStreamApi.getTcpStreamListTotal, searchParams);
+        const streams = yield call(tcpStreamApi.getTcpStreamList, mappedSearchParams);
+        const streamsTotal = yield call(tcpStreamApi.getTcpStreamListTotal, mappedSearchParams);
 
         yield put(StreamsListActions.FetchListSucceed({
             streams,

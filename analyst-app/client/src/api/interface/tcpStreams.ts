@@ -1,12 +1,12 @@
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
-import { TcpStreamsSearchParamsModel } from 'root/streams/model/list/tcpStreamsSearchParams';
+import { ITcpStreamFilter } from 'DAL/Stream/Tcp/ITcpStreamFilter';
 
 export interface ITcpStreamsApi {
     getTcpStreamList(
-        searchParams: TcpStreamsSearchParamsModel,
+        searchParams: ITcpStreamFilter,
     ): Promise<ITcpStreamView[]>;
 
     getTcpStreamListTotal(
-        searchParams: TcpStreamsSearchParamsModel,
+        searchParams: ITcpStreamFilter,
     ): Promise<number>;
 }

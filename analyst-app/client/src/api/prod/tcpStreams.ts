@@ -1,11 +1,11 @@
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { httpClient, HttpClientMethod, HttpClientResponseType } from 'root/api/httpClient';
 import { ITcpStreamsApi } from 'root/api/interface/tcpStreams';
-import { TcpStreamsSearchParamsModel } from 'root/streams/model/list/tcpStreamsSearchParams';
+import { ITcpStreamFilter } from 'DAL/Stream/Tcp/ITcpStreamFilter';
 
 export class TcpStreamsApi implements ITcpStreamsApi {
     getTcpStreamList(
-        searchParams: TcpStreamsSearchParamsModel,
+        searchParams: ITcpStreamFilter,
     ): Promise<ITcpStreamView[]> {
         return httpClient({
             controller: 'api/stream/tcp',
@@ -21,11 +21,11 @@ export class TcpStreamsApi implements ITcpStreamsApi {
     }
 
     getTcpStreamListTotal(
-        searchParams: TcpStreamsSearchParamsModel,
+        searchParams: ITcpStreamFilter,
     ): Promise<number> {
         return httpClient({
-            controller: 'api/stream/tcp/total',
-            action: 'list',
+            controller: 'api/stream/tcp',
+            action: 'list/total',
             method: HttpClientMethod.GET,
             request: {
                 query: {
