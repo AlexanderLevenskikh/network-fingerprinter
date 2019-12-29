@@ -5,7 +5,6 @@ import { StreamsRouterActionTypes } from 'root/streams/actions/router';
 import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
 import { mapSearchParamsToDto } from 'root/streams/mappers/search/tcpSearchParams';
-import { StreamsSearchActions } from 'root/streams/actions/search';
 
 export function* streamListSagaArray() {
     yield spawn(watchStreamListSaga);

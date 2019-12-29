@@ -10,6 +10,8 @@ import { TcpStreamsFilterFormSourcePort } from 'root/streams/components/list/tcp
 import { TcpStreamsFilterFormDestinationPort } from 'root/streams/components/list/tcp/filter/form/controls/destinationPort';
 import { TcpStreamsFilterFormDateTimeFrom } from 'root/streams/components/list/tcp/filter/form/controls/dateTimeFrom';
 import { TcpStreamsFilterFormDateTimeTo } from 'root/streams/components/list/tcp/filter/form/controls/dateTimeTo';
+import { useTcpStreamsFilterForm } from 'root/streams/components/list/tcp/filter/form/hook';
+import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
 
 interface IProps {
 }
@@ -26,42 +28,44 @@ const formItemLayout = {
 };
 
 export const TcpStreamsFilterForm: FC<IProps> = () => {
+    const { t } = useTcpStreamsFilterForm();
+
     return (
         <Form { ...formItemLayout } className={ styles.form }>
             <Row gutter={ 20 } type='flex' justify='start'>
                 <Col span={ 10 }>
-                    <Form.Item label='IP-адрес источника' labelAlign='left' className={ styles.item }>
+                    <Form.Item label={ t(I18StreamsNsKeys.filterSourceIp) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormSourceIp/>
                     </Form.Item>
                 </Col>
                 <Col span={ 10 }>
-                    <Form.Item label='IP-адрес назначения' labelAlign='left' className={ styles.item }>
+                    <Form.Item label={ t(I18StreamsNsKeys.filterDestinationIp) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormDestinationIp />
                     </Form.Item>
                 </Col>
             </Row>
             <Row gutter={ 20 } type='flex' justify='start'>
                 <Col span={ 10 } >
-                    <Form.Item label='Порт источника' labelAlign='left' className={ styles.item }>
+                    <Form.Item label={ t(I18StreamsNsKeys.filterSourcePort) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormSourcePort />
                     </Form.Item>
                 </Col>
                 <Col span={ 10 }>
-                    <Form.Item label='Порт назначения' labelAlign='left' className={ styles.item }>
+                    <Form.Item label={ t(I18StreamsNsKeys.filterDestinationPort) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormDestinationPort />
                     </Form.Item>
                 </Col>
             </Row>
             <Row gutter={ 20 } type='flex' justify='start'>
                 <Col span={ 10 }>
-                    <Form.Item label='MAC-адрес источника' labelAlign='left' className={ styles.item }>
+                    <Form.Item label={ t(I18StreamsNsKeys.filterSourceMac) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormSourceMac />
                     </Form.Item>
                 </Col>
             </Row>
             <Row gutter={ 20 } type='flex' justify='start'>
                 <Col span={ 10 }>
-                    <Form.Item label='Дата' labelAlign='left' className={ styles.item }>
+                    <Form.Item label={ t(I18StreamsNsKeys.filterDateRange) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormDateTimeFrom />
                         &nbsp;—&nbsp;
                         <TcpStreamsFilterFormDateTimeTo />

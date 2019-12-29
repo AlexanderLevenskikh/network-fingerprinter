@@ -12,7 +12,6 @@ import { StreamsRouterActions } from 'root/streams/actions/router';
 import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
 import { StreamDatesOrder } from 'root/streams/model/list/streamDatesOrder';
-import { put, select } from '@redux-saga/core/effects';
 import { StreamsSearchActions } from 'root/streams/actions/search';
 
 export function useStreamsList() {
