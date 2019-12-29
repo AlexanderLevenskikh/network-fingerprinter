@@ -4,8 +4,8 @@ export class SearchParamsModel {
     current: number = 1;
     take: number = 15;
 
-    constructor(current: string | number = 0, take: string | number = 15) {
-        let currentNumber = 0;
+    constructor(current: string | number = 1, take: string | number = 15) {
+        let currentNumber = 1;
         let takeNumber = 15;
 
         if (typeof current === 'string') {

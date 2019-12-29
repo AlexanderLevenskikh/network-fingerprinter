@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { StreamListSelectors } from 'root/streams/selectors/list';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { StreamsListActions } from 'root/streams/actions/list';
 import { useTranslation } from 'react-i18next';
 import { I18nNamespace } from 'root/i18n/resources/namespaces';
@@ -11,6 +11,7 @@ import { SorterResult } from 'antd/lib/table';
 import { StreamsRouterActions } from 'root/streams/actions/router';
 import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
+import { StreamDatesOrder } from 'root/streams/model/list/streamDatesOrder';
 
 export function useStreamsList() {
     const streams = useSelector(StreamListSelectors.list);
@@ -31,6 +32,21 @@ export function useStreamsList() {
     const { t } = useTranslation(I18nNamespace.streams);
     const columns = createColumnsConfiguration(t);
 
+    const mapAntdSorter = (sorter: SorterResult<ITcpStreamView>, field: keyof ITcpStreamView) => {
+        if (sorter.field === field) {
+            switch (sorter.order) {
+                case 'ascend':
+                    return StreamDatesOrder.Asc;
+                case 'descend':
+                    return StreamDatesOrder.Desc;
+                default:
+                    return undefined;
+            }
+        }
+
+        return undefined;
+    };
+
     const handleTableChange = (
         pagination: PaginationConfig,
         filters: Record<keyof ITcpStreamView, string[]>,
@@ -43,6 +59,8 @@ export function useStreamsList() {
                     ...searchParamsModel,
                     current: pagination.current || searchParamsModel.current,
                     take: pagination.pageSize || searchParamsModel.take,
+                    dateTimeFromOrder: mapAntdSorter(sorter, 'startDateTime'),
+                    dateTimeToOrder: mapAntdSorter(sorter, 'endDateTime'),
                 },
             },
             ));

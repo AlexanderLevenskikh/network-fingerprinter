@@ -15,7 +15,7 @@ import { TcpPacketViewProviderMappers } from '../../Packet/Tcp/TcpPacketViewProv
 import { HttpStreamViewProvider } from '../Http/HttpStreamViewProvider';
 import {
     httpFingerprintProcessor,
-    HttpFingerprintProcessorPacketType
+    HttpFingerprintProcessorPacketType,
 } from '../../../Processors/Fingerprint/Http/Http';
 import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
 import { TlsPacketViewProvider } from '../../Packet/Tls/tls-packet-view-provider.service';
@@ -23,7 +23,7 @@ import { tlsFingerprintProcessor } from '../../../Processors/Fingerprint/Tls/Tls
 import { ITcpStreamFilter } from './ITcpStreamFilter';
 import { compareIsoDates } from '../../../Shared/Utils/compareIsoDates';
 import { filter } from '../../../Shared/Utils/filter';
-import { notEmpty } from '../../../Shared/Utils/notEmpty';
+import { TcpStreamFilterDateOrder } from './TcpStreamFilterDateOrder';
 
 @Injectable()
 export class TcpStreamViewProvider {
@@ -42,12 +42,14 @@ export class TcpStreamViewProvider {
 
     getTcpStreams = async (query: ITcpStreamFilter): Promise<ITcpStreamView[]> => {
         const streamsFilter = this.createStreamsFilter(query);
-        const streamIds = await filter(await this.getStreamIds(), streamsFilter);
+        const streamIds = await this.getStreamIds();
+        const sortedStreamIds = await this.sortStreams(query, streamIds);
+        const filteredStreamIds = await filter(sortedStreamIds, streamsFilter);
 
         const current = query.current ? Number.parseInt(query.current, 10) - 1 : 0;
         const take = query.take ? Number.parseInt(query.take, 10) : 15;
         const skip = current * take;
-        const skippedStreamIds = streamIds.slice(skip, skip + take);
+        const skippedStreamIds = filteredStreamIds.slice(skip, skip + take);
 
         const streamPromises = skippedStreamIds.map(async (streamId: number): Promise<ITcpStreamView> => {
             const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
@@ -88,7 +90,44 @@ export class TcpStreamViewProvider {
                 serverNameIndication: (tlsClientHello && tlsClientHello.tls) ? tlsClientHello.tls.serverNameIndication : null,
             }
         });
+
         return await Promise.all(streamPromises);
+    };
+
+    private sortStreams = async (query: ITcpStreamFilter, streamIds: number[]) => {
+        if (
+            query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Asc
+            && query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Desc
+            && query.dateTimeToOrder !== TcpStreamFilterDateOrder.Asc
+            && query.dateTimeToOrder !== TcpStreamFilterDateOrder.Desc
+        ) {
+            return streamIds;
+        }
+
+        const streamPromises = streamIds.map(async (streamId: number): Promise<any> => {
+            const meta = await this.getTcpStreamMetaDataByStreamId(streamId);
+
+            return {
+                streamId,
+                ...meta,
+            }
+        });
+        const streamsMetaData = await Promise.all(streamPromises);
+
+        if (query.dateTimeFromOrder === TcpStreamFilterDateOrder.Asc) {
+            streamsMetaData.sort((a, b) => compareIsoDates(a.startDateTime, b.startDateTime));
+        }
+        if (query.dateTimeFromOrder === TcpStreamFilterDateOrder.Desc) {
+            streamsMetaData.sort((a, b) => -1 * compareIsoDates(a.startDateTime, b.startDateTime));
+        }
+        if (query.dateTimeToOrder === TcpStreamFilterDateOrder.Asc) {
+            streamsMetaData.sort((a, b) => compareIsoDates(a.endDateTime, b.endDateTime));
+        }
+        if (query.dateTimeToOrder === TcpStreamFilterDateOrder.Desc) {
+            streamsMetaData.sort((a, b) => -1 * compareIsoDates(a.endDateTime, b.endDateTime));
+        }
+
+        return streamsMetaData.map(x => x.streamId);
     };
 
     private createStreamsFilter = (query: ITcpStreamFilter) => {
@@ -102,7 +141,7 @@ export class TcpStreamViewProvider {
                     }
                     const comparisionResult = compareIsoDates(startDateTime, query.dateTimeFrom);
 
-                    if (comparisionResult === -1) {
+                    if (comparisionResult < 0) {
                         return false;
                     }
                 }
@@ -113,17 +152,17 @@ export class TcpStreamViewProvider {
                     }
                     const comparisionResult = compareIsoDates(query.dateTimeTo, endDateTime);
 
-                    if (comparisionResult === -1) {
+                    if (comparisionResult < 0) {
                         return false;
                     }
                 }
             }
 
             const { syn } = await this.getTcpHandshakePacketsByStreamId(streamId);
-            if (!syn && (query.sourceIp || query.sourceMac || query.sourcePort
-                || query.destinationIp || query.destinationMac || query.destinationPort)
-            ) {
-                return false;
+
+            if (!syn) {
+                return !(query.sourceIp || query.sourceMac || query.sourcePort
+                    || query.destinationIp || query.destinationMac || query.destinationPort);
             }
 
             const {

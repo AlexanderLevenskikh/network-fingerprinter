@@ -1,4 +1,4 @@
-export function compareIsoDates(firstIsoDate: string, secondIsoDate: string) {
+export function compareIsoDates(firstIsoDate: string, secondIsoDate: string): number {
     try {
         const firstDate = new Date(firstIsoDate);
         const secondDate = new Date(secondIsoDate);
