@@ -30,7 +30,11 @@ export function useStreamsList() {
         dispatch(StreamsListActions.FetchList());
     }, [ dispatch ]);
     const { t } = useTranslation(I18nNamespace.streams);
-    const columns = createColumnsConfiguration(t);
+    const columns = createColumnsConfiguration(
+        searchParamsModel.dateTimeFromOrder,
+        searchParamsModel.dateTimeToOrder,
+        t,
+    );
 
     const mapAntdSorter = (sorter: SorterResult<ITcpStreamView>, field: keyof ITcpStreamView) => {
         if (sorter.field === field) {

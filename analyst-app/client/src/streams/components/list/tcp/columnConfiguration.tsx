@@ -8,8 +8,16 @@ import { renderStreamSide } from 'root/streams/components/list/tcp/columns/side/
 import { renderFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/renderFingerprint';
 import { renderInfo } from 'root/streams/components/list/tcp/columns/info/renderInfo';
 import { DateTimeService } from 'root/shared/utils/dateTime/DateTimeService';
+import { StreamDatesOrder } from 'root/streams/model/list/streamDatesOrder';
+import { getAntdDateTimeOrder } from 'root/streams/components/list/tcp/getAntdDateTimeOrder';
 
-export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStreamView>[] {
+export function createColumnsConfiguration(
+    startDateTimeOrder: StreamDatesOrder | undefined,
+    endDateTimeOrder: StreamDatesOrder | undefined,
+    t: TFunction,
+): ColumnProps<ITcpStreamView>[] {
+    const startDateTimeAntdOrder = getAntdDateTimeOrder(startDateTimeOrder);
+    const endDateTimeAntdOrder = getAntdDateTimeOrder(endDateTimeOrder);
     return [
         {
             title: '',
@@ -26,6 +34,7 @@ export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStream
                     key: 'startDateTime',
                     dataIndex: 'startDateTime',
                     sorter: true,
+                    sortOrder: startDateTimeAntdOrder,
                     render: startDateTime => renderStreamDateTime(startDateTime),
                     width: '9%',
                 },
@@ -34,6 +43,7 @@ export function createColumnsConfiguration(t: TFunction): ColumnProps<ITcpStream
                     key: 'endDateTime',
                     dataIndex: 'endDateTime',
                     sorter: true,
+                    sortOrder: endDateTimeAntdOrder,
                     render: endDateTime => renderStreamDateTime(endDateTime),
                     width: '9%',
                 },

@@ -23,6 +23,8 @@ export const TcpStreamsList: FC<IProps> = () => {
             pagination={{
                 showSizeChanger: true,
                 showQuickJumper: true,
+                pageSize: take,
+                current,
                 pageSizeOptions: [ '5', '15', '50', '200' ],
                 total,
             }}
