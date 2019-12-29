@@ -6,8 +6,13 @@ export class StreamRouterState {
     renderList: boolean = false;
     transport: StreamsRouterTransport = StreamsRouterTransport.Tcp;
 
+    tcpStreamsSearchOpened: boolean = false;
+    tcpStreamsSearchParamsAreEmpty: boolean = false;
     tcpStreamsSearchParams: TcpStreamsSearchParamsModel = new TcpStreamsSearchParamsModel({});
     tcpStreamsSearchParamsDraft: TcpStreamsSearchParamsModel = new TcpStreamsSearchParamsModel({});
+
+    udpStreamsSearchOpened: boolean = false;
+    udpStreamsSearchParamsAreEmpty: boolean = false;
     udpStreamsSearchParams: UdpStreamsSearchParamsModel = new UdpStreamsSearchParamsModel({});
     udpStreamsSearchParamsDraft: UdpStreamsSearchParamsModel = new UdpStreamsSearchParamsModel({});
 }

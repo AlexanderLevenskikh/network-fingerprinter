@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Table } from 'antd';
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { useStreamsList } from 'root/streams/components/list/tcp/hook';
-import { TcpStreamsSearchForm } from 'root/streams/components/list/tcp/filter';
+import { TcpStreamsFilter } from 'root/streams/components/list/tcp/filter';
 
 interface IProps {
 }
@@ -14,7 +14,7 @@ export const TcpStreamsList: FC<IProps> = () => {
 
     return (
         <>
-            <TcpStreamsSearchForm/>
+            <TcpStreamsFilter/>
             <Table<ITcpStreamView>
                 columns={ columns }
                 rowKey={ getRowKey }

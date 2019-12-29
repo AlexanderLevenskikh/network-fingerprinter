@@ -4,7 +4,7 @@ import { Action } from 'typesafe-actions';
 
 type ReturnType<TValue> = [
     TValue,
-    (event: any, value: TValue) => void,
+    (event: any) => void,
     (event: any) => void,
 ];
 
@@ -22,7 +22,9 @@ export function useLocalState<TState, TModel, TValue>(
     const dispatch = useDispatch();
 
     const onChange = useCallback(
-        (event: any, value: TValue) => changeLocalValue(value),
+        (event: any) => {
+            changeLocalValue(event.currentTarget.value)
+        },
         [],
     );
     const onBlur = useCallback(

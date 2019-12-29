@@ -12,6 +12,8 @@ import { StreamsRouterActions } from 'root/streams/actions/router';
 import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
 import { StreamDatesOrder } from 'root/streams/model/list/streamDatesOrder';
+import { put, select } from '@redux-saga/core/effects';
+import { StreamsSearchActions } from 'root/streams/actions/search';
 
 export function useStreamsList() {
     const streams = useSelector(StreamListSelectors.list);
@@ -19,6 +21,12 @@ export function useStreamsList() {
     const loading = useSelector(StreamListSelectors.loading);
     const transport = useSelector(StreamRouterSelectors.transport);
     const isTcp = transport === StreamsRouterTransport.Tcp;
+
+    const searchParamsAreEmpty = useSelector(
+        isTcp
+            ? StreamRouterSelectors.tcpStreamsSearchParamsAreEmpty
+            : StreamRouterSelectors.udpStreamsSearchParamsAreEmpty,
+    );
     const searchParamsModel = useSelector(
         isTcp
             ? StreamRouterSelectors.tcpStreamsSearchParams
@@ -28,7 +36,12 @@ export function useStreamsList() {
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(StreamsListActions.FetchList());
+
+        if (!searchParamsAreEmpty) {
+            dispatch(StreamsSearchActions.open());
+        }
     }, [ dispatch ]);
+
     const { t } = useTranslation(I18nNamespace.streams);
     const columns = createColumnsConfiguration(
         searchParamsModel.dateTimeFromOrder,

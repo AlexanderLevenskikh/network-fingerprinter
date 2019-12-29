@@ -1,12 +1,17 @@
-import { MessagesTabsEnum } from 'core/message/constants/router/tabs';
-import { MessageRouterSelectors } from 'core/message/selectors/router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { StreamRouterSelectors } from 'root/streams/selectors/router';
+import { StreamsSearchActions } from 'root/streams/actions/search';
 
-export function useMessageSearchForm() {
-    const tabName = useSelector(MessageRouterSelectors.tabName);
-    const canFilterByStatus = tabName !== MessagesTabsEnum.DRAFTS;
+export function useTcpStreamsFilter() {
+    const tcpStreamsSearchOpened = useSelector(StreamRouterSelectors.tcpStreamsSearchOpened);
+    const dispatch = useDispatch();
+
+    const toggleSearch = () => dispatch(
+        tcpStreamsSearchOpened ? StreamsSearchActions.close() : StreamsSearchActions.open(),
+    );
 
     return {
-        canFilterByStatus,
+        tcpStreamsSearchOpened,
+        toggleSearch,
     }
 }

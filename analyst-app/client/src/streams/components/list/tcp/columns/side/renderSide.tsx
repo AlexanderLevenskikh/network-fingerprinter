@@ -9,7 +9,7 @@ import { notEmpty } from 'root/shared/utils/notEmpty';
 interface IArgs {
     ip: string;
     port: number;
-    mac: string;
+    mac?: string;
     t: TFunction;
 }
 

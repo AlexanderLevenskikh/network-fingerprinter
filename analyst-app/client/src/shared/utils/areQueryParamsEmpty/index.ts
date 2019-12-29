@@ -1,5 +1,5 @@
-import { querySerializer } from 'shared/utils/querySerializer';
 import { SearchParamsModel } from 'root/shared/model/searchParams';
+import { querySerializer } from 'root/shared/utils/querySerializer';
 
 export function areQueryParamsEmpty(params: SearchParamsModel) {
     const pagingParams = new SearchParamsModel(params.current, params.take);

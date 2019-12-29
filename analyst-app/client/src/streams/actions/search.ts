@@ -5,16 +5,16 @@ export interface IStreamsChangeSearchParamsPayload {
     model: SearchParamsModel;
 }
 
-export interface IStreamsSearchPayload {
-    model: SearchParamsModel;
-}
-
 export enum StreamsSearchActionTypes {
+    Open = 'streams/searching/open',
+    Close = 'streams/searching/close',
     Search = 'streams/searching/search',
     ChangeSearchParams = 'streams/searching/changeSearchParams',
 }
 
 export const StreamsSearchActions = {
-    search: csa(StreamsSearchActionTypes.Search)<IStreamsSearchPayload>(),
+    open: csa(StreamsSearchActionTypes.Open)(),
+    close: csa(StreamsSearchActionTypes.Close)(),
+    search: csa(StreamsSearchActionTypes.Search)(),
     changeSearchParams: csa(StreamsSearchActionTypes.ChangeSearchParams)<IStreamsChangeSearchParamsPayload>(),
 };

@@ -17,16 +17,16 @@ export class TcpStreamsSearchParamsModel extends SearchParamsModel {
     constructor(query: Partial<TcpStreamsSearchParamsModel>) {
         super(query.current, query.take);
 
-        this.dateTimeFrom = query.dateTimeFrom ||undefined;
-        this.dateTimeFromOrder = query.dateTimeFromOrder ||undefined;
-        this.dateTimeTo = query.dateTimeTo ||undefined;
-        this.dateTimeToOrder = query.dateTimeToOrder ||undefined;
-        this.sourceIp = query.sourceIp ||undefined;
-        this.sourceMac = query.sourceMac ||undefined;
-        this.sourcePort = query.sourcePort ||undefined;
-        this.destinationIp = query.destinationIp ||undefined;
-        this.destinationMac = query.destinationMac ||undefined;
-        this.destinationPort = query.destinationPort ||undefined;
-        this.sensorId = query.sensorId ||undefined;
+        this.dateTimeFrom = query.dateTimeFrom || undefined;
+        this.dateTimeFromOrder = query.dateTimeFromOrder || undefined;
+        this.dateTimeTo = query.dateTimeTo || undefined;
+        this.dateTimeToOrder = query.dateTimeToOrder || undefined;
+        this.sourceIp = query.sourceIp || undefined;
+        this.sourceMac = query.sourceMac || undefined;
+        this.sourcePort = query.sourcePort || undefined;
+        this.destinationIp = query.destinationIp || undefined;
+        this.destinationMac = query.destinationMac || undefined;
+        this.destinationPort = query.destinationPort || undefined;
+        this.sensorId = query.sensorId || undefined;
     }
 }

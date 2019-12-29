@@ -70,7 +70,6 @@ export function createColumnsConfiguration(
                     render: (_, record) => renderStreamSide({
                         ip: record.destinationIp,
                         port: record.destinationPort,
-                        mac: record.destinationMac,
                         t,
                     }),
                     width: '15%',
