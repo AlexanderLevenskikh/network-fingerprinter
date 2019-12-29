@@ -6,8 +6,15 @@ import { useTranslation } from 'react-i18next';
 import enUS from 'antd/es/locale/en_US';
 import ruRu from 'antd/es/locale/ru_RU';
 import { Languages } from 'root/shared/constants/languages';
+import { useSelector } from 'react-redux';
+import { RouterSelectors } from 'root/router/selectors/router';
+import { RouterPages } from 'root/router/constants/pages';
+import { StreamsPage } from 'root/streams/components';
 
 export const App: FC = () => {
+    const page = useSelector(RouterSelectors.page);
+    const isStreamsPage = page === RouterPages.Streams;
+
     const { i18n } = useTranslation();
     let locale;
     switch (i18n.language) {
@@ -22,7 +29,11 @@ export const App: FC = () => {
     return (
         <ConfigProvider locale={ locale }>
             <Suspense fallback={ null }>
-                <AppLayout/>
+                <AppLayout>
+                    { isStreamsPage && (
+                        <StreamsPage />
+                    )}
+                </AppLayout>
             </Suspense>
         </ConfigProvider>
     );

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Text from 'antd/es/typography/Text';
-import { ITlsFingerprint } from '../../../../../../../../server/src/Processors/Fingerprint/Tls/Fingerprint/ITlsFingerprint';
+import { ITlsFingerprint } from '../../../../../../../../../server/src/Processors/Fingerprint/Tls/Fingerprint/ITlsFingerprint';
 import styles from './styles.less';
 import { Tooltip } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';

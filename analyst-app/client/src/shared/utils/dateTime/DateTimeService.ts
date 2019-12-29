@@ -24,6 +24,23 @@ export class DateTimeService {
         }
     }
 
+    public static isoDatesComparator(firstIsoDate: string, secondIsoDate: string): -1 | 0 | 1 {
+        try {
+            const firstDate = new Date(firstIsoDate);
+            const secondDate = new Date(secondIsoDate);
+
+            if (firstDate < secondDate) {
+                return -1;
+            } else if (firstDate > secondDate) {
+                return 1;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+
+        return 0;
+    }
+
     private static getDateParts(dateStr: string): IDateParts {
         const isValid = DateTimeService.validateIsoDateString(dateStr);
         if (!isValid) {

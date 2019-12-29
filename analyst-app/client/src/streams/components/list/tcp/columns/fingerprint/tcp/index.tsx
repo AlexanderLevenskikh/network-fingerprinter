@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ITcpFingerprint } from '../../../../../../../../server/src/Processors/Fingerprint/Tcp/Fingerprint/ITcpFingerprint';
+import { ITcpFingerprint } from '../../../../../../../../../server/src/Processors/Fingerprint/Tcp/Fingerprint/ITcpFingerprint';
 import Text from 'antd/es/typography/Text';
 import Paragraph from 'antd/es/typography/Paragraph';
 import styles from './styles.less';

@@ -1,5 +1,8 @@
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
+import { TcpStreamsSearchParamsModel } from 'root/streams/model/list/tcpStreamsSearchParams';
 
 export interface ITcpStreamsApi {
-    getList(): Promise<ITcpStreamView[]>;
+    getTcpStreamList(
+        searchParams: TcpStreamsSearchParamsModel,
+    ): Promise<ITcpStreamView[]>;
 }

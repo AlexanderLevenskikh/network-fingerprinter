@@ -7,5 +7,5 @@ import { RouterPages } from 'root/router/constants/pages';
 export interface IState {
     stream: StreamState;
     router: RouterState;
-    location: LocationState<RouterPages, AnyAction>;
+    location: LocationState<string, any>;
 }

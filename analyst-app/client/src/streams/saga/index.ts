@@ -1,6 +1,8 @@
 import { spawn } from 'redux-saga/effects';
-import { streamListSaga } from 'root/streams/saga/list';
+import { streamListSagaArray } from 'root/streams/saga/list';
+import { streamSearchingSagaArray } from 'root/streams/saga/search';
 
 export function* streamSaga() {
-    yield spawn(streamListSaga);
+    yield spawn(streamListSagaArray);
+    yield spawn(streamSearchingSagaArray);
 }
