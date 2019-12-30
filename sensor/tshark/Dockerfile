@@ -1,5 +1,5 @@
 ARG ELASTIC_HOST
-FROM python:3.7-alpine
+FROM nikolaik/python-nodejs:python3.8-nodejs13-alpine
 
 USER root
 

@@ -44,6 +44,17 @@ services:
     depends_on:
       - elasticsearch
 
+  analyst:
+    build:
+      context: ../analyst-app
+    ports:
+      - "3000:3000"
+    restart: on-failure
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
 networks:
   elk:
     driver: bridge
