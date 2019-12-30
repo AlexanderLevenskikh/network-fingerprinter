@@ -5,7 +5,7 @@ export const webpackFileRule = ({ exclude, include }: IWebpackRuleCreatorArgs = 
     test: /\.(jpg|png|gif|svg|woff|woff2|eot)$/,
     loader: 'file-loader',
     options: {
-        publicPath: 'static',
+        publicPath: '',
     },
     include,
     exclude,

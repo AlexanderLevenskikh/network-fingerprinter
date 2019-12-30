@@ -31,7 +31,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
     const isProductionMode = mode === WebpackModeEnum.Production;
     const isProductionApi = Boolean(config.isProdApi);
-    const publicPath = '/static';
+    const publicPath = '/';
 
     const entryPoint = path.resolve(
         './src',
