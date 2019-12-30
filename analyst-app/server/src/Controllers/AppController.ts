@@ -1,12 +1,6 @@
-import { Controller, Post, Res, UseGuards } from '@nestjs/common';
-import { Response } from 'express';
-import { LoginGuard } from '../Domain/Guards/LoginGuard';
+import { Controller, Get, UseFilters, Request, Res } from '@nestjs/common';
+import { AuthExceptionFilter } from '../Filters/AuthExceptionsFilter';
 
-@Controller('api/app/')
+@Controller('')
 export class AppController {
-    @UseGuards(LoginGuard)
-    @Post('auth/login')
-    login(@Res() res: Response) {
-        return true;
-    }
 }
