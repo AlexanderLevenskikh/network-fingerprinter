@@ -4,9 +4,9 @@ import * as path from 'path';
 export const webpackDevServerPart = (historyApiFallback: boolean): Configuration => {
     return {
         host: '0.0.0.0',
-        contentBase: path.join(__dirname, 'static'),
+        contentBase: __dirname,
         public: 'localhost:8080',
-        publicPath: '/static/',
+        publicPath: '/',
         headers: {
             'Access-Control-Allow-Origin': '*',
         },
@@ -24,7 +24,7 @@ export const webpackDevServerPart = (historyApiFallback: boolean): Configuration
         },
         historyApiFallback: {
             rewrites: [
-                { from: /./, to: '/static/index.html' },
+                { from: /./, to: '/index.html' },
             ],
         },
         hot: true,
