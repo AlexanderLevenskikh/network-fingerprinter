@@ -7,9 +7,9 @@
 * Ломается сенсор если долго запущен
 * Слишком много экспортируемых полей
 * elastic index template for packets
-* Удалить packetbeat/netflow/p0f docker/flow provider 
+* ~~Удалить packetbeat/netflow/p0f docker/flow provider~~ 
 * Не сохраняются данные на носителе (после перезапуска все теряется)
-* Авторизация
+* ~~Авторизация~~
 * Https
 * ~~Http-сигнатуры~~
 * Сигнатуры для других протоколов
@@ -21,6 +21,7 @@
 * Сохранять отпечатки в sql
 * sensor id
 * UDP потоки
+* Load from pcap
 
 Фронт:
 * Админка
