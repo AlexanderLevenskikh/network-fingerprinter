@@ -6,6 +6,8 @@ services:
       context: tshark
       args:
         ELASTIC_HOST: $ELASTIC_HOST
+        ELASTIC_USERNAME: $ELASTIC_USERNAME
+        ELASTIC_PASSWORD: $ELASTIC_PASSWORD
     cap_add:
       - NET_ADMIN
       - NET_RAW

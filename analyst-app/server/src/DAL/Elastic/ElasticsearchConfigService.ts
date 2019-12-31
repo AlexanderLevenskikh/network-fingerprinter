@@ -3,8 +3,8 @@ import { ElasticsearchModuleOptions, ElasticsearchOptionsFactory } from '@nestjs
 export class ElasticsearchConfigService implements ElasticsearchOptionsFactory {
     createElasticsearchOptions(): ElasticsearchModuleOptions {
         return {
-            host: 'http://127.0.0.1:9200',
-            httpAuth: 'elastic:12345',
+            host: `http://${process.env.ELASTIC_HOST}`,
+            httpAuth: `${process.env.ELASTIC_USERNAME}:${process.env.ELASTIC_PASSWORD}`,
         };
     }
 }
