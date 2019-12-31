@@ -1,0 +1,8 @@
+version: '3.2'
+
+services:
+  analyst:
+    build:
+      context: ../analyst-app
+    restart: on-failure
+    network_mode: host

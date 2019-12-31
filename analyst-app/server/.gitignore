@@ -2,6 +2,7 @@
 /dist
 /node_modules
 .jest-cache
+static
 
 # Logs
 logs
