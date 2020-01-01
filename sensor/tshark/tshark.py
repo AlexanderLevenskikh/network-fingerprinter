@@ -69,10 +69,10 @@ def capture(interface, packet_filter, guid):
                 json_packet = json.loads(packet)
                 stream_id = guid
 
-                if json_packet['layers']['tcp'] is not None:
+                if 'tcp' in json_packet['layers'] is not None:
                     stream_id = guid + json_packet['layers']['tcp']['tcp_tcp_stream']
 
-                if json_packet['layers']['udp'] is not None:
+                if 'udp' in json_packet['layers'] is not None:
                     stream_id = guid + json_packet['layers']['udp']['udp_udp_stream']
 
                 json_packet['streamId'] = stream_id

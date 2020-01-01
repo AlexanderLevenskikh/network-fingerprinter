@@ -29,7 +29,7 @@ def start_capture(es_connection, interface, packet_filter, chunk_length, guid):
 @click.option('--filter', default=None, help='Custom packet filter')
 @click.option('--chunk-length', default=100, help='Number of packets to bulk index (default=100)')
 def main(elastic_url, i, filter, chunk_length):
-    guid = uuid.uuid1()
+    guid = str(uuid.uuid1())
 
     try:
         if elastic_url is None:
