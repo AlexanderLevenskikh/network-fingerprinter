@@ -95,7 +95,9 @@ export class PlayerService {
                 fs.createReadStream(resolve(process.cwd(), `temp/${ guid }-${ range }.json`))
                     .pipe(ndjson.parse())
                     .on('data', (obj) => {
-                        if (!obj.index) {
+                        if (obj.index && obj.index._type) {
+                            delete obj.index._type;
+                        } else {
                             let stream = uuid.v1();
                             if (obj.layers.tcp) {
                                 stream = obj.layers.tcp.tcp_tcp_stream;
@@ -109,8 +111,9 @@ export class PlayerService {
                                 streamId,
                             };
 
-                            transformedNdJson += `${ JSON.stringify(obj) }\n`;
                         }
+                        transformedNdJson += `${ JSON.stringify(obj) }\n`;
+
                     })
                     .on('error', (err) => {
                         rej(err);

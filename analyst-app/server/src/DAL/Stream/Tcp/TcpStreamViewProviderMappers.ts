@@ -11,7 +11,7 @@ export class TcpStreamViewProviderMappers {
             .aggregations
             .by_stream
             .buckets
-            .map(bucket => Number.parseInt(bucket.key.streamId, 10))
+            .map(bucket => bucket.key.streamId)
             .sort(TcpStreamViewProviderMappers.toStreamIdsAscOrder);
     }
 

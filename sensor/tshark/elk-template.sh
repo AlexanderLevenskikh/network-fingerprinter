@@ -20,8 +20,7 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
           "type": "date"
         },
         "streamId": {
-          "type": "text",
-          "analyzer": "simple"
+          "type": "keyword"
         },
         "layers": {
           "properties": {
@@ -33,6 +32,9 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
                 "frame_frame_protocols": {
                   "type": "text",
                   "analyzer": "simple"
+                },
+                "frame_frame_time": {
+                  "type": "keyword"
                 },
                 "frame_frame_time_epoch": {
                   "type": "double"
