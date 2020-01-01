@@ -49,68 +49,6 @@ export class PlayerService {
                     }
                 }).catch(err => rej(err));
             })
-
-            /*writeFile(pcapFilePath, fileBuffer, (err) => {
-                if (err) {
-                    promiseReject(err);
-                }
-
-                const cb = (error, stdout, stderr) => {
-                    if (error) {
-                        promiseReject(error);
-                    }
-
-                    let transformedNdJson = '';
-                    fs.createReadStream(resolve(process.cwd(), `temp/${ guid }.json`))
-                        .pipe(ndjson.parse())
-                        .on('data', (obj) => {
-                            if (obj.index && obj.index._type) {
-                                delete obj.index._type;
-                            }
-
-                            transformedNdJson += `${ JSON.stringify(obj) }\n`;
-                        })
-                        .on('end', () => {
-                            fs.writeFile(resolve(process.cwd(), `temp/${ guid }.json`), transformedNdJson, (err) => {
-                                rm(`./temp/${ guid }.pcap`);
-
-                                if (err) {
-                                    promiseReject(err);
-                                }
-
-                                const host = `${ process.env.ELASTIC_USERNAME }:${ process.env.ELASTIC_PASSWORD }@${ process.env.ELASTIC_HOST }`;
-                                const cleanupCb = (error, stdout, stderr) => {
-                                    if (error) {
-                                        promiseReject(error);
-                                    }
-
-                                    rm(`./temp/${ guid }.json`);
-
-                                    promiseResolve();
-                                };
-
-                                if (!/^win/.test(process.platform)) {
-                                    exec(
-                                        `curl ${ host }/_bulk -H 'Content-Type: application/x-ndjson' -X POST --data-binary @./temp/${ guid }.json`,
-                                        cleanupCb,
-                                    );
-                                } else {
-                                    exec(
-                                        `cmd /s /c curl ${ host }/_bulk -H "Content-Type: application/x-ndjson" -X POST --data-binary @./temp/${ guid }.json`,
-                                        cleanupCb,
-                                    );
-                                }
-
-                            });
-                        });
-                };
-
-                if (!/^win/.test(process.platform)) {
-                    exec(`tshark -T ek -r ./temp/${ guid }.pcap > ./temp/${ guid }.json`, cb);
-                } else {
-                    exec(`cmd /s /c tshark -T ek -r ./temp/${ guid }.pcap > ./temp/${ guid }.json`, cb);
-                }
-            });*/
         });
     }
 
@@ -157,11 +95,22 @@ export class PlayerService {
                 fs.createReadStream(resolve(process.cwd(), `temp/${ guid }-${ range }.json`))
                     .pipe(ndjson.parse())
                     .on('data', (obj) => {
-                        if (obj.index && obj.index._type) {
-                            delete obj.index._type;
-                        }
+                        if (!obj.index) {
+                            let stream = uuid.v1();
+                            if (obj.layers.tcp) {
+                                stream = obj.layers.tcp.tcp_tcp_stream;
+                            } else if (obj.layers.udp) {
+                                stream = obj.layers.udp.udp_udp_stream;
+                            }
 
-                        transformedNdJson += `${ JSON.stringify(obj) }\n`;
+                            const streamId = `${guid}-${stream}`;
+                            obj = {
+                                ...obj,
+                                streamId,
+                            };
+
+                            transformedNdJson += `${ JSON.stringify(obj) }\n`;
+                        }
                     })
                     .on('error', (err) => {
                         rej(err);
