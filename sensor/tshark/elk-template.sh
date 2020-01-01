@@ -20,7 +20,8 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
           "type": "date"
         },
         "streamId": {
-          "type": "text"
+          "type": "text",
+          "analyzer": "simple"
         },
         "layers": {
           "properties": {

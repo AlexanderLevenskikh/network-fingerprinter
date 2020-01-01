@@ -51,7 +51,7 @@ export class TcpStreamViewProvider {
         const skip = current * take;
         const skippedStreamIds = filteredStreamIds.slice(skip, skip + take);
 
-        const streamPromises = skippedStreamIds.map(async (streamId: number): Promise<ITcpStreamView> => {
+        const streamPromises = skippedStreamIds.map(async (streamId: string): Promise<ITcpStreamView> => {
             const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
             const { request, response } = await this.httpStreamViewProvider.getHttpRequestAndResponsePacketsByStream(streamId);
             const tlsClientHello = await this.tlsPacketViewProvider.getClientHelloByStreamId(streamId);
@@ -115,7 +115,7 @@ export class TcpStreamViewProvider {
         return await Promise.all(streamPromises);
     };
 
-    private sortStreams = async (query: ITcpStreamFilter, streamIds: number[]) => {
+    private sortStreams = async (query: ITcpStreamFilter, streamIds: string[]) => {
         if (
             query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Asc
             && query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Desc
@@ -125,7 +125,7 @@ export class TcpStreamViewProvider {
             return streamIds;
         }
 
-        const streamPromises = streamIds.map(async (streamId: number): Promise<any> => {
+        const streamPromises = streamIds.map(async (streamId: string): Promise<any> => {
             const meta = await this.getTcpStreamMetaDataByStreamId(streamId);
 
             return {
@@ -152,7 +152,7 @@ export class TcpStreamViewProvider {
     };
 
     private createStreamsFilter = (query: ITcpStreamFilter) => {
-        return async (streamId: number) => {
+        return async (streamId: string) => {
             if (query.dateTimeFrom || query.dateTimeTo) {
                 const { endDateTime, startDateTime } = await this.getTcpStreamMetaDataByStreamId(streamId);
 
@@ -213,7 +213,7 @@ export class TcpStreamViewProvider {
         };
     };
 
-    private getTcpHandshakePacketsByStreamId = async (streamId: number): Promise<ITcpStreamHandshakePackets> => {
+    private getTcpHandshakePacketsByStreamId = async (streamId: string): Promise<ITcpStreamHandshakePackets> => {
         const synPacket = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
@@ -243,7 +243,7 @@ export class TcpStreamViewProvider {
         };
     };
 
-    private getTcpSamplePacketByStreamId = async (streamId: number): Promise<Nullable<IPacketViewTcp>> => {
+    private getTcpSamplePacketByStreamId = async (streamId: string): Promise<Nullable<IPacketViewTcp>> => {
         const sample = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
@@ -258,7 +258,7 @@ export class TcpStreamViewProvider {
         return sample.length > 0 ? sample[ 0 ] : null;
     };
 
-    private getTcpStreamMetaDataByStreamId = async (streamId: number): Promise<ITcpStreamMetaData> => {
+    private getTcpStreamMetaDataByStreamId = async (streamId: string): Promise<ITcpStreamMetaData> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
@@ -270,7 +270,7 @@ export class TcpStreamViewProvider {
             .toPromise();
     };
 
-    private getTcpStreamDocumentsCount = async (streamId: number): Promise<number> => {
+    private getTcpStreamDocumentsCount = async (streamId: string): Promise<number> => {
         return this.elasticsearchService
             .count({
                 index: 'packets-*',
@@ -280,7 +280,7 @@ export class TcpStreamViewProvider {
             .toPromise();
     };
 
-    private getStreamIds = async (size: number = 15): Promise<number[]> => {
+    private getStreamIds = async (size: number = 15): Promise<string[]> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',

@@ -11,7 +11,7 @@ export class HttpStreamViewProvider {
     constructor(private readonly elasticsearchService: ElasticsearchService) {
     }
 
-    public getHttpRequestAndResponsePacketsByStream = async (streamId: number): Promise<IHttpStreamRequestAndResponsePackets> => {
+    public getHttpRequestAndResponsePacketsByStream = async (streamId: string): Promise<IHttpStreamRequestAndResponsePackets> => {
         const requestPacket = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',

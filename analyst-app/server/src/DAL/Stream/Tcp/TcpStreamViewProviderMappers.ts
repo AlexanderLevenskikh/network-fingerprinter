@@ -2,7 +2,7 @@ import { CountResponse, SearchResponse } from 'elasticsearch';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 
 export class TcpStreamViewProviderMappers {
-    public static toStreamIds(response: SearchResponse<any>): number[] {
+    public static toStreamIds(response: SearchResponse<any>): string[] {
         if (!response[0].aggregations) {
             return [];
         }

@@ -4,7 +4,7 @@ import { Nullable } from '../../../Shared/Types/Nullable';
 import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
 
 export interface ITcpStreamView extends ITcpStreamMetaData {
-    streamId: number;
+    streamId: string;
     packetsCount: number; // aggregation (_docs count)
     sourceIp: string; // From tcp SYN
     sourcePort: number; // From tcp SYN

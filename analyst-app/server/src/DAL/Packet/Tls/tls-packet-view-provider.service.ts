@@ -12,7 +12,7 @@ export class TlsPacketViewProvider {
     constructor(private readonly elasticsearchService: ElasticsearchService) {
     }
 
-    public getClientHelloByStreamId = async (streamId: number): Promise<Nullable<IPacketViewTls>> => {
+    public getClientHelloByStreamId = async (streamId: string): Promise<Nullable<IPacketViewTls>> => {
         const requestPacket = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
