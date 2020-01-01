@@ -19,6 +19,9 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
         "timestamp": {
           "type": "date"
         },
+        "streamId": {
+          "type": "text"
+        },
         "layers": {
           "properties": {
             "frame": {
