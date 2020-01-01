@@ -64,16 +64,20 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
-    static buildTcpStreamIdsQuery(size: number) {
+    static buildTcpStreamIdsQuery() {
         return {
-            aggs: {
-                by_stream: {
-                    composite: {
-                        size,
-                        sources : [
-                            { streamId: { terms: { field: 'streamId' } } },
-                        ],
+            query: {
+                bool: {
+                    filter: {
+                        term: {
+                            'layers.ip.ip_ip_proto': 6,
+                        },
                     },
+                },
+            },
+            aggs : {
+                by_stream : {
+                    terms : { field : 'streamId', size: 1000000000 },
                 },
             },
         }

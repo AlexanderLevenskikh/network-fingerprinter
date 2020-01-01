@@ -116,14 +116,9 @@ export class TcpStreamViewProvider {
     };
 
     private sortStreams = async (query: ITcpStreamFilter, streamIds: string[]) => {
-        if (
-            query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Asc
-            && query.dateTimeFromOrder !== TcpStreamFilterDateOrder.Desc
-            && query.dateTimeToOrder !== TcpStreamFilterDateOrder.Asc
-            && query.dateTimeToOrder !== TcpStreamFilterDateOrder.Desc
-        ) {
-            return streamIds;
-        }
+        const dateTimeFromOrder = query.dateTimeFromOrder === TcpStreamFilterDateOrder.Asc
+            ? TcpStreamFilterDateOrder.Asc
+            : TcpStreamFilterDateOrder.Desc;
 
         const streamPromises = streamIds.map(async (streamId: string): Promise<any> => {
             const meta = await this.getTcpStreamMetaDataByStreamId(streamId);
@@ -135,10 +130,10 @@ export class TcpStreamViewProvider {
         });
         const streamsMetaData = await Promise.all(streamPromises);
 
-        if (query.dateTimeFromOrder === TcpStreamFilterDateOrder.Asc) {
+        if (dateTimeFromOrder === TcpStreamFilterDateOrder.Asc) {
             streamsMetaData.sort((a, b) => compareIsoDates(a.startDateTime, b.startDateTime));
         }
-        if (query.dateTimeFromOrder === TcpStreamFilterDateOrder.Desc) {
+        if (dateTimeFromOrder === TcpStreamFilterDateOrder.Desc) {
             streamsMetaData.sort((a, b) => -1 * compareIsoDates(a.startDateTime, b.startDateTime));
         }
         if (query.dateTimeToOrder === TcpStreamFilterDateOrder.Asc) {
@@ -280,13 +275,13 @@ export class TcpStreamViewProvider {
             .toPromise();
     };
 
-    private getStreamIds = async (size: number = 15): Promise<string[]> => {
+    private getStreamIds = async (): Promise<string[]> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 0,
                 body: {
-                    ...TcpStreamViewProviderQueries.buildTcpStreamIdsQuery(size),
+                    ...TcpStreamViewProviderQueries.buildTcpStreamIdsQuery(),
                 },
             })
             .pipe(map(TcpStreamViewProviderMappers.toStreamIds))
