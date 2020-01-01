@@ -74,16 +74,37 @@ export class TcpStreamViewProvider {
                 http: destinationHttpFingerprints,
             };
 
+            const packetForAddressesCalculation = syn || synAck || sample;
+
+            const sourceMac = (packetForAddressesCalculation && packetForAddressesCalculation.eth)
+                ? packetForAddressesCalculation.eth.sourceMac
+                : null;
+            const sourceIp = (packetForAddressesCalculation && packetForAddressesCalculation.ip)
+                ? packetForAddressesCalculation.ip.sourceIp
+                : null;
+            const sourcePort = (packetForAddressesCalculation && packetForAddressesCalculation.tcp)
+                ? packetForAddressesCalculation.tcp.sourcePort
+                : null;
+            const destinationMac = (packetForAddressesCalculation && packetForAddressesCalculation.eth)
+                ? packetForAddressesCalculation.eth.destinationMac
+                : null;
+            const destinationIp = (packetForAddressesCalculation && packetForAddressesCalculation.ip)
+                ? packetForAddressesCalculation.ip.destinationIp
+                : null;
+            const destinationPort = (packetForAddressesCalculation && packetForAddressesCalculation.tcp)
+                ? packetForAddressesCalculation.tcp.destinationPort
+                : null;
+
             return {
                 streamId,
                 ...streamMetaData,
-                sourceMac: (syn && syn.eth) ? syn.eth.sourceMac : null,
-                sourceIp: (syn && syn.ip) ? syn.ip.sourceIp : null,
-                sourcePort: (syn && syn.tcp) ? syn.tcp.sourcePort : null,
+                sourceMac,
+                sourceIp,
+                sourcePort,
                 sourceFingerprints,
-                destinationMac: (syn && syn.eth) ? syn.eth.destinationMac : null,
-                destinationIp: (syn && syn.ip) ? syn.ip.destinationIp : null,
-                destinationPort: (syn && syn.tcp) ? syn.tcp.destinationPort : null,
+                destinationMac,
+                destinationIp,
+                destinationPort,
                 destinationFingerprints,
                 packetsCount,
                 applicationLayerProtocol: (sample && sample.frame) ? getApplicationLayerProtocolByFrame(sample.frame) : null,

@@ -45,6 +45,7 @@ def _make_capturing_command(interface, packet_filter):
 
     command.append('-T')
     command.append('ek')
+    command.append('-P')
     command.append('-i')
     command.append(interface)
 
