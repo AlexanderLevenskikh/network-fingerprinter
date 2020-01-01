@@ -8,6 +8,7 @@ services:
         ELASTIC_HOST: $ELASTIC_HOST
         ELASTIC_USERNAME: $ELASTIC_USERNAME
         ELASTIC_PASSWORD: $ELASTIC_PASSWORD
+    restart: on-failure
     cap_add:
       - NET_ADMIN
       - NET_RAW

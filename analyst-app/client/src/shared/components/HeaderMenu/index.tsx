@@ -12,16 +12,19 @@ interface IProps {
 enum MenuItemKey {
     TcpStream = 'TcpStream',
     UdpStream = 'UdpStream',
+    Player = 'Player',
 }
 
 export const HeaderMenu: FC<IProps> = () => {
-    const { onClickTcpStreams, onClickUdpStreams, transport, t, page } = useHeaderMenu();
+    const { onClickTcpStreams, onClickUdpStreams, onClickUpload, transport, t, page } = useHeaderMenu();
     const tcpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Tcp;
     const udpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Udp;
+    const playerSelected = page === RouterPages.Player;
 
     const selectedKeys = [
         ...(tcpStreamsSelected ? [ MenuItemKey.TcpStream ] : []),
         ...(udpStreamsSelected ? [ MenuItemKey.UdpStream ] : []),
+        ...(playerSelected ? [ MenuItemKey.Player ] : []),
     ];
 
     return (
@@ -47,6 +50,15 @@ export const HeaderMenu: FC<IProps> = () => {
                 <Icon type="select" />
                 <span>
                     UDP { t(I18MainNsKeys.menuStreamsLabel) }
+                </span>
+            </Menu.Item>
+            <Menu.Item
+                key={ MenuItemKey.Player }
+                onClick={ onClickUpload }
+            >
+                <Icon type="upload" />
+                <span>
+                    { t(I18MainNsKeys.menuPlayerLabel) }
                 </span>
             </Menu.Item>
         </Menu>

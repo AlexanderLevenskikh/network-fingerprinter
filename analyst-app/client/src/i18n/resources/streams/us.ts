@@ -1,6 +1,7 @@
 import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
+import { EnumMap } from 'root/shared/types/enumMap';
 
-export const i18StreamsNsUsResources = {
+export const i18StreamsNsUsResources: EnumMap<I18StreamsNsKeys, string> = {
     // list
     [ I18StreamsNsKeys.listTcpHeader ]: 'TCP streams',
     [ I18StreamsNsKeys.listDateTimeColumnTitle ]: 'Date and time',

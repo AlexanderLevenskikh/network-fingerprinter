@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { UserModule } from './UserModule';
-import { AuthService } from '../Domain/Auth/AuthService';
+import { AuthService } from '../Services/Auth/AuthService';
 import { PassportModule } from '@nestjs/passport';
-import { LocalStrategy } from '../Domain/Auth/LocalStrategy';
-import { SessionSerializer } from '../Domain/Auth/SessionSerializer';
+import { LocalStrategy } from '../Services/Auth/LocalStrategy';
+import { SessionSerializer } from '../Services/Auth/SessionSerializer';
 import { AuthController } from '../Controllers/AuthController';
 
 @Module({

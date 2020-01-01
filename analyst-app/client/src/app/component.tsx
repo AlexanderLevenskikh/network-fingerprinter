@@ -10,10 +10,12 @@ import { useSelector } from 'react-redux';
 import { RouterSelectors } from 'root/router/selectors/router';
 import { RouterPages } from 'root/router/constants/pages';
 import { StreamsPage } from 'root/streams/components';
+import { PlayerPage } from 'root/player/components';
 
 export const App: FC = () => {
     const page = useSelector(RouterSelectors.page);
     const isStreamsPage = page === RouterPages.Streams;
+    const isUploadPage = page === RouterPages.Player;
 
     const { i18n } = useTranslation();
     let locale;
@@ -32,6 +34,9 @@ export const App: FC = () => {
                 <AppLayout>
                     { isStreamsPage && (
                         <StreamsPage />
+                    )}
+                    { isUploadPage && (
+                        <PlayerPage />
                     )}
                 </AppLayout>
             </Suspense>

@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { RouterSelectors } from 'root/router/selectors/router';
 import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { SearchParamsModel } from 'root/shared/model/searchParams';
+import { PlayerRouterActions } from 'root/player/actions/router';
 
 export function useHeaderMenu() {
     const page = useSelector(RouterSelectors.page);
@@ -25,6 +26,10 @@ export function useHeaderMenu() {
         )),
         [ dispatch ],
     );
+    const onClickUpload = useCallback(
+        () => dispatch(PlayerRouterActions.Upload()),
+        [ dispatch ],
+    );
     const { t } = useTranslation();
 
     return {
@@ -32,6 +37,7 @@ export function useHeaderMenu() {
         transport,
         onClickTcpStreams,
         onClickUdpStreams,
+        onClickUpload,
         t,
     }
 }

@@ -8,6 +8,7 @@ import { UserModule } from './UserModule';
 import { AuthModule } from './AuthModule';
 import { AppController } from '../Controllers/AppController';
 import { ReactMiddleware } from '../Middleware/ReactMiddleware';
+import { PlayerModule } from './PlayerModule';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { ReactMiddleware } from '../Middleware/ReactMiddleware';
         TlsPacketModule,
         UserModule,
         AuthModule,
+        PlayerModule,
     ],
     controllers: [
         AppController,
