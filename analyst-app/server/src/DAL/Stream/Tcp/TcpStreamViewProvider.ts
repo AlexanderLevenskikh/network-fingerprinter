@@ -46,7 +46,7 @@ export class TcpStreamViewProvider {
         const skip = current * take;
         const selectedPageStreamIds = filteredStreamIds.slice(skip, skip + take);
 
-        const streamPromises = selectedPageStreamIds.map(async (streamId: string): Promise<Nullable<ITcpStreamView>> => {
+        const streamPromises = selectedPageStreamIds.map(async (streamId: string): Promise<ITcpStreamView> => {
             const { syn, synAck } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
             const { request, response } = await this.packetViewHttpProvider.getHttpRequestAndResponsePacketsByStream(streamId);
             const tlsClientHello = await this.packetViewTlsProvider.getClientHelloByStreamId(streamId);
@@ -62,10 +62,6 @@ export class TcpStreamViewProvider {
 
             const significantRequestPacket = syn || tlsClientHello || request;
             const significantResponsePacket = synAck || response;
-
-            if (!significantRequestPacket && !significantResponsePacket) {
-                return null;
-            }
 
             const sourceAndDestinationInfo = this.getSourceAndDestinationInfo(
                 significantRequestPacket || significantResponsePacket,
@@ -87,9 +83,7 @@ export class TcpStreamViewProvider {
             }
         });
 
-        const streams = await Promise.all(streamPromises);
-
-        return streams.filter(Boolean);
+        return await Promise.all(streamPromises);
     };
 
     private getSourceAndDestinationInfo(packet: IPacketViewTcp, isRequest: boolean) {
@@ -98,6 +92,7 @@ export class TcpStreamViewProvider {
                 sourceMac: packet.eth ? packet.eth.sourceMac : null,
                 sourceIp: packet.ip ? packet.ip.sourceIp : null,
                 sourcePort: packet.tcp ? packet.tcp.sourcePort : null,
+                destinationMac: packet.eth ? packet.eth.destinationMac : null,
                 destinationIp: packet.ip ? packet.ip.destinationIp : null,
                 destinationPort: packet.tcp ? packet.tcp.destinationPort : null,
             }
@@ -107,6 +102,7 @@ export class TcpStreamViewProvider {
             sourceMac: packet.eth ? packet.eth.destinationMac : null,
             sourceIp: packet.ip ? packet.ip.destinationIp : null,
             sourcePort: packet.tcp ? packet.tcp.destinationPort : null,
+            destinationMac: packet.eth ? packet.eth.sourceMac : null,
             destinationIp: packet.ip ? packet.ip.sourceIp : null,
             destinationPort: packet.tcp ? packet.tcp.sourcePort : null,
         }
@@ -171,37 +167,69 @@ export class TcpStreamViewProvider {
                 }
             }
 
-            const { syn } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
+            const { syn, synAck } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
+            const { request, response } = await this.packetViewHttpProvider.getHttpRequestAndResponsePacketsByStream(streamId);
+            const tlsClientHello = await this.packetViewTlsProvider.getClientHelloByStreamId(streamId);
 
-            if (!syn) {
-                return !(query.sourceIp || query.sourceMac || query.sourcePort
-                    || query.destinationIp || query.destinationMac || query.destinationPort);
-            }
+            const significantRequestPacket = syn || tlsClientHello || request;
+            const significantResponsePacket = synAck || response;
+            const significantPacket = significantRequestPacket || significantResponsePacket;
 
-            const {
-                tcp: { sourcePort, destinationPort },
-                ip: { sourceIp, destinationIp },
-                eth: { destinationMac, sourceMac },
-            } = syn;
-
-            if (query.sourceIp && !query.sourceIp.includes(sourceIp)) {
+            if (!significantPacket) {
                 return false;
             }
-            if (query.sourcePort && !query.sourcePort.includes(sourcePort.toString())) {
+            const isSignificantPacketRequest = Boolean(significantRequestPacket);
+
+            let sourceMac = null;
+            let sourceIp = null;
+            let sourcePort = null;
+            let destinationMac = null;
+            let destinationIp = null;
+            let destinationPort = null;
+
+            if (significantPacket.eth) {
+                sourceMac = isSignificantPacketRequest
+                    ? significantPacket.eth.sourceMac
+                    : significantPacket.eth.destinationMac;
+                destinationMac = isSignificantPacketRequest
+                    ? significantPacket.eth.destinationMac
+                    : significantPacket.eth.sourceMac;
+            }
+            if (significantPacket.ip) {
+                sourceIp = isSignificantPacketRequest
+                    ? significantPacket.ip.sourceIp
+                    : significantPacket.ip.destinationIp;
+                destinationIp = isSignificantPacketRequest
+                    ? significantPacket.ip.destinationIp
+                    : significantPacket.ip.sourceIp;
+            }
+            if (significantPacket.tcp) {
+                sourcePort = isSignificantPacketRequest
+                    ? significantPacket.tcp.sourcePort
+                    : significantPacket.tcp.destinationPort;
+                destinationPort = isSignificantPacketRequest
+                    ? significantPacket.tcp.destinationPort
+                    : significantPacket.tcp.sourcePort;
+            }
+
+            if (query.sourceIp && sourceIp && !query.sourceIp.includes(sourceIp)) {
                 return false;
             }
-            if (query.sourceMac && !query.sourceMac.includes(sourceMac)) {
+            if (query.sourcePort && sourcePort && !query.sourcePort.includes(sourcePort.toString())) {
+                return false;
+            }
+            if (query.sourceMac && sourceMac && !query.sourceMac.includes(sourceMac)) {
                 return false;
             }
 
-            if (query.destinationIp && !query.destinationIp.includes(destinationIp)) {
+            if (query.destinationIp && destinationIp && !query.destinationIp.includes(destinationIp)) {
                 return false;
             }
-            if (query.destinationPort && !query.destinationPort.includes(destinationPort.toString())) {
+            if (query.destinationPort && destinationPort && !query.destinationPort.includes(destinationPort.toString())) {
                 return false;
             }
 
-            return !(query.destinationMac && !query.destinationMac.includes(destinationMac));
+            return !(query.destinationMac && destinationMac && !query.destinationMac.includes(destinationMac));
         };
     };
 
