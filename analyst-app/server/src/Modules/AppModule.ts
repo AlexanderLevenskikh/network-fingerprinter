@@ -1,22 +1,20 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
-import { FlowModule } from './FlowModule';
-import { PacketModule } from './PacketModule';
 import { TcpStreamModule } from './TcpStreamModule';
-import { HttpStreamModule } from './HttpStreamModule';
-import { TlsPacketModule } from './TlsPacketModule';
+import { PacketHttpModule } from './PacketHttpModule';
+import { PacketTlsModule } from './PacketTlsModule';
 import { UserModule } from './UserModule';
 import { AuthModule } from './AuthModule';
 import { AppController } from '../Controllers/AppController';
 import { ReactMiddleware } from '../Middleware/ReactMiddleware';
 import { PlayerModule } from './PlayerModule';
+import { PacketTcpModule } from './PacketTcpModule';
 
 @Module({
     imports: [
-        FlowModule,
-        PacketModule,
         TcpStreamModule,
-        HttpStreamModule,
-        TlsPacketModule,
+        PacketHttpModule,
+        PacketTlsModule,
+        PacketTcpModule,
         UserModule,
         AuthModule,
         PlayerModule,

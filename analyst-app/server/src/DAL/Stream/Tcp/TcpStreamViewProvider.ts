@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { ITcpStreamHandshakePackets } from './ITcpStreamHandshakePackets';
 import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
 import { map } from 'rxjs/operators';
 import { TcpStreamViewProviderQueries } from './TcpStreamViewProviderQueries';
@@ -8,29 +7,28 @@ import { TcpStreamViewProviderMappers } from './TcpStreamViewProviderMappers';
 import { ITcpStreamView } from './ITcpStreamView';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 import { getApplicationLayerProtocolByFrame } from '../../../Mappers/Stream/Frame/ApplicationLayerProtocolByFrame';
-import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
-import { Nullable } from '../../../Shared/Types/Nullable';
 import { tcpFingerprintProcessor, TcpFingerprintProcessorPacketType } from '../../../Processors/Fingerprint/Tcp/Tcp';
-import { TcpPacketViewProviderMappers } from '../../Packet/Tcp/TcpPacketViewProviderMappers';
-import { HttpStreamViewProvider } from '../Http/HttpStreamViewProvider';
+import { PacketViewHttpProvider } from '../../Packet/Http/PacketViewHttpProvider';
 import {
     httpFingerprintProcessor,
     HttpFingerprintProcessorPacketType,
 } from '../../../Processors/Fingerprint/Http/Http';
 import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
-import { TlsPacketViewProvider } from '../../Packet/Tls/tls-packet-view-provider.service';
+import { PacketViewTlsProvider } from '../../Packet/Tls/PacketViewTlsProvider';
 import { tlsFingerprintProcessor } from '../../../Processors/Fingerprint/Tls/Tls';
 import { ITcpStreamFilter } from './ITcpStreamFilter';
 import { compareIsoDates } from '../../../Shared/Utils/compareIsoDates';
 import { filter } from '../../../Shared/Utils/filter';
 import { TcpStreamFilterDateOrder } from './TcpStreamFilterDateOrder';
+import { PacketViewTcpProvider } from '../../Packet/Tcp/PacketViewTcpProvider';
 
 @Injectable()
 export class TcpStreamViewProvider {
     constructor(
         private readonly elasticsearchService: ElasticsearchService,
-        private readonly httpStreamViewProvider: HttpStreamViewProvider,
-        private readonly tlsPacketViewProvider: TlsPacketViewProvider,
+        private readonly packetViewHttpProvider: PacketViewHttpProvider,
+        private readonly packetViewTlsProvider: PacketViewTlsProvider,
+        private readonly packetViewTcpProvider: PacketViewTcpProvider,
     ) {}
 
     getTcpStreamsTotal = async (query: ITcpStreamFilter): Promise<number> => {
@@ -52,10 +50,10 @@ export class TcpStreamViewProvider {
         const skippedStreamIds = filteredStreamIds.slice(skip, skip + take);
 
         const streamPromises = skippedStreamIds.map(async (streamId: string): Promise<ITcpStreamView> => {
-            const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
-            const { request, response } = await this.httpStreamViewProvider.getHttpRequestAndResponsePacketsByStream(streamId);
-            const tlsClientHello = await this.tlsPacketViewProvider.getClientHelloByStreamId(streamId);
-            const sample = await this.getTcpSamplePacketByStreamId(streamId);
+            const { syn, synAck } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
+            const { request, response } = await this.packetViewHttpProvider.getHttpRequestAndResponsePacketsByStream(streamId);
+            const tlsClientHello = await this.packetViewTlsProvider.getClientHelloByStreamId(streamId);
+            const sample = await this.packetViewTcpProvider.getTcpSamplePacketByStreamId(streamId);
             const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
             const packetsCount = await this.getTcpStreamDocumentsCount(streamId);
 
@@ -174,7 +172,7 @@ export class TcpStreamViewProvider {
                 }
             }
 
-            const { syn } = await this.getTcpHandshakePacketsByStreamId(streamId);
+            const { syn } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
 
             if (!syn) {
                 return !(query.sourceIp || query.sourceMac || query.sourcePort
@@ -206,51 +204,6 @@ export class TcpStreamViewProvider {
 
             return !(query.destinationMac && !query.destinationMac.includes(destinationMac));
         };
-    };
-
-    private getTcpHandshakePacketsByStreamId = async (streamId: string): Promise<ITcpStreamHandshakePackets> => {
-        const synPacket = await this.elasticsearchService
-            .search<IPacketEntity>({
-                index: 'packets-*',
-                size: 1,
-                body: {
-                    ...TcpStreamViewProviderQueries.buildTcpSynByStreamIdQuery(streamId),
-                },
-            })
-            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
-            .toPromise();
-
-        const synAckPacket = await this.elasticsearchService
-            .search<IPacketEntity>({
-                index: 'packets-*',
-                size: 1,
-                body: {
-                    ...TcpStreamViewProviderQueries.buildTcpSynAckByStreamIdQuery(streamId),
-                },
-            })
-            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
-            .toPromise();
-
-        return {
-            streamId,
-            syn: synPacket.length > 0 ? synPacket[ 0 ] : null,
-            synAck: synAckPacket.length > 0 ? synAckPacket[ 0 ] : null,
-        };
-    };
-
-    private getTcpSamplePacketByStreamId = async (streamId: string): Promise<Nullable<IPacketViewTcp>> => {
-        const sample = await this.elasticsearchService
-            .search<IPacketEntity>({
-                index: 'packets-*',
-                size: 1,
-                body: {
-                    ...TcpStreamViewProviderQueries.buildTcpPacketSampleByStreamIdQuery(streamId),
-                },
-            })
-            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
-            .toPromise();
-
-        return sample.length > 0 ? sample[ 0 ] : null;
     };
 
     private getTcpStreamMetaDataByStreamId = async (streamId: string): Promise<ITcpStreamMetaData> => {
