@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { mkdir, rm, touch } from 'shelljs';
+import { mkdir, rm, touch, test } from 'shelljs';
 import { resolve } from 'path';
 import * as uuid from 'uuid';
 import * as fs from 'fs';
@@ -15,7 +15,9 @@ export class PlayerService {
 
     public uploadDump(fileBuffer: any): Promise<any> {
         return new Promise((res, rej) => {
-            mkdir(resolve(process.cwd(), 'temp'));
+            if (!test('-e', resolve(process.cwd(), 'temp'))) {
+                mkdir(resolve(process.cwd(), 'temp'));
+            }
 
             const guid = uuid.v1();
 
@@ -39,13 +41,9 @@ export class PlayerService {
 
                         res();
                     } catch (error) {
-                        for (const chunkName of chunkNames) {
-                            rm(`./temp/${ guid }-${ chunkName }.json`);
-                        }
-                        // TODO cleanup
                         rej(error);
                     } finally {
-                        rm(`./temp/${ guid }.json`);
+                        rm('-rf', './temp');
                     }
                 }).catch(err => rej(err));
             })
@@ -151,8 +149,9 @@ export class PlayerService {
 
         while (leftBorder < packetsCount) {
             const chunkNamePromise = new Promise<string>((res, rej) => {
-                const rightBorder = leftBorder + step;
-                const range = rightBorder <= packetsCount ? `${leftBorder}-${rightBorder}` : leftBorder.toString();
+                const nextBorder = leftBorder + step;
+                const rightBorder = nextBorder <= packetsCount ? nextBorder : packetsCount;
+                const range = `${leftBorder}-${rightBorder}`;
 
                 const chunkCb = (error, stdout, stderr) => {
                     if (error) {
