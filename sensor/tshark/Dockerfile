@@ -16,7 +16,7 @@ COPY . /usr/share/tshark
 WORKDIR /usr/share/tshark
 
 RUN apk update
-RUN apk --update --no-cache add tshark curl
+RUN apk --update --no-cache add tshark~=3.0.7 curl
 RUN pip install --upgrade pip
 RUN pip install click pyyaml elasticsearch
 RUN chmod +x ./elk-template.sh && ./elk-template.sh ${name}:${pass}@${host}

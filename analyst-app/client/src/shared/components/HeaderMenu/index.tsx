@@ -15,6 +15,7 @@ enum MenuItemKey {
     Player = 'Player',
 }
 
+// UDP streams item temporary disabled
 export const HeaderMenu: FC<IProps> = () => {
     const { onClickTcpStreams, onClickUdpStreams, onClickUpload, transport, t, page } = useHeaderMenu();
     const tcpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Tcp;
@@ -43,7 +44,7 @@ export const HeaderMenu: FC<IProps> = () => {
                     TCP { t(I18MainNsKeys.menuStreamsLabel) }
                 </span>
             </Menu.Item>
-            <Menu.Item
+            {/*<Menu.Item
                 key={ MenuItemKey.UdpStream }
                 onClick={ onClickUdpStreams }
             >
@@ -51,7 +52,7 @@ export const HeaderMenu: FC<IProps> = () => {
                 <span>
                     UDP { t(I18MainNsKeys.menuStreamsLabel) }
                 </span>
-            </Menu.Item>
+            </Menu.Item>*/}
             <Menu.Item
                 key={ MenuItemKey.Player }
                 onClick={ onClickUpload }
