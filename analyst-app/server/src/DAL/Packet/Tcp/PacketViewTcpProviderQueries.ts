@@ -27,16 +27,22 @@ export class PacketViewTcpProviderQueries {
         };
     }
 
-    static buildTcpPacketSampleByStreamIdQuery(streamId: string) {
+    static buildTcpPacketApplicationLayersProtocolsByStreamIsQuery(streamId: string) {
         return {
             query: {
                 bool: {
-                    filter: [
-                        { term: { streamId } },
-                        { exists: { field: 'layers.tcp.tcp_tcp_payload' } },
-                    ],
+                    filter: {
+                        term: {
+                            streamId,
+                        },
+                    },
                 },
             },
-        };
+            aggs : {
+                protocols : {
+                    terms : { field : 'layers.frame.frame_frame_protocols', size: 100 },
+                },
+            },
+        }
     }
 }

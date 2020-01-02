@@ -1,21 +1,17 @@
 import React from 'react';
 import styles from './styles.less';
-import Paragraph from 'antd/es/typography/Paragraph';
-import Text from 'antd/es/typography/Text';
-import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
 import { TFunction } from 'i18next';
-import { notEmpty } from 'root/shared/utils/notEmpty';
-import { IFingerprints } from '../../../../../../../../server/src/Processors/Fingerprint/IFingerprints';
 import { StreamTcpFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/tcp';
 import { StreamHttpFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/http';
 import { StreamTlsFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/tls';
+import { ISourceFingerprintsView } from 'DAL/Fingerprint/Tcp/ISourceFingerprintsView';
 
 interface IArgs {
-    fingerprints: IFingerprints;
+    fingerprints: ISourceFingerprintsView;
     t: TFunction;
 }
 
-export function renderFingerprint({ fingerprints, t }: IArgs) {
+export function renderSourceFingerprint({ fingerprints, t }: IArgs) {
     const { tls, http, tcp } = fingerprints;
 
     return (

@@ -6,6 +6,7 @@ import { TcpStreamViewProvider } from '../DAL/Stream/Tcp/TcpStreamViewProvider';
 import { PacketHttpModule } from './PacketHttpModule';
 import { PacketTlsModule } from './PacketTlsModule';
 import { PacketTcpModule } from './PacketTcpModule';
+import { FingerprintModule } from './FingerprintModule';
 
 @Module({
     imports: [
@@ -15,6 +16,7 @@ import { PacketTcpModule } from './PacketTcpModule';
         PacketTlsModule,
         PacketHttpModule,
         PacketTcpModule,
+        FingerprintModule,
     ],
     controllers: [
         TcpStreamController,

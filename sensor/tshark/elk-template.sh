@@ -30,8 +30,7 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
                   "type": "keyword"
                 },
                 "frame_frame_protocols": {
-                  "type": "text",
-                  "analyzer": "simple"
+                  "type": "keyword",
                 },
                 "frame_frame_time": {
                   "type": "keyword"

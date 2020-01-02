@@ -1,10 +1,10 @@
 import { IPacketViewFrame } from '../../../DAL/Packet/Frame/IPacketViewEthLayer';
-import { TcpStreamViewApplicationProtocol } from '../../../DAL/Stream/Tcp/TcpStreamViewApplicationProtocol';
+import { PacketViewTcpApplicationProtocol } from '../../../DAL/Packet/Tcp/PacketViewTcpApplicationProtocol';
 
-export function getApplicationLayerProtocolByFrame(frame: IPacketViewFrame): TcpStreamViewApplicationProtocol {
+export function getApplicationLayerProtocolByFrame(frame: IPacketViewFrame): PacketViewTcpApplicationProtocol {
     const protocolsMap = {
-        http: TcpStreamViewApplicationProtocol.Http,
-        tls: TcpStreamViewApplicationProtocol.Tls,
+        http: PacketViewTcpApplicationProtocol.Http,
+        tls: PacketViewTcpApplicationProtocol.Tls,
     };
 
     const lastProtocol = frame.protocolsInFrame[frame.protocolsInFrame.length - 1];

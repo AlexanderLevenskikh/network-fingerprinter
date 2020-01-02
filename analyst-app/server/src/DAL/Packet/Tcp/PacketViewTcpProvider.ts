@@ -7,6 +7,7 @@ import { Nullable } from '../../../Shared/Types/Nullable';
 import { IPacketViewTcp } from './IPacketViewTcp';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { PacketViewTcpProviderQueries } from './PacketViewTcpProviderQueries';
+import { PacketViewTcpApplicationProtocol } from './PacketViewTcpApplicationProtocol';
 
 @Injectable()
 export class PacketViewTcpProvider {
@@ -44,18 +45,18 @@ export class PacketViewTcpProvider {
         };
     };
 
-    public getTcpSamplePacketByStreamId = async (streamId: string): Promise<Nullable<IPacketViewTcp>> => {
-        const sample = await this.elasticsearchService
+    public getTcpApplicationLayersProtocolsByStreamId = async (
+        streamId: string,
+    ): Promise<PacketViewTcpApplicationProtocol[]> => {
+        return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
-                size: 1,
+                size: 0,
                 body: {
-                    ...PacketViewTcpProviderQueries.buildTcpPacketSampleByStreamIdQuery(streamId),
+                    ...PacketViewTcpProviderQueries.buildTcpPacketApplicationLayersProtocolsByStreamIsQuery(streamId),
                 },
             })
-            .pipe(map(PacketViewTcpProviderMappers.toTcpPacketViews))
+            .pipe(map(PacketViewTcpProviderMappers.toApplicationLayerProtocols))
             .toPromise();
-
-        return sample.length > 0 ? sample[ 0 ] : null;
-    };
+    }
 }
