@@ -2,6 +2,9 @@ FROM nikolaik/python-nodejs:python3.8-nodejs13-alpine
 
 USER root
 
+RUN apk update
+RUN apk --update --no-cache add tshark~=3.0.7 curl
+
 WORKDIR /usr/src/app
 COPY . .
 

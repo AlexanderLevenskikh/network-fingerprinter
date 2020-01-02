@@ -1,10 +1,10 @@
 export class HttpStreamViewProviderQueries {
-    static buildHttpRequestQueryByStreamId(streamId: number) {
+    static buildHttpRequestQueryByStreamId(streamId: string) {
         return {
             query: {
                 bool: {
                     filter: [
-                        { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                        { term: { streamId } },
                         { term: { 'layers.http.http_http_request': '1' } },
                     ],
                 },
@@ -12,12 +12,12 @@ export class HttpStreamViewProviderQueries {
         }
     }
 
-    static buildHttpResponseQueryByStreamId(streamId: number) {
+    static buildHttpResponseQueryByStreamId(streamId: string) {
         return {
             query: {
                 bool: {
                     filter: [
-                        { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                        { term: { streamId } },
                         { term: { 'layers.http.http_http_response': '1' } },
                     ],
                 },

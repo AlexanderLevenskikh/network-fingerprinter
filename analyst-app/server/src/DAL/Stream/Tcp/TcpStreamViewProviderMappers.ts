@@ -2,7 +2,7 @@ import { CountResponse, SearchResponse } from 'elasticsearch';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 
 export class TcpStreamViewProviderMappers {
-    public static toStreamIds(response: SearchResponse<any>): number[] {
+    public static toStreamIds(response: SearchResponse<any>): string[] {
         if (!response[0].aggregations) {
             return [];
         }
@@ -11,7 +11,7 @@ export class TcpStreamViewProviderMappers {
             .aggregations
             .by_stream
             .buckets
-            .map(bucket => Number.parseInt(bucket.key.streamId, 10))
+            .map(bucket => bucket.key)
             .sort(TcpStreamViewProviderMappers.toStreamIdsAscOrder);
     }
 

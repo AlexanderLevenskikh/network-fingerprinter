@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { PacketViewProvider } from '../DAL/Packet/PacketViewProvider';
-import { AuthenticatedGuard } from '../Domain/Guards/AuthenticatedGuard';
+import { AuthenticatedGuard } from '../Services/Guards/AuthenticatedGuard';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('api/packet')

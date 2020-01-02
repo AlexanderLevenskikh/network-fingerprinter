@@ -1,0 +1,4960 @@
+{
+  "index_patterns": "packets-*",
+  "settings": {
+    "mapping.total_fields.limit": 1000000
+  },
+  "mappings": {
+    "dynamic": false,
+    "properties": {
+        "timestamp": {
+          "type": "date"
+        },
+        "layers": {
+          "properties": {
+            "arp": {
+              "properties": {
+                "arp_arp_hw_type": {
+                  "type": "integer"
+                },
+                "arp_arp_proto_type": {
+                  "type": "integer"
+                },
+                "arp_arp_hw_size": {
+                  "type": "short"
+                },
+                "arp_arp_src_htype": {
+                  "type": "boolean"
+                },
+                "arp_arp_src_hlen": {
+                  "type": "short"
+                },
+                "arp_arp_src_stype": {
+                  "type": "boolean"
+                },
+                "arp_arp_src_slen": {
+                  "type": "short"
+                },
+                "arp_arp_proto_size": {
+                  "type": "short"
+                },
+                "arp_arp_opcode": {
+                  "type": "integer"
+                },
+                "arp_arp_isgratuitous": {
+                  "type": "boolean"
+                },
+                "arp_arp_isprobe": {
+                  "type": "boolean"
+                },
+                "arp_arp_isannouncement": {
+                  "type": "boolean"
+                },
+                "arp_arp_src_pln": {
+                  "type": "short"
+                },
+                "arp_arp_dst_htype": {
+                  "type": "boolean"
+                },
+                "arp_arp_dst_hlen": {
+                  "type": "short"
+                },
+                "arp_arp_dst_stype": {
+                  "type": "boolean"
+                },
+                "arp_arp_dst_slen": {
+                  "type": "short"
+                },
+                "arp_arp_dst_pln": {
+                  "type": "short"
+                },
+                "arp_arp_src_hw": {
+                  "type": "byte"
+                },
+                "arp_arp_src_atm_num_nsap": {
+                  "type": "byte"
+                },
+                "arp_arp_src_atm_subaddr": {
+                  "type": "byte"
+                },
+                "arp_arp_src_proto": {
+                  "type": "byte"
+                },
+                "arp_arp_src_proto_ipv4": {
+                  "type": "ip"
+                },
+                "arp_arp_dst_hw": {
+                  "type": "byte"
+                },
+                "arp_arp_dst_atm_num_nsap": {
+                  "type": "byte"
+                },
+                "arp_arp_dst_atm_subaddr": {
+                  "type": "byte"
+                },
+                "arp_arp_dst_proto": {
+                  "type": "byte"
+                },
+                "arp_arp_dst_proto_ipv4": {
+                  "type": "ip"
+                },
+                "arp_arp_dst_drarp_error_status": {
+                  "type": "integer"
+                },
+                "arp_arp_duplicate-address-frame": {
+                  "type": "long"
+                },
+                "arp_arp_seconds-since-duplicate-address-frame": {
+                  "type": "long"
+                },
+                "arp_arp_src_atm_data_country_code": {
+                  "type": "integer"
+                },
+                "arp_arp_src_atm_data_country_code_group": {
+                  "type": "integer"
+                },
+                "arp_arp_src_atm_high_order_dsp": {
+                  "type": "byte"
+                },
+                "arp_arp_src_atm_end_system_identifier": {
+                  "type": "byte"
+                },
+                "arp_arp_src_atm_selector": {
+                  "type": "short"
+                },
+                "arp_arp_src_atm_international_code_designator": {
+                  "type": "integer"
+                },
+                "arp_arp_src_atm_international_code_designator_group": {
+                  "type": "integer"
+                },
+                "arp_arp_src_atm_e_164_isdn": {
+                  "type": "byte"
+                },
+                "arp_arp_src_atm_e_164_isdn_group": {
+                  "type": "byte"
+                },
+                "arp_arp_src_atm_rest_of_address": {
+                  "type": "byte"
+                },
+                "arp_arp_src_atm_afi": {
+                  "type": "short"
+                }
+              }
+            },
+            "dns": {
+              "properties": {
+                "dns_dns_length": {
+                  "type": "integer"
+                },
+                "dns_dns_flags": {
+                  "type": "integer"
+                },
+                "dns_dns_flags_response": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_opcode": {
+                  "type": "integer"
+                },
+                "dns_dns_flags_authoritative": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_conflict": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_truncated": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_recdesired": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_tentative": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_recavail": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_z": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_authenticated": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_checkdisable": {
+                  "type": "boolean"
+                },
+                "dns_dns_flags_rcode": {
+                  "type": "integer"
+                },
+                "dns_dns_id": {
+                  "type": "integer"
+                },
+                "dns_dns_qry_type": {
+                  "type": "integer"
+                },
+                "dns_dns_qry_class": {
+                  "type": "integer"
+                },
+                "dns_dns_qry_qu": {
+                  "type": "boolean"
+                },
+                "dns_dns_qry_name_len": {
+                  "type": "integer"
+                },
+                "dns_dns_count_labels": {
+                  "type": "integer"
+                },
+                "dns_dns_resp_type": {
+                  "type": "integer"
+                },
+                "dns_dns_resp_class": {
+                  "type": "integer"
+                },
+                "dns_dns_resp_cache_flush": {
+                  "type": "boolean"
+                },
+                "dns_dns_resp_ext_rcode": {
+                  "type": "short"
+                },
+                "dns_dns_resp_edns0_version": {
+                  "type": "short"
+                },
+                "dns_dns_resp_z": {
+                  "type": "integer"
+                },
+                "dns_dns_resp_z_do": {
+                  "type": "boolean"
+                },
+                "dns_dns_resp_z_reserved": {
+                  "type": "integer"
+                },
+                "dns_dns_srv_priority": {
+                  "type": "integer"
+                },
+                "dns_dns_srv_weight": {
+                  "type": "integer"
+                },
+                "dns_dns_srv_port": {
+                  "type": "integer"
+                },
+                "dns_dns_naptr_order": {
+                  "type": "integer"
+                },
+                "dns_dns_naptr_preference": {
+                  "type": "integer"
+                },
+                "dns_dns_naptr_flags_length": {
+                  "type": "short"
+                },
+                "dns_dns_naptr_service_length": {
+                  "type": "short"
+                },
+                "dns_dns_naptr_regex_length": {
+                  "type": "short"
+                },
+                "dns_dns_naptr_replacement_length": {
+                  "type": "short"
+                },
+                "dns_dns_resp_ttl": {
+                  "type": "long"
+                },
+                "dns_dns_resp_len": {
+                  "type": "long"
+                },
+                "dns_dns_a": {
+                  "type": "ip"
+                },
+                "dns_dns_null": {
+                  "type": "byte"
+                },
+                "dns_dns_aaaa": {
+                  "type": "ip"
+                },
+                "dns_dns_rr_udp_payload_size": {
+                  "type": "integer"
+                },
+                "dns_dns_soa_serial_number": {
+                  "type": "long"
+                },
+                "dns_dns_soa_refresh_interval": {
+                  "type": "long"
+                },
+                "dns_dns_soa_retry_interval": {
+                  "type": "long"
+                },
+                "dns_dns_soa_expire_limit": {
+                  "type": "long"
+                },
+                "dns_dns_soa_mininum_ttl": {
+                  "type": "long"
+                },
+                "dns_dns_wks_address": {
+                  "type": "ip"
+                },
+                "dns_dns_wks_protocol": {
+                  "type": "short"
+                },
+                "dns_dns_wks_bits": {
+                  "type": "short"
+                },
+                "dns_dns_hinfo_cpu_length": {
+                  "type": "short"
+                },
+                "dns_dns_hinfo_os_length": {
+                  "type": "short"
+                },
+                "dns_dns_mx_preference": {
+                  "type": "integer"
+                },
+                "dns_dns_txt_length": {
+                  "type": "short"
+                },
+                "dns_dns_csync_soa": {
+                  "type": "long"
+                },
+                "dns_dns_csync_flags": {
+                  "type": "integer"
+                },
+                "dns_dns_csync_flags_immediate": {
+                  "type": "boolean"
+                },
+                "dns_dns_csync_flags_soaminimum": {
+                  "type": "boolean"
+                },
+                "dns_dns_csync_type_bitmap": {
+                  "type": "byte"
+                },
+                "dns_dns_spf_length": {
+                  "type": "short"
+                },
+                "dns_dns_ilnp_nid_preference": {
+                  "type": "integer"
+                },
+                "dns_dns_ilnp_nid": {
+                  "type": "byte"
+                },
+                "dns_dns_ilnp_l32_preference": {
+                  "type": "integer"
+                },
+                "dns_dns_ilnp_l32": {
+                  "type": "ip"
+                },
+                "dns_dns_ilnp_l64_preference": {
+                  "type": "integer"
+                },
+                "dns_dns_ilnp_l64": {
+                  "type": "byte"
+                },
+                "dns_dns_ilnp_lp_preference": {
+                  "type": "integer"
+                },
+                "dns_dns_rrsig_type_covered": {
+                  "type": "integer"
+                },
+                "dns_dns_rrsig_algorithm": {
+                  "type": "short"
+                },
+                "dns_dns_rrsig_labels": {
+                  "type": "short"
+                },
+                "dns_dns_rrsig_original_ttl": {
+                  "type": "long"
+                },
+                "dns_dns_rrsig_signature_expiration": {
+                  "type": "date"
+                },
+                "dns_dns_rrsig_signature_inception": {
+                  "type": "date"
+                },
+                "dns_dns_rrsig_key_tag": {
+                  "type": "integer"
+                },
+                "dns_dns_rrsig_signature": {
+                  "type": "byte"
+                },
+                "dns_dns_dnskey_flags": {
+                  "type": "integer"
+                },
+                "dns_dns_dnskey_flags_zone_key": {
+                  "type": "boolean"
+                },
+                "dns_dns_dnskey_flags_key_revoked": {
+                  "type": "boolean"
+                },
+                "dns_dns_dnskey_flags_secure_entry_point": {
+                  "type": "boolean"
+                },
+                "dns_dns_dnskey_flags_reserved": {
+                  "type": "integer"
+                },
+                "dns_dns_dnskey_protocol": {
+                  "type": "short"
+                },
+                "dns_dns_dnskey_algorithm": {
+                  "type": "short"
+                },
+                "dns_dns_dnskey_key_id": {
+                  "type": "integer"
+                },
+                "dns_dns_dnskey_public_key": {
+                  "type": "byte"
+                },
+                "dns_dns_key_flags": {
+                  "type": "integer"
+                },
+                "dns_dns_key_flags_authentication": {
+                  "type": "boolean"
+                },
+                "dns_dns_key_flags_confidentiality": {
+                  "type": "boolean"
+                },
+                "dns_dns_key_flags_required": {
+                  "type": "boolean"
+                },
+                "dns_dns_key_flags_associated_user": {
+                  "type": "boolean"
+                },
+                "dns_dns_key_flags_associated_named_entity": {
+                  "type": "boolean"
+                },
+                "dns_dns_key_flags_ipsec": {
+                  "type": "boolean"
+                },
+                "dns_dns_key_flags_mime": {
+                  "type": "boolean"
+                },
+                "dns_dns_key_flags_signatory": {
+                  "type": "integer"
+                },
+                "dns_dns_key_protocol": {
+                  "type": "short"
+                },
+                "dns_dns_key_algorithm": {
+                  "type": "short"
+                },
+                "dns_dns_key_key_id": {
+                  "type": "integer"
+                },
+                "dns_dns_key_public_key": {
+                  "type": "byte"
+                },
+                "dns_dns_px_preference": {
+                  "type": "short"
+                },
+                "dns_dns_tkey_signature_expiration": {
+                  "type": "date"
+                },
+                "dns_dns_tkey_signature_inception": {
+                  "type": "date"
+                },
+                "dns_dns_tkey_mode": {
+                  "type": "integer"
+                },
+                "dns_dns_tkey_error": {
+                  "type": "integer"
+                },
+                "dns_dns_tkey_key_size": {
+                  "type": "integer"
+                },
+                "dns_dns_tkey_key_data": {
+                  "type": "byte"
+                },
+                "dns_dns_tkey_other_size": {
+                  "type": "integer"
+                },
+                "dns_dns_tkey_other_data": {
+                  "type": "byte"
+                },
+                "dns_dns_ipseckey_gateway_precedence": {
+                  "type": "short"
+                },
+                "dns_dns_ipseckey_gateway_algorithm": {
+                  "type": "short"
+                },
+                "dns_dns_ipseckey_gateway_type": {
+                  "type": "short"
+                },
+                "dns_dns_ipseckey_gateway_ipv4": {
+                  "type": "ip"
+                },
+                "dns_dns_ipseckey_gateway_ipv6": {
+                  "type": "ip"
+                },
+                "dns_dns_ipseckey_public_key": {
+                  "type": "byte"
+                },
+                "dns_dns_xpf_ip_version": {
+                  "type": "integer"
+                },
+                "dns_dns_xpf_protocol": {
+                  "type": "short"
+                },
+                "dns_dns_xpf_source_ipv4": {
+                  "type": "ip"
+                },
+                "dns_dns_xpf_destination_ipv4": {
+                  "type": "ip"
+                },
+                "dns_dns_xpf_source_ipv6": {
+                  "type": "ip"
+                },
+                "dns_dns_xpf_destination_ipv6": {
+                  "type": "ip"
+                },
+                "dns_dns_xpf_sport": {
+                  "type": "integer"
+                },
+                "dns_dns_xpf_dport": {
+                  "type": "integer"
+                },
+                "dns_dns_a6_prefix_len": {
+                  "type": "short"
+                },
+                "dns_dns_a6_address_suffix": {
+                  "type": "ip"
+                },
+                "dns_dns_loc_version": {
+                  "type": "short"
+                },
+                "dns_dns_loc_size": {
+                  "type": "short"
+                },
+                "dns_dns_loc_horizontal_precision": {
+                  "type": "short"
+                },
+                "dns_dns_loc_vertical_precision": {
+                  "type": "short"
+                },
+                "dns_dns_loc_latitude": {
+                  "type": "long"
+                },
+                "dns_dns_loc_longitude": {
+                  "type": "long"
+                },
+                "dns_dns_loc_altitude": {
+                  "type": "long"
+                },
+                "dns_dns_loc_unknown_data": {
+                  "type": "byte"
+                },
+                "dns_dns_kx_preference": {
+                  "type": "integer"
+                },
+                "dns_dns_cert_type": {
+                  "type": "integer"
+                },
+                "dns_dns_cert_key_tag": {
+                  "type": "integer"
+                },
+                "dns_dns_cert_algorithm": {
+                  "type": "short"
+                },
+                "dns_dns_cert_certificate": {
+                  "type": "byte"
+                },
+                "dns_dns_opt_code": {
+                  "type": "integer"
+                },
+                "dns_dns_opt_len": {
+                  "type": "integer"
+                },
+                "dns_dns_opt_data": {
+                  "type": "byte"
+                },
+                "dns_dns_opt_dau": {
+                  "type": "short"
+                },
+                "dns_dns_opt_dhu": {
+                  "type": "short"
+                },
+                "dns_dns_opt_n3u": {
+                  "type": "short"
+                },
+                "dns_dns_opt_client_family": {
+                  "type": "integer"
+                },
+                "dns_dns_opt_client_netmask": {
+                  "type": "short"
+                },
+                "dns_dns_opt_client_scope": {
+                  "type": "short"
+                },
+                "dns_dns_opt_client_addr": {
+                  "type": "byte"
+                },
+                "dns_dns_opt_client_addr4": {
+                  "type": "ip"
+                },
+                "dns_dns_opt_client_addr6": {
+                  "type": "ip"
+                },
+                "dns_dns_opt_cookie_client": {
+                  "type": "byte"
+                },
+                "dns_dns_opt_cookie_server": {
+                  "type": "byte"
+                },
+                "dns_dns_opt_edns_tcp_keepalive_timeout": {
+                  "type": "integer"
+                },
+                "dns_dns_opt_padding": {
+                  "type": "byte"
+                },
+                "dns_dns_count_queries": {
+                  "type": "integer"
+                },
+                "dns_dns_count_zones": {
+                  "type": "integer"
+                },
+                "dns_dns_count_answers": {
+                  "type": "integer"
+                },
+                "dns_dns_count_prerequisites": {
+                  "type": "integer"
+                },
+                "dns_dns_count_auth_rr": {
+                  "type": "integer"
+                },
+                "dns_dns_count_updates": {
+                  "type": "integer"
+                },
+                "dns_dns_nsec3_algo": {
+                  "type": "short"
+                },
+                "dns_dns_nsec3_flags": {
+                  "type": "short"
+                },
+                "dns_dns_nsec3_flags_opt_out": {
+                  "type": "boolean"
+                },
+                "dns_dns_nsec3_iterations": {
+                  "type": "integer"
+                },
+                "dns_dns_nsec3_salt_length": {
+                  "type": "short"
+                },
+                "dns_dns_nsec3_salt_value": {
+                  "type": "byte"
+                },
+                "dns_dns_nsec3_hash_length": {
+                  "type": "short"
+                },
+                "dns_dns_nsec3_hash_value": {
+                  "type": "byte"
+                },
+                "dns_dns_tlsa_certificate_usage": {
+                  "type": "short"
+                },
+                "dns_dns_tlsa_selector": {
+                  "type": "short"
+                },
+                "dns_dns_tlsa_matching_type": {
+                  "type": "short"
+                },
+                "dns_dns_tlsa_certificate_association_data": {
+                  "type": "byte"
+                },
+                "dns_dns_tsig_time_signed": {
+                  "type": "date"
+                },
+                "dns_dns_tsig_original_id": {
+                  "type": "integer"
+                },
+                "dns_dns_tsig_error": {
+                  "type": "integer"
+                },
+                "dns_dns_tsig_fudge": {
+                  "type": "integer"
+                },
+                "dns_dns_tsig_mac_size": {
+                  "type": "integer"
+                },
+                "dns_dns_tsig_other_len": {
+                  "type": "integer"
+                },
+                "dns_dns_tsig_other_data": {
+                  "type": "byte"
+                },
+                "dns_dns_response_in": {
+                  "type": "long"
+                },
+                "dns_dns_response_to": {
+                  "type": "long"
+                },
+                "dns_dns_retransmission": {
+                  "type": "boolean"
+                },
+                "dns_dns_retransmit_request_in": {
+                  "type": "long"
+                },
+                "dns_dns_retransmit_response_in": {
+                  "type": "long"
+                },
+                "dns_dns_time": {
+                  "type": "date"
+                },
+                "dns_dns_unsolicited": {
+                  "type": "boolean"
+                },
+                "dns_dns_count_add_rr": {
+                  "type": "integer"
+                },
+                "dns_dns_sshfp_algorithm": {
+                  "type": "short"
+                },
+                "dns_dns_sshfp_fingerprint_type": {
+                  "type": "short"
+                },
+                "dns_dns_sshfp_fingerprint": {
+                  "type": "byte"
+                },
+                "dns_dns_hip_hit_length": {
+                  "type": "short"
+                },
+                "dns_dns_hip_hit_pk_algo": {
+                  "type": "short"
+                },
+                "dns_dns_hip_pk_length": {
+                  "type": "integer"
+                },
+                "dns_dns_hip_hit": {
+                  "type": "byte"
+                },
+                "dns_dns_hip_pk": {
+                  "type": "byte"
+                },
+                "dns_dns_dhcid_rdata": {
+                  "type": "byte"
+                },
+                "dns_dns_ds_key_id": {
+                  "type": "integer"
+                },
+                "dns_dns_ds_algorithm": {
+                  "type": "short"
+                },
+                "dns_dns_ds_digest_type": {
+                  "type": "short"
+                },
+                "dns_dns_ds_digest": {
+                  "type": "byte"
+                },
+                "dns_dns_apl_address_family": {
+                  "type": "integer"
+                },
+                "dns_dns_apl_coded_prefix": {
+                  "type": "short"
+                },
+                "dns_dns_apl_negation": {
+                  "type": "boolean"
+                },
+                "dns_dns_apl_afdlength": {
+                  "type": "short"
+                },
+                "dns_dns_apl_afdpart_ipv4": {
+                  "type": "ip"
+                },
+                "dns_dns_apl_afdpart_ipv6": {
+                  "type": "ip"
+                },
+                "dns_dns_apl_afdpart_data": {
+                  "type": "byte"
+                },
+                "dns_dns_gpos_longitude_length": {
+                  "type": "short"
+                },
+                "dns_dns_gpos_latitude_length": {
+                  "type": "short"
+                },
+                "dns_dns_gpos_altitude_length": {
+                  "type": "short"
+                },
+                "dns_dns_afsdb_subtype": {
+                  "type": "integer"
+                },
+                "dns_dns_x25_length": {
+                  "type": "short"
+                },
+                "dns_dns_idsn_length": {
+                  "type": "short"
+                },
+                "dns_dns_idsn_sa_length": {
+                  "type": "short"
+                },
+                "dns_dns_rt_subtype": {
+                  "type": "integer"
+                },
+                "dns_dns_nsap_rdata": {
+                  "type": "byte"
+                },
+                "dns_dns_caa_flags": {
+                  "type": "short"
+                },
+                "dns_dns_caa_flags_issuer_critical": {
+                  "type": "boolean"
+                },
+                "dns_dns_caa_tag_length": {
+                  "type": "short"
+                },
+                "dns_dns_wins_local_flag": {
+                  "type": "boolean"
+                },
+                "dns_dns_wins_lookup_timeout": {
+                  "type": "long"
+                },
+                "dns_dns_wins_cache_timeout": {
+                  "type": "long"
+                },
+                "dns_dns_wins_nb_wins_servers": {
+                  "type": "long"
+                },
+                "dns_dns_wins_wins_server": {
+                  "type": "ip"
+                },
+                "dns_dns_winsr_local_flag": {
+                  "type": "boolean"
+                },
+                "dns_dns_winsr_lookup_timeout": {
+                  "type": "long"
+                },
+                "dns_dns_winsr_cache_timeout": {
+                  "type": "long"
+                },
+                "dns_dns_data": {
+                  "type": "byte"
+                }
+              }
+            },
+            "eth": {
+              "properties": {
+                "eth_eth_dst_oui": {
+                  "type": "integer"
+                },
+                "eth_eth_src_oui": {
+                  "type": "integer"
+                },
+                "eth_eth_len": {
+                  "type": "integer"
+                },
+                "eth_eth_type": {
+                  "type": "integer"
+                },
+                "eth_eth_invalid_lentype": {
+                  "type": "integer"
+                },
+                "eth_eth_addr_oui": {
+                  "type": "integer"
+                },
+                "eth_eth_padding": {
+                  "type": "byte"
+                },
+                "eth_eth_trailer": {
+                  "type": "byte"
+                },
+                "eth_eth_fcs": {
+                  "type": "long"
+                },
+                "eth_eth_fcs_status": {
+                  "type": "short"
+                },
+                "eth_eth_dst_lg": {
+                  "type": "boolean"
+                },
+                "eth_eth_dst_ig": {
+                  "type": "boolean"
+                },
+                "eth_eth_src_lg": {
+                  "type": "boolean"
+                },
+                "eth_eth_src_ig": {
+                  "type": "boolean"
+                },
+                "eth_eth_lg": {
+                  "type": "boolean"
+                },
+                "eth_eth_ig": {
+                  "type": "boolean"
+                }
+              }
+            },
+            "frame": {
+              "properties": {
+                "frame_frame_time": {
+                  "type": "date"
+                },
+                "frame_frame_offset_shift": {
+                  "type": "date"
+                },
+                "frame_frame_time_epoch": {
+                  "type": "date"
+                },
+                "frame_frame_time_delta": {
+                  "type": "date"
+                },
+                "frame_frame_time_delta_displayed": {
+                  "type": "date"
+                },
+                "frame_frame_time_relative": {
+                  "type": "date"
+                },
+                "frame_frame_number": {
+                  "type": "long"
+                },
+                "frame_frame_len": {
+                  "type": "long"
+                },
+                "frame_frame_cap_len": {
+                  "type": "long"
+                },
+                "frame_frame_p2p_dir": {
+                  "type": "short"
+                },
+                "frame_frame_link_nr": {
+                  "type": "integer"
+                },
+                "frame_frame_file_off": {
+                  "type": "long"
+                },
+                "frame_frame_marked": {
+                  "type": "boolean"
+                },
+                "frame_frame_ignored": {
+                  "type": "boolean"
+                },
+                "frame_frame_interface_id": {
+                  "type": "long"
+                },
+                "frame_frame_packet_flags": {
+                  "type": "long"
+                },
+                "frame_frame_packet_flags_direction": {
+                  "type": "long"
+                },
+                "frame_frame_packet_flags_reception_type": {
+                  "type": "long"
+                },
+                "frame_frame_packet_flags_fcs_length": {
+                  "type": "long"
+                },
+                "frame_frame_packet_flags_reserved": {
+                  "type": "long"
+                },
+                "frame_frame_packet_flags_crc_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_packet_flags_packet_too_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_packet_flags_packet_too_short_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_packet_flags_wrong_inter_frame_gap_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_packet_flags_unaligned_frame_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_packet_flags_start_frame_delimiter_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_packet_flags_preamble_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_packet_flags_symbol_error": {
+                  "type": "boolean"
+                },
+                "frame_frame_encap_type": {
+                  "type": "integer"
+                }
+              }
+            },
+            "ftp": {
+              "properties": {
+                "ftp_ftp_response": {
+                  "type": "boolean"
+                },
+                "ftp_ftp_request": {
+                  "type": "boolean"
+                },
+                "ftp_ftp_response_code": {
+                  "type": "long"
+                },
+                "ftp_ftp_passive_ip": {
+                  "type": "ip"
+                },
+                "ftp_ftp_passive_port": {
+                  "type": "integer"
+                },
+                "ftp_ftp_passive_nat": {
+                  "type": "boolean"
+                },
+                "ftp_ftp_active_cip": {
+                  "type": "ip"
+                },
+                "ftp_ftp_active_port": {
+                  "type": "integer"
+                },
+                "ftp_ftp_active_nat": {
+                  "type": "boolean"
+                },
+                "ftp_ftp_eprt_af": {
+                  "type": "short"
+                },
+                "ftp_ftp_eprt_ip": {
+                  "type": "ip"
+                },
+                "ftp_ftp_eprt_ipv6": {
+                  "type": "ip"
+                },
+                "ftp_ftp_eprt_port": {
+                  "type": "integer"
+                },
+                "ftp_ftp_epsv_ip": {
+                  "type": "ip"
+                },
+                "ftp_ftp_epsv_ipv6": {
+                  "type": "ip"
+                },
+                "ftp_ftp_epsv_port": {
+                  "type": "integer"
+                },
+                "ftp_ftp_command-response_first-frame-num": {
+                  "type": "long"
+                },
+                "ftp_ftp_command-response_last-frame-num": {
+                  "type": "long"
+                },
+                "ftp_ftp_command-response_duration": {
+                  "type": "long"
+                },
+                "ftp_ftp_command-response_bitrate": {
+                  "type": "long"
+                },
+                "ftp_ftp_command-response_frames": {
+                  "type": "long"
+                },
+                "ftp_ftp_command-response_bytes": {
+                  "type": "long"
+                },
+                "ftp_ftp_setup-frame": {
+                  "type": "long"
+                },
+                "ftp_ftp_command-frame": {
+                  "type": "long"
+                },
+                "ftp_ftp-data_setup-frame": {
+                  "type": "long"
+                },
+                "ftp_ftp-data_command-frame": {
+                  "type": "long"
+                }
+              }
+            },
+            "http": {
+              "properties": {
+                "http_http_notification": {
+                  "type": "boolean"
+                },
+                "http_http_response": {
+                  "type": "boolean"
+                },
+                "http_http_request": {
+                  "type": "boolean"
+                },
+                "http_http_response_number": {
+                  "type": "long"
+                },
+                "http_http_request_number": {
+                  "type": "long"
+                },
+                "http_http_authcitrix": {
+                  "type": "boolean"
+                },
+                "http_http_response_code": {
+                  "type": "integer"
+                },
+                "http_http_proxy_connect_port": {
+                  "type": "integer"
+                },
+                "http_http_content_length": {
+                  "type": "long"
+                },
+                "http_http_request_in": {
+                  "type": "long"
+                },
+                "http_http_response_in": {
+                  "type": "long"
+                },
+                "http_http_next_request_in": {
+                  "type": "long"
+                },
+                "http_http_next_response_in": {
+                  "type": "long"
+                },
+                "http_http_prev_request_in": {
+                  "type": "long"
+                },
+                "http_http_prev_response_in": {
+                  "type": "long"
+                },
+                "http_http_time": {
+                  "type": "date"
+                },
+                "http_http_chunk_boundary": {
+                  "type": "byte"
+                },
+                "http_http_chunk_size": {
+                  "type": "long"
+                }
+              }
+            },
+            "icmp": {
+              "properties": {
+                "icmp_icmp_type": {
+                  "type": "short"
+                },
+                "icmp_icmp_code": {
+                  "type": "short"
+                },
+                "icmp_icmp_checksum": {
+                  "type": "integer"
+                },
+                "icmp_icmp_checksum_status": {
+                  "type": "short"
+                },
+                "icmp_icmp_unused": {
+                  "type": "byte"
+                },
+                "icmp_icmp_reserved": {
+                  "type": "byte"
+                },
+                "icmp_icmp_ident": {
+                  "type": "integer"
+                },
+                "icmp_icmp_seq": {
+                  "type": "integer"
+                },
+                "icmp_icmp_seq_le": {
+                  "type": "integer"
+                },
+                "icmp_icmp_mtu": {
+                  "type": "integer"
+                },
+                "icmp_icmp_num_addrs": {
+                  "type": "short"
+                },
+                "icmp_icmp_addr_entry_size": {
+                  "type": "short"
+                },
+                "icmp_icmp_lifetime": {
+                  "type": "integer"
+                },
+                "icmp_icmp_pointer": {
+                  "type": "long"
+                },
+                "icmp_icmp_router_address": {
+                  "type": "ip"
+                },
+                "icmp_icmp_pref_level": {
+                  "type": "integer"
+                },
+                "icmp_icmp_originate_timestamp": {
+                  "type": "long"
+                },
+                "icmp_icmp_receive_timestamp": {
+                  "type": "long"
+                },
+                "icmp_icmp_transmit_timestamp": {
+                  "type": "long"
+                },
+                "icmp_icmp_address_mask": {
+                  "type": "ip"
+                },
+                "icmp_icmp_redir_gw": {
+                  "type": "ip"
+                },
+                "icmp_icmp_mip_type": {
+                  "type": "short"
+                },
+                "icmp_icmp_mip_length": {
+                  "type": "short"
+                },
+                "icmp_icmp_mip_prefixlength": {
+                  "type": "short"
+                },
+                "icmp_icmp_mip_seq": {
+                  "type": "integer"
+                },
+                "icmp_icmp_mip_life": {
+                  "type": "integer"
+                },
+                "icmp_icmp_mip_flags": {
+                  "type": "integer"
+                },
+                "icmp_icmp_mip_r": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_b": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_h": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_f": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_m": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_g": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_v": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_rt": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_u": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_x": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mip_reserved": {
+                  "type": "integer"
+                },
+                "icmp_icmp_mip_coa": {
+                  "type": "ip"
+                },
+                "icmp_icmp_mip_challenge": {
+                  "type": "byte"
+                },
+                "icmp_icmp_mip_content": {
+                  "type": "byte"
+                },
+                "icmp_icmp_ext_version": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_res": {
+                  "type": "integer"
+                },
+                "icmp_icmp_ext_checksum": {
+                  "type": "integer"
+                },
+                "icmp_icmp_ext_checksum_status": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_length": {
+                  "type": "integer"
+                },
+                "icmp_icmp_ext_class": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_ctype": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_data": {
+                  "type": "byte"
+                },
+                "icmp_icmp_mpls_label": {
+                  "type": "integer"
+                },
+                "icmp_icmp_mpls_exp": {
+                  "type": "integer"
+                },
+                "icmp_icmp_mpls_s": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_mpls_ttl": {
+                  "type": "short"
+                },
+                "icmp_icmp_mpls_data": {
+                  "type": "byte"
+                },
+                "icmp_icmp_resp_in": {
+                  "type": "long"
+                },
+                "icmp_icmp_resp_to": {
+                  "type": "long"
+                },
+                "icmp_icmp_resptime": {
+                  "type": "float"
+                },
+                "icmp_icmp_data_time": {
+                  "type": "date"
+                },
+                "icmp_icmp_data_time_relative": {
+                  "type": "date"
+                },
+                "icmp_icmp_length": {
+                  "type": "short"
+                },
+                "icmp_icmp_length_original_datagram": {
+                  "type": "short"
+                },
+                "icmp_icmp_int_info_role": {
+                  "type": "short"
+                },
+                "icmp_icmp_int_info_reserved": {
+                  "type": "short"
+                },
+                "icmp_icmp_int_info_ifindex": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_int_info_ipaddr": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_int_info_name_present": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_int_info_mtu": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_int_info_index": {
+                  "type": "long"
+                },
+                "icmp_icmp_int_info_afi": {
+                  "type": "integer"
+                },
+                "icmp_icmp_int_info_ipv4": {
+                  "type": "ip"
+                },
+                "icmp_icmp_int_info_ipv6": {
+                  "type": "ip"
+                },
+                "icmp_icmp_int_info_ipunknown": {
+                  "type": "byte"
+                },
+                "icmp_icmp_int_info_name_length": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_echo_seq": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_echo_req_res": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_echo_req_local": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_ext_echo_rsp_state": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_echo_rsp_res": {
+                  "type": "short"
+                },
+                "icmp_icmp_ext_echo_rsp_active": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_ext_echo_rsp_ipv4": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_ext_echo_rsp_ipv6": {
+                  "type": "boolean"
+                },
+                "icmp_icmp_int_ident_index": {
+                  "type": "long"
+                },
+                "icmp_icmp_int_ident_afi": {
+                  "type": "integer"
+                },
+                "icmp_icmp_int_ident_addr_length": {
+                  "type": "short"
+                },
+                "icmp_icmp_int_ident_reserved": {
+                  "type": "byte"
+                },
+                "icmp_icmp_int_ident_ipv4": {
+                  "type": "ip"
+                },
+                "icmp_icmp_int_ident_ipv6": {
+                  "type": "ip"
+                },
+                "icmp_icmp_int_ident_address": {
+                  "type": "byte"
+                }
+              }
+            },
+            "icmpv6": {
+              "properties": {
+                "icmpv6_icmpv6_type": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_code": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_checksum": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_checksum_status": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_reserved": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_data": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_unknown_data": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_mtu": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_pointer": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_echo_identifier": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_echo_sequence_number": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_nonce": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_nd_ra_cur_hop_limit": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_nd_ra_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_nd_ra_flag_m": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_nd_ra_flag_o": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_nd_ra_flag_h": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_nd_ra_flag_prf": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_nd_ra_flag_p": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_nd_ra_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_nd_ra_router_lifetime": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_nd_ra_reachable_time": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_nd_ra_retrans_timer": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_nd_ns_target_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_nd_na_flag": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_nd_na_flag_r": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_nd_na_flag_s": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_nd_na_flag_o": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_nd_na_flag_rsv": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_nd_na_target_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_nd_rd_target_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rd_na_destination_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_type": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_linkaddr": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_src_linkaddr": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_target_linkaddr": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_prefix_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_prefix_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_prefix_flag_l": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_prefix_flag_a": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_prefix_flag_r": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_prefix_flag_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_prefix_valid_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_prefix_preferred_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_prefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_cga_pad_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_cga": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_cga_modifier": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_cga_subnet_prefix": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_cga_count": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_cga_ext_type": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_cga_ext_length": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_cga_ext_data": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_rsa_key_hash": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_ps_key_hash": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_timestamp": {
+                  "type": "date"
+                },
+                "icmpv6_icmpv6_opt_nonce": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_ipa_option_code": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_ipa_prefix_len": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_ipa_ipv6_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_nrpi_option_code": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_nrpi_prefix_len": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_nrpi_prefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_lla_option_code": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_lla_bytes": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_naack_option_code": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_naack_status": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_naack_supplied_ncoa": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_map_distance": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_map_preference": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_map_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_map_flag_r": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_map_flag_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_map_valid_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_map_global_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_route_info_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_route_info_flag_route_preference": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_route_info_flag_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_route_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_name_type": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_name_x501": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_send_identifier": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_send_all_components": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_send_component": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_x509_Name": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_mtu": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_nbma_shortcut_limit": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_advertisement_interval": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_home_agent_preference": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_home_agent_lifetime": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_ipv6_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_rdnss_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_rdnss": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_efo": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_efo_m": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_efo_o": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_efo_h": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_efo_prf": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_efo_p": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_efo_rsv": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_hkr_pad_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_hkr_at": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_hkr_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_hkr_encryption_public_key": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_hkr_padding": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_hkr_lifetime": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_hkr_encrypted_handover_key": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_hai_option_code": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_hai_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_hai_value": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_mn_option_code": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_mn_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_mn_value": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_opt_dnssl_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_opt_aro_status": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_aro_registration_lifetime": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_6co_context_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_6co_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_6co_flag_c": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_opt_6co_flag_cid": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_6co_flag_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_opt_6co_valid_lifetime": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_6co_context_prefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_abro_version_low": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_abro_version_high": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_abro_valid_lifetime": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_abro_6lbr_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_opt_6cio_unassigned1": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_6cio_flag_g": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_opt_6cio_unassigned2": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_mld_maximum_response_delay": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mld_multicast_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rr_sequence_number": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rr_segment_number": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_flag_t": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_flag_r": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_flag_a": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_flag_s": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_flag_p": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_maxdelay": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rr_pco_mp_opcode": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_mp_oplength": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_mp_ordinal": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_mp_matchlen": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_mp_minlen": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_mp_maxlen": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_mp_matchprefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rr_pco_up_uselen": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_up_keeplen": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flagmask": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flagmask_l": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flagmask_a": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flagmask_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_up_raflags": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_pco_up_validlifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rr_pco_up_preferredlifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flag": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flag_v": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flag_p": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_pco_up_flag_reserved": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rr_pco_up_useprefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rr_rm_flag": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rr_rm_flag_b": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_rm_flag_f": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rr_rm_flag_reserved": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rr_rm_ordinal": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_rm_matchedlen": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rr_rm_interfaceindex": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rr_rm_matchedprefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_mip6_identifier": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mip6_home_agent_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_mip6_flag": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mip6_flag_m": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_mip6_flag_o": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_mip6_flag_rsv": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mld_maximum_response_code": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mld_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mld_flag_s": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_mld_flag_qrv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mld_flag_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mld_qqi": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mld_nb_sources": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mld_source_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_mldr_nb_mcast_records": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mldr_mar_record_type": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mldr_mar_aux_data_len": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mldr_mar_nb_sources": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mldr_mar_multicast_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_mldr_mar_source_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_mldr_mar_auxiliary_data": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_fmip6_subtype": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_fmip6_hi_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_fmip6_hi_flag_s": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_fmip6_hi_flag_a": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_fmip6_hi_flag_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_fmip6_identifier": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mcast_ra_query_interval": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_mcast_ra_robustness_variable": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_ni_qtype": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_ni_flag": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_ni_flag_g": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ni_flag_s": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ni_flag_l": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ni_flag_c": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ni_flag_a": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ni_flag_t": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ni_flag_rsv": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_ni_nonce": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_ni_query_subject_ipv6": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_ni_query_subject_ipv4": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_ni_reply_node_ttl": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_ni_reply_node_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_ni_reply_ipv4_address": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_dis_flags": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dio_instance": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dio_version": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dio_rank": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_dio_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dio_flag_g": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_dio_flag_0": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_dio_flag_mop": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dio_flag_preference": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dio_dtsn": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dio_dagid": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_dao_instance": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dao_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dao_flag_k": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_dao_flag_d": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_dao_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dao_sequence": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_dao_dodagid": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_daoack_instance": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_daoack_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_daoack_flag_d": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_daoack_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_daoack_sequence": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_daoack_status": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_daoack_dodagid": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_cc_instance": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_cc_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_cc_flag_r": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_cc_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_cc_nonce": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_cc_dodagid": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_cc_destination_counter": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_secure_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_secure_flag_t": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_secure_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_secure_algorithm": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_secure_kim": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_secure_lvl": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_secure_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_secure_counter": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_secure_key_source": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_rpl_secure_key_index": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_type": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_type": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_flags": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_reserved": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_flag_p": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_flag_c": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_flag_o": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_flag_r": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_flag_a": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_prec": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_reserved": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_flags": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_flag_a": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_flag_o": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_opttlv_object": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_opttlv_object_type": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_opttlv_object_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_nsa_object_opttlv_object_data": {
+                  "type": "byte"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_ne_object": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_ne_object_flags": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_ne_object_flag_i": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_ne_object_type": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_ne_object_flag_e": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_ne_object_energy": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_hp_object": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_hp_object_reserved": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_hp_object_flags": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_hp_object_hp": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lt_object_lt": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_ll_object_ll": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lql_object": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lql_object_res": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lql_object_val": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lql_object_counter": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_etx_object_etx": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lc_object_res": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lc_object_lc": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lc_object_counter": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lc_object_reserved": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_metric_lc_object_flag_i": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_route_prefix_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_route_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_route_pref": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_route_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_route_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_opt_route_prefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_reserved": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_auth": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_pcs": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_interval_double": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_interval_min": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_redundancy": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_max_rank_inc": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_min_hop_rank_inc": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_ocp": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_def_lifetime": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_lifetime_unit": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_opt_target_prefix_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_target_prefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_opt_transit_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_transit_flag_e": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_transit_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_transit_pathctl": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_transit_pathseq": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_transit_pathlifetime": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_transit_parent": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_instance": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_flag_v": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_flag_i": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_flag_d": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_dodagid": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_opt_solicited_version": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_prefix_length": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_prefix_flag": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_prefix_flag_l": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_flag_a": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_flag_r": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_config_flag_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_prefix_valid_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_opt_prefix_preferred_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_opt_prefix": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_opt_targetdesc_descriptor": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_flag_reply": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_flag_hopbyhop": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_flag_numofroutes": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_flag_compr": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_lifetime": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_maxrank": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_nh": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_targetaddr": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_opt_routediscovery_addrvec_addr": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_instance": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_version": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_flag": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_flag_stop": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_flag_ack": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_flag_seq": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_flag_reserved": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_p2p_dro_dagid": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_rpl_p2p_droack_flag": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_p2p_droack_flag_seq": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_rpl_p2p_droack_flag_reserved": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_ilnp_nb_locs": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_ilnp_nb_locator": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_ilnp_nb_preference": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_ilnp_nb_lifetime": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_6lowpannd_da_status": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_6lowpannd_da_rsv": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_6lowpannd_da_lifetime": {
+                  "type": "integer"
+                },
+                "icmpv6_icmpv6_6lowpannd_da_reg_addr": {
+                  "type": "ip"
+                },
+                "icmpv6_icmpv6_ext_echo_seq": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_ext_echo_req_res": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_ext_echo_req_local": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ext_echo_rsp_state": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_ext_echo_rsp_res": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_ext_echo_rsp_active": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ext_echo_rsp_ipv4": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_ext_echo_rsp_ipv6": {
+                  "type": "boolean"
+                },
+                "icmpv6_icmpv6_resp_in": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_resp_to": {
+                  "type": "long"
+                },
+                "icmpv6_icmpv6_resptime": {
+                  "type": "float"
+                },
+                "icmpv6_icmpv6_mpl_seed_info_min_sequence": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mpl_seed_info_bm_len": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mpl_seed_info_s": {
+                  "type": "short"
+                },
+                "icmpv6_icmpv6_mpl_seed_info_sequence": {
+                  "type": "short"
+                }
+              }
+            },
+            "imap": {
+              "properties": {
+                "imap_imap_isrequest": {
+                  "type": "boolean"
+                },
+                "imap_imap_request_command_uid": {
+                  "type": "boolean"
+                },
+                "imap_imap_response_in": {
+                  "type": "long"
+                },
+                "imap_imap_response_to": {
+                  "type": "long"
+                },
+                "imap_imap_time": {
+                  "type": "date"
+                }
+              }
+            },
+            "ip": {
+              "properties": {
+                "ip_ip_version": {
+                  "type": "short"
+                },
+                "ip_ip_hdr_len": {
+                  "type": "short"
+                },
+                "ip_ip_dsfield": {
+                  "type": "short"
+                },
+                "ip_ip_dsfield_dscp": {
+                  "type": "short"
+                },
+                "ip_ip_dsfield_ecn": {
+                  "type": "short"
+                },
+                "ip_ip_tos": {
+                  "type": "short"
+                },
+                "ip_ip_tos_precedence": {
+                  "type": "short"
+                },
+                "ip_ip_tos_delay": {
+                  "type": "boolean"
+                },
+                "ip_ip_tos_throughput": {
+                  "type": "boolean"
+                },
+                "ip_ip_tos_reliability": {
+                  "type": "boolean"
+                },
+                "ip_ip_tos_cost": {
+                  "type": "boolean"
+                },
+                "ip_ip_len": {
+                  "type": "integer"
+                },
+                "ip_ip_id": {
+                  "type": "integer"
+                },
+                "ip_ip_dst": {
+                  "type": "ip"
+                },
+                "ip_ip_src": {
+                  "type": "ip"
+                },
+                "ip_ip_addr": {
+                  "type": "ip"
+                },
+                "ip_ip_geoip_asnum": {
+                  "type": "long"
+                },
+                "ip_ip_geoip_lat": {
+                  "type": "float"
+                },
+                "ip_ip_geoip_lon": {
+                  "type": "float"
+                },
+                "ip_ip_geoip_src_asnum": {
+                  "type": "long"
+                },
+                "ip_ip_geoip_src_lat": {
+                  "type": "float"
+                },
+                "ip_ip_geoip_src_lon": {
+                  "type": "float"
+                },
+                "ip_ip_geoip_dst_asnum": {
+                  "type": "long"
+                },
+                "ip_ip_geoip_dst_lat": {
+                  "type": "float"
+                },
+                "ip_ip_geoip_dst_lon": {
+                  "type": "float"
+                },
+                "ip_ip_flags": {
+                  "type": "integer"
+                },
+                "ip_ip_flags_sf": {
+                  "type": "boolean"
+                },
+                "ip_ip_flags_rb": {
+                  "type": "boolean"
+                },
+                "ip_ip_flags_df": {
+                  "type": "boolean"
+                },
+                "ip_ip_flags_mf": {
+                  "type": "boolean"
+                },
+                "ip_ip_frag_offset": {
+                  "type": "integer"
+                },
+                "ip_ip_ttl": {
+                  "type": "short"
+                },
+                "ip_ip_proto": {
+                  "type": "short"
+                },
+                "ip_ip_checksum": {
+                  "type": "integer"
+                },
+                "ip_ip_checksum_calculated": {
+                  "type": "integer"
+                },
+                "ip_ip_checksum_status": {
+                  "type": "short"
+                },
+                "ip_ip_opt_type": {
+                  "type": "short"
+                },
+                "ip_ip_opt_type_copy": {
+                  "type": "boolean"
+                },
+                "ip_ip_opt_type_class": {
+                  "type": "short"
+                },
+                "ip_ip_opt_type_number": {
+                  "type": "short"
+                },
+                "ip_ip_opt_len": {
+                  "type": "short"
+                },
+                "ip_ip_opt_ptr": {
+                  "type": "short"
+                },
+                "ip_ip_opt_sid": {
+                  "type": "integer"
+                },
+                "ip_ip_opt_mtu": {
+                  "type": "integer"
+                },
+                "ip_ip_opt_id_number": {
+                  "type": "integer"
+                },
+                "ip_ip_opt_ohc": {
+                  "type": "integer"
+                },
+                "ip_ip_opt_rhc": {
+                  "type": "integer"
+                },
+                "ip_ip_opt_originator": {
+                  "type": "ip"
+                },
+                "ip_ip_opt_ra": {
+                  "type": "integer"
+                },
+                "ip_ip_opt_addr": {
+                  "type": "ip"
+                },
+                "ip_ip_opt_padding": {
+                  "type": "byte"
+                },
+                "ip_ip_opt_qs_func": {
+                  "type": "short"
+                },
+                "ip_ip_opt_qs_rate": {
+                  "type": "short"
+                },
+                "ip_ip_opt_qs_ttl": {
+                  "type": "short"
+                },
+                "ip_ip_opt_qs_ttl_diff": {
+                  "type": "short"
+                },
+                "ip_ip_opt_qs_unused": {
+                  "type": "short"
+                },
+                "ip_ip_opt_qs_nonce": {
+                  "type": "long"
+                },
+                "ip_ip_opt_qs_reserved": {
+                  "type": "long"
+                },
+                "ip_ip_opt_sec_rfc791_sec": {
+                  "type": "short"
+                },
+                "ip_ip_opt_sec_rfc791_comp": {
+                  "type": "integer"
+                },
+                "ip_ip_opt_sec_cl": {
+                  "type": "short"
+                },
+                "ip_ip_opt_sec_prot_auth_flags": {
+                  "type": "short"
+                },
+                "ip_ip_opt_sec_prot_auth_genser": {
+                  "type": "boolean"
+                },
+                "ip_ip_opt_sec_prot_auth_siop_esi": {
+                  "type": "boolean"
+                },
+                "ip_ip_opt_sec_prot_auth_sci": {
+                  "type": "boolean"
+                },
+                "ip_ip_opt_sec_prot_auth_nsa": {
+                  "type": "boolean"
+                },
+                "ip_ip_opt_sec_prot_auth_doe": {
+                  "type": "boolean"
+                },
+                "ip_ip_opt_sec_prot_auth_unassigned": {
+                  "type": "short"
+                },
+                "ip_ip_opt_sec_prot_auth_fti": {
+                  "type": "boolean"
+                },
+                "ip_ip_opt_ext_sec_add_sec_info_format_code": {
+                  "type": "short"
+                },
+                "ip_ip_opt_ext_sec_add_sec_info": {
+                  "type": "byte"
+                },
+                "ip_ip_rec_rt": {
+                  "type": "ip"
+                },
+                "ip_ip_cur_rt": {
+                  "type": "ip"
+                },
+                "ip_ip_src_rt": {
+                  "type": "ip"
+                },
+                "ip_ip_empty_rt": {
+                  "type": "ip"
+                },
+                "ip_ip_cipso_tag_type": {
+                  "type": "short"
+                },
+                "ip_ip_fragment_overlap": {
+                  "type": "boolean"
+                },
+                "ip_ip_fragment_overlap_conflict": {
+                  "type": "boolean"
+                },
+                "ip_ip_fragment_multipletails": {
+                  "type": "boolean"
+                },
+                "ip_ip_fragment_toolongfragment": {
+                  "type": "boolean"
+                },
+                "ip_ip_fragment_error": {
+                  "type": "long"
+                },
+                "ip_ip_fragment_count": {
+                  "type": "long"
+                },
+                "ip_ip_fragment": {
+                  "type": "long"
+                },
+                "ip_ip_fragments": {
+                  "type": "byte"
+                },
+                "ip_ip_reassembled_in": {
+                  "type": "long"
+                },
+                "ip_ip_reassembled_length": {
+                  "type": "long"
+                },
+                "ip_ip_reassembled_data": {
+                  "type": "byte"
+                },
+                "ip_ip_cipso_doi": {
+                  "type": "long"
+                },
+                "ip_ip_cipso_sensitivity_level": {
+                  "type": "short"
+                },
+                "ip_ip_cipso_tag_data": {
+                  "type": "byte"
+                },
+                "ip_ip_opt_overflow": {
+                  "type": "short"
+                },
+                "ip_ip_opt_flag": {
+                  "type": "short"
+                },
+                "ip_ip_opt_time_stamp": {
+                  "type": "long"
+                },
+                "ip_ip_opt_time_stamp_addr": {
+                  "type": "ip"
+                }
+              }
+            },
+            "ipv6": {
+              "properties": {
+                "ipv6_ipv6_version": {
+                  "type": "short"
+                },
+                "ipv6_ip_version": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_tclass": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_tclass_dscp": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_tclass_ecn": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_flow": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_plen": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_nxt": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_hlim": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_src": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_src_isatap_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_src_6to4_gw_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_src_6to4_sla_id": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_src_ts_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_src_tc_port": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_src_tc_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_src_embed_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_dst": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_dst_isatap_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_dst_6to4_gw_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_dst_6to4_sla_id": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_dst_ts_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_dst_tc_port": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_dst_tc_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_dst_embed_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_addr": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_isatap_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_6to4_gw_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_6to4_sla_id": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_ts_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_tc_port": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_tc_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_embed_ipv4": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_geoip_asnum": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_geoip_lat": {
+                  "type": "float"
+                },
+                "ipv6_ipv6_geoip_lon": {
+                  "type": "float"
+                },
+                "ipv6_ipv6_geoip_src_asnum": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_geoip_src_lat": {
+                  "type": "float"
+                },
+                "ipv6_ipv6_geoip_src_lon": {
+                  "type": "float"
+                },
+                "ipv6_ipv6_geoip_dst_asnum": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_geoip_dst_lat": {
+                  "type": "float"
+                },
+                "ipv6_ipv6_geoip_dst_lon": {
+                  "type": "float"
+                },
+                "ipv6_ipv6_opt_type": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_type_action": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_type_change": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_type_rest": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_length": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_padn": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_pmtu_min": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_pmtu_rtn": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_pmtu_r_flag": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_router_alert": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_tel": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_jumbo": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_opt_calipso_doi": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_calipso_cmpt_length": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_calipso_sens_level": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_calipso_checksum": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_calipso_cmpt_bitmap": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_smf_dpd_hash_bit": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_smf_dpd_tid_type": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_smf_dpd_tid_len": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_smf_dpd_tagger_id": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_smf_dpd_ident": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_smf_dpd_hav": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_pdm_scale_dtlr": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_pdm_scale_dtls": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_pdm_psn_this_pkt": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_pdm_psn_last_recv": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_pdm_delta_last_recv": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_pdm_delta_last_sent": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_qs_func": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_qs_rate": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_qs_ttl": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_qs_ttl_diff": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_qs_unused": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_qs_nonce": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_opt_qs_reserved": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_opt_mipv6_home_address": {
+                  "type": "ip"
+                },
+                "ipv6_ipv6_opt_rpl_flag": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_rpl_flag_o": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_rpl_flag_r": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_rpl_flag_f": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_rpl_flag_rsv": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_rpl_instance_id": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_rpl_sender_rank": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_ilnp_nonce": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_lio_length": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_mpl_flag": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_mpl_flag_s": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_mpl_flag_m": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_mpl_flag_v": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_mpl_flag_rsv": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_mpl_sequence": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_mpl_seed_id": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_dff_flags": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_dff_flag_ver": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_dff_flag_dup": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_dff_flag_ret": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_opt_dff_flag_rsv": {
+                  "type": "short"
+                },
+                "ipv6_ipv6_opt_dff_sequence_number": {
+                  "type": "integer"
+                },
+                "ipv6_ipv6_opt_experimental": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_unknown_data": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_opt_unknown": {
+                  "type": "byte"
+                },
+                "ipv6_ipv6_fragment": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_fragment_overlap": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_fragment_overlap_conflict": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_fragment_multipletails": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_fragment_toolongfragment": {
+                  "type": "boolean"
+                },
+                "ipv6_ipv6_fragment_error": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_fragment_count": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_reassembled_in": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_reassembled_length": {
+                  "type": "long"
+                },
+                "ipv6_ipv6_reassembled_data": {
+                  "type": "byte"
+                }
+              }
+            },
+            "netbios": {
+              "properties": {
+                "netbios_netbios_command": {
+                  "type": "short"
+                },
+                "netbios_netbios_hdr_len": {
+                  "type": "integer"
+                },
+                "netbios_netbios_delimiter": {
+                  "type": "integer"
+                },
+                "netbios_netbios_xmit_corrl": {
+                  "type": "integer"
+                },
+                "netbios_netbios_resp_corrl": {
+                  "type": "integer"
+                },
+                "netbios_netbios_call_name_type": {
+                  "type": "short"
+                },
+                "netbios_netbios_nb_name_type": {
+                  "type": "short"
+                },
+                "netbios_netbios_version": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_no_receive_flags": {
+                  "type": "short"
+                },
+                "netbios_netbios_no_receive_flags_send_no_ack": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_largest_frame": {
+                  "type": "short"
+                },
+                "netbios_netbios_status_buffer_len": {
+                  "type": "integer"
+                },
+                "netbios_netbios_status": {
+                  "type": "short"
+                },
+                "netbios_netbios_name_type": {
+                  "type": "integer"
+                },
+                "netbios_netbios_max_data_recv_size": {
+                  "type": "integer"
+                },
+                "netbios_netbios_termination_indicator": {
+                  "type": "integer"
+                },
+                "netbios_netbios_num_data_bytes_accepted": {
+                  "type": "integer"
+                },
+                "netbios_netbios_local_session": {
+                  "type": "short"
+                },
+                "netbios_netbios_remote_session": {
+                  "type": "short"
+                },
+                "netbios_netbios_flags": {
+                  "type": "short"
+                },
+                "netbios_netbios_flags_send_no_ack": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_flags_ack": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_flags_ack_with_data": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_flags_ack_expected": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_flags_recv_cont_req": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_data2": {
+                  "type": "integer"
+                },
+                "netbios_netbios_data2_frame": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_data2_user": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_data2_status": {
+                  "type": "integer"
+                },
+                "netbios_netbios_resync_indicator": {
+                  "type": "integer"
+                },
+                "netbios_netbios_status_request": {
+                  "type": "short"
+                },
+                "netbios_netbios_local_session_no": {
+                  "type": "short"
+                },
+                "netbios_netbios_state_of_name": {
+                  "type": "short"
+                },
+                "netbios_netbios_status_response": {
+                  "type": "short"
+                },
+                "netbios_netbios_fragment_overlap": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_fragment_overlap_conflict": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_fragment_multipletails": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_fragment_toolongfragment": {
+                  "type": "boolean"
+                },
+                "netbios_netbios_fragment_error": {
+                  "type": "long"
+                },
+                "netbios_netbios_fragment_count": {
+                  "type": "long"
+                },
+                "netbios_netbios_fragment": {
+                  "type": "long"
+                },
+                "netbios_netbios_reassembled_length": {
+                  "type": "long"
+                }
+              }
+            },
+            "smtp": {
+              "properties": {
+                "smtp_smtp_req": {
+                  "type": "boolean"
+                },
+                "smtp_smtp_rsp": {
+                  "type": "boolean"
+                },
+                "smtp_smtp_response_code": {
+                  "type": "long"
+                },
+                "smtp_smtp_data_fragment": {
+                  "type": "long"
+                },
+                "smtp_smtp_data_fragment_overlap": {
+                  "type": "boolean"
+                },
+                "smtp_smtp_data_fragment_overlap_conflicts": {
+                  "type": "boolean"
+                },
+                "smtp_smtp_data_fragment_multiple_tails": {
+                  "type": "boolean"
+                },
+                "smtp_smtp_data_fragment_too_long_fragment": {
+                  "type": "boolean"
+                },
+                "smtp_smtp_data_fragment_error": {
+                  "type": "long"
+                },
+                "smtp_smtp_data_fragment_count": {
+                  "type": "long"
+                },
+                "smtp_smtp_data_reassembled_in": {
+                  "type": "long"
+                },
+                "smtp_smtp_data_reassembled_length": {
+                  "type": "long"
+                }
+              }
+            },
+            "snmp": {
+              "properties": {
+                "snmp_snmp_response_in": {
+                  "type": "long"
+                },
+                "snmp_snmp_response_to": {
+                  "type": "long"
+                },
+                "snmp_snmp_time": {
+                  "type": "date"
+                },
+                "snmp_snmp_v3_flags_auth": {
+                  "type": "boolean"
+                },
+                "snmp_snmp_v3_flags_crypt": {
+                  "type": "boolean"
+                },
+                "snmp_snmp_v3_flags_report": {
+                  "type": "boolean"
+                },
+                "snmp_snmp_engineid_conform": {
+                  "type": "boolean"
+                },
+                "snmp_snmp_engineid_enterprise": {
+                  "type": "long"
+                },
+                "snmp_snmp_engineid_format": {
+                  "type": "short"
+                },
+                "snmp_snmp_engineid_ipv4": {
+                  "type": "ip"
+                },
+                "snmp_snmp_engineid_ipv6": {
+                  "type": "ip"
+                },
+                "snmp_snmp_engineid_cisco_type": {
+                  "type": "short"
+                },
+                "snmp_snmp_engineid_time": {
+                  "type": "date"
+                },
+                "snmp_snmp_engineid_data": {
+                  "type": "byte"
+                },
+                "snmp_snmp_v3_auth": {
+                  "type": "boolean"
+                },
+                "snmp_snmp_decrypted_pdu": {
+                  "type": "byte"
+                },
+                "snmp_snmp_value_int": {
+                  "type": "long"
+                },
+                "snmp_snmp_value_octets": {
+                  "type": "byte"
+                },
+                "snmp_snmp_value_ipv4": {
+                  "type": "ip"
+                },
+                "snmp_snmp_value_ipv6": {
+                  "type": "ip"
+                },
+                "snmp_snmp_value_addr": {
+                  "type": "byte"
+                },
+                "snmp_snmp_value_u32": {
+                  "type": "long"
+                },
+                "snmp_snmp_value_g32": {
+                  "type": "long"
+                },
+                "snmp_snmp_value_unk": {
+                  "type": "byte"
+                },
+                "snmp_snmp_value_counter": {
+                  "type": "long"
+                },
+                "snmp_snmp_value_nsap": {
+                  "type": "long"
+                },
+                "snmp_snmp_value_timeticks": {
+                  "type": "long"
+                },
+                "snmp_snmp_value_opaque": {
+                  "type": "byte"
+                },
+                "snmp_snmp_name_index": {
+                  "type": "long"
+                },
+                "snmp_snmp_agentid_trailer": {
+                  "type": "byte"
+                },
+                "snmp_snmp_SMUX_PDUs": {
+                  "type": "long"
+                },
+                "snmp_snmp_version": {
+                  "type": "integer"
+                },
+                "snmp_snmp_data": {
+                  "type": "long"
+                },
+                "snmp_snmp_parameters": {
+                  "type": "byte"
+                },
+                "snmp_snmp_datav2u": {
+                  "type": "long"
+                },
+                "snmp_snmp_plaintext": {
+                  "type": "long"
+                },
+                "snmp_snmp_encrypted": {
+                  "type": "byte"
+                },
+                "snmp_snmp_msgAuthoritativeEngineID": {
+                  "type": "byte"
+                },
+                "snmp_snmp_msgAuthoritativeEngineBoots": {
+                  "type": "long"
+                },
+                "snmp_snmp_msgAuthoritativeEngineTime": {
+                  "type": "long"
+                },
+                "snmp_snmp_msgAuthenticationParameters": {
+                  "type": "byte"
+                },
+                "snmp_snmp_msgPrivacyParameters": {
+                  "type": "byte"
+                },
+                "snmp_snmp_msgVersion": {
+                  "type": "integer"
+                },
+                "snmp_snmp_msgSecurityParameters": {
+                  "type": "byte"
+                },
+                "snmp_snmp_msgData": {
+                  "type": "long"
+                },
+                "snmp_snmp_msgID": {
+                  "type": "long"
+                },
+                "snmp_snmp_msgMaxSize": {
+                  "type": "long"
+                },
+                "snmp_snmp_msgFlags": {
+                  "type": "byte"
+                },
+                "snmp_snmp_msgSecurityModel": {
+                  "type": "long"
+                },
+                "snmp_snmp_encryptedPDU": {
+                  "type": "byte"
+                },
+                "snmp_snmp_contextEngineID": {
+                  "type": "byte"
+                },
+                "snmp_snmp_request_id": {
+                  "type": "integer"
+                },
+                "snmp_snmp_error_status": {
+                  "type": "integer"
+                },
+                "snmp_snmp_error_index": {
+                  "type": "integer"
+                },
+                "snmp_snmp_variable_bindings": {
+                  "type": "long"
+                },
+                "snmp_snmp_non_repeaters": {
+                  "type": "long"
+                },
+                "snmp_snmp_max_repetitions": {
+                  "type": "long"
+                },
+                "snmp_snmp_agent_addr": {
+                  "type": "ip"
+                },
+                "snmp_snmp_generic_trap": {
+                  "type": "integer"
+                },
+                "snmp_snmp_specific_trap": {
+                  "type": "integer"
+                },
+                "snmp_snmp_time_stamp": {
+                  "type": "long"
+                },
+                "snmp_snmp_open": {
+                  "type": "long"
+                },
+                "snmp_snmp_close": {
+                  "type": "integer"
+                },
+                "snmp_snmp_registerResponse": {
+                  "type": "long"
+                },
+                "snmp_snmp_commitOrRollback": {
+                  "type": "integer"
+                },
+                "snmp_snmp_rRspPDU": {
+                  "type": "integer"
+                },
+                "snmp_snmp_pDUs": {
+                  "type": "long"
+                },
+                "snmp_snmp_smux_version": {
+                  "type": "integer"
+                },
+                "snmp_snmp_description": {
+                  "type": "byte"
+                },
+                "snmp_snmp_password": {
+                  "type": "byte"
+                },
+                "snmp_snmp_priority": {
+                  "type": "integer"
+                },
+                "snmp_snmp_operation": {
+                  "type": "integer"
+                }
+              }
+            },
+            "ssh": {
+              "properties": {
+                "ssh_ssh_packet_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_packet_length_encrypted": {
+                  "type": "byte"
+                },
+                "ssh_ssh_padding_length": {
+                  "type": "short"
+                },
+                "ssh_ssh_payload": {
+                  "type": "byte"
+                },
+                "ssh_ssh_encrypted_packet": {
+                  "type": "byte"
+                },
+                "ssh_ssh_padding_string": {
+                  "type": "byte"
+                },
+                "ssh_ssh_mac": {
+                  "type": "byte"
+                },
+                "ssh_ssh_direction": {
+                  "type": "boolean"
+                },
+                "ssh_ssh_message_code": {
+                  "type": "short"
+                },
+                "ssh_ssh_cookie": {
+                  "type": "byte"
+                },
+                "ssh_ssh_kex_algorithms_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_server_host_key_algorithms_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_encryption_algorithms_client_to_server_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_encryption_algorithms_server_to_client_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_mac_algorithms_client_to_server_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_mac_algorithms_server_to_client_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_compression_algorithms_client_to_server_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_compression_algorithms_server_to_client_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_languages_client_to_server_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_languages_server_to_client_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_first_kex_packet_follows": {
+                  "type": "short"
+                },
+                "ssh_ssh_kex_reserved": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_host_key_type_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_host_key_data": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_rsa_n": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_rsa_e": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_dsa_p": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_dsa_q": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_dsa_g": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_dsa_y": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_ecdsa_id_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_host_key_ecdsa_q": {
+                  "type": "byte"
+                },
+                "ssh_ssh_host_key_ecdsa_q_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_kex_h_sig": {
+                  "type": "byte"
+                },
+                "ssh_ssh_kex_h_sig_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_dh_e": {
+                  "type": "byte"
+                },
+                "ssh_ssh_dh_f": {
+                  "type": "byte"
+                },
+                "ssh_ssh_dh_gex_min": {
+                  "type": "long"
+                },
+                "ssh_ssh_dh_gex_nbits": {
+                  "type": "long"
+                },
+                "ssh_ssh_dh_gex_max": {
+                  "type": "long"
+                },
+                "ssh_ssh_dh_gex_p": {
+                  "type": "byte"
+                },
+                "ssh_ssh_dh_gex_g": {
+                  "type": "byte"
+                },
+                "ssh_ssh_ecdh_q_c": {
+                  "type": "byte"
+                },
+                "ssh_ssh_ecdh_q_c_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_ecdh_q_s": {
+                  "type": "byte"
+                },
+                "ssh_ssh_ecdh_q_s_length": {
+                  "type": "long"
+                },
+                "ssh_ssh_mpint_length": {
+                  "type": "long"
+                }
+              }
+            },
+            "tcp": {
+              "properties": {
+                "tcp_tcp_srcport": {
+                  "type": "integer"
+                },
+                "tcp_tcp_dstport": {
+                  "type": "integer"
+                },
+                "tcp_tcp_port": {
+                  "type": "integer"
+                },
+                "tcp_tcp_stream": {
+                  "type": "long"
+                },
+                "tcp_tcp_seq": {
+                  "type": "long"
+                },
+                "tcp_tcp_seq_raw": {
+                  "type": "long"
+                },
+                "tcp_tcp_nxtseq": {
+                  "type": "long"
+                },
+                "tcp_tcp_ack": {
+                  "type": "long"
+                },
+                "tcp_tcp_ack_raw": {
+                  "type": "long"
+                },
+                "tcp_tcp_hdr_len": {
+                  "type": "short"
+                },
+                "tcp_tcp_flags": {
+                  "type": "integer"
+                },
+                "tcp_tcp_flags_res": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_ns": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_cwr": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_ecn": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_urg": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_ack": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_push": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_reset": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_syn": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_flags_fin": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_window_size_value": {
+                  "type": "integer"
+                },
+                "tcp_tcp_window_size": {
+                  "type": "long"
+                },
+                "tcp_tcp_window_size_scalefactor": {
+                  "type": "integer"
+                },
+                "tcp_tcp_checksum": {
+                  "type": "integer"
+                },
+                "tcp_tcp_checksum_status": {
+                  "type": "short"
+                },
+                "tcp_tcp_checksum_calculated": {
+                  "type": "integer"
+                },
+                "tcp_tcp_analysis_duplicate_ack_num": {
+                  "type": "long"
+                },
+                "tcp_tcp_analysis_duplicate_ack_frame": {
+                  "type": "long"
+                },
+                "tcp_tcp_continuation_to": {
+                  "type": "long"
+                },
+                "tcp_tcp_len": {
+                  "type": "long"
+                },
+                "tcp_tcp_analysis_acks_frame": {
+                  "type": "long"
+                },
+                "tcp_tcp_analysis_bytes_in_flight": {
+                  "type": "long"
+                },
+                "tcp_tcp_analysis_push_bytes_sent": {
+                  "type": "long"
+                },
+                "tcp_tcp_analysis_ack_rtt": {
+                  "type": "date"
+                },
+                "tcp_tcp_analysis_initial_rtt": {
+                  "type": "date"
+                },
+                "tcp_tcp_analysis_rto": {
+                  "type": "date"
+                },
+                "tcp_tcp_analysis_rto_frame": {
+                  "type": "long"
+                },
+                "tcp_tcp_urgent_pointer": {
+                  "type": "integer"
+                },
+                "tcp_tcp_segment_overlap": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_segment_overlap_conflict": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_segment_multipletails": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_segment_toolongfragment": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_segment_error": {
+                  "type": "long"
+                },
+                "tcp_tcp_segment_count": {
+                  "type": "long"
+                },
+                "tcp_tcp_segment": {
+                  "type": "long"
+                },
+                "tcp_tcp_reassembled_in": {
+                  "type": "long"
+                },
+                "tcp_tcp_reassembled_length": {
+                  "type": "long"
+                },
+                "tcp_tcp_reassembled_data": {
+                  "type": "byte"
+                },
+                "tcp_tcp_option_kind": {
+                  "type": "short"
+                },
+                "tcp_tcp_option_len": {
+                  "type": "short"
+                },
+                "tcp_tcp_options": {
+                  "type": "byte"
+                },
+                "tcp_tcp_options_mss_val": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_wscale_shift": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_wscale_multiplier": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_experimental_data": {
+                  "type": "byte"
+                },
+                "tcp_tcp_options_experimental_magic_number": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_unknown_payload": {
+                  "type": "byte"
+                },
+                "tcp_tcp_options_sack_le": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_sack_re": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_sack_count": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_echo_value": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_timestamp_tsval": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_timestamp_tsecr": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_subtype": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_version": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_reserved": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_mptcp_flags": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_backup_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_checksumreq_flags": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_extensibility_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_sha1_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_sha256_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_datafin_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_dseqn8_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_dseqnpresent_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_dataack8_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_dataackpresent_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_reserved_flag": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_addrid": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_sendkey": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_recvkey": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_recvtok": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_sendrand": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_sendtrunchmac": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_sendhmac": {
+                  "type": "byte"
+                },
+                "tcp_tcp_options_mptcp_addaddrtrunchmac": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_rawdataack": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_rawdataseqno": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_subflowseqno": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_mptcp_datalvllen": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_mptcp_checksum": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_mptcp_ipver": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_mptcp_ipv4": {
+                  "type": "ip"
+                },
+                "tcp_tcp_options_mptcp_ipv6": {
+                  "type": "ip"
+                },
+                "tcp_tcp_options_mptcp_port": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_cc_value": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_md5_digest": {
+                  "type": "byte"
+                },
+                "tcp_tcp_options_qs_rate": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_qs_ttl_diff": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_scps_vector": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_scps_binding_id": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_scps_binding_len": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_snack_offset": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_snack_size": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_snack_le": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_snack_re": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_scpsflags_bets": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_scpsflags_snack1": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_scpsflags_snack2": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_scpsflags_compress": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_scpsflags_nlts": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_scpsflags_reserved": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_scps_binding": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_user_to_granularity": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_user_to_val": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_rvbd_probe_type1": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_rvbd_probe_type2": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_rvbd_probe_version": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_rvbd_probe_version_raw": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_rvbd_probe_prober": {
+                  "type": "ip"
+                },
+                "tcp_tcp_options_rvbd_probe_proxy_ip": {
+                  "type": "ip"
+                },
+                "tcp_tcp_options_rvbd_probe_proxy_port": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_rvbd_probe_appli_ver": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_rvbd_probe_client_ip": {
+                  "type": "ip"
+                },
+                "tcp_tcp_options_rvbd_probe_storeid": {
+                  "type": "long"
+                },
+                "tcp_tcp_options_rvbd_probe_flags": {
+                  "type": "short"
+                },
+                "tcp_tcp_options_rvbd_probe_flags_notcfe": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_probe_flags_last": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_probe_flags_probe": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_probe_flags_ssl": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_probe_flags_server": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_trpy_flags": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_rvbd_trpy_flags_fw_rst_probe": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_trpy_flags_fw_rst_inner": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_trpy_flags_fw_rst": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_trpy_flags_chksum": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_trpy_flags_oob": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_trpy_flags_mode": {
+                  "type": "boolean"
+                },
+                "tcp_tcp_options_rvbd_trpy_src_ip": {
+                  "type": "ip"
+                },
+                "tcp_tcp_options_rvbd_trpy_dst_ip": {
+                  "type": "ip"
+                },
+                "tcp_tcp_options_rvbd_trpy_src_port": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_rvbd_trpy_dst_port": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_rvbd_trpy_client_port": {
+                  "type": "integer"
+                },
+                "tcp_tcp_options_tfo_cookie": {
+                  "type": "byte"
+                },
+                "tcp_tcp_pdu_time": {
+                  "type": "date"
+                },
+                "tcp_tcp_pdu_size": {
+                  "type": "long"
+                },
+                "tcp_tcp_pdu_last_frame": {
+                  "type": "long"
+                },
+                "tcp_tcp_time_relative": {
+                  "type": "date"
+                },
+                "tcp_tcp_time_delta": {
+                  "type": "date"
+                },
+                "tcp_tcp_proc_srcuid": {
+                  "type": "long"
+                },
+                "tcp_tcp_proc_srcpid": {
+                  "type": "long"
+                },
+                "tcp_tcp_proc_dstuid": {
+                  "type": "long"
+                },
+                "tcp_tcp_proc_dstpid": {
+                  "type": "long"
+                },
+                "tcp_tcp_segment_data": {
+                  "type": "byte"
+                },
+                "tcp_tcp_payload": {
+                  "type": "byte"
+                },
+                "tcp_tcp_options_scps_binding_data": {
+                  "type": "byte"
+                },
+                "tcp_tcp_options_rvbd_probe_reserved": {
+                  "type": "short"
+                },
+                "tcp_tcp_fin_retransmission": {
+                  "type": "long"
+                }
+              }
+            },
+            "telnet": {
+              "properties": {
+                "telnet_telnet_cmd": {
+                  "type": "short"
+                },
+                "telnet_telnet_subcmd": {
+                  "type": "short"
+                },
+                "telnet_telnet_auth_cmd": {
+                  "type": "short"
+                },
+                "telnet_telnet_auth_type": {
+                  "type": "short"
+                },
+                "telnet_telnet_auth_mod_cred_fwd": {
+                  "type": "boolean"
+                },
+                "telnet_telnet_auth_mod_who": {
+                  "type": "boolean"
+                },
+                "telnet_telnet_auth_mod_how": {
+                  "type": "boolean"
+                },
+                "telnet_telnet_auth_mod_enc": {
+                  "type": "short"
+                },
+                "telnet_telnet_auth_krb5_cmd": {
+                  "type": "short"
+                },
+                "telnet_telnet_naws_subopt_width": {
+                  "type": "integer"
+                },
+                "telnet_telnet_naws_subopt_height": {
+                  "type": "integer"
+                },
+                "telnet_telnet_comport_subopt_baud_rate": {
+                  "type": "long"
+                },
+                "telnet_telnet_comport_subopt_data_size": {
+                  "type": "short"
+                },
+                "telnet_telnet_comport_subopt_parity": {
+                  "type": "short"
+                },
+                "telnet_telnet_comport_subopt_stop": {
+                  "type": "short"
+                },
+                "telnet_telnet_comport_subopt_control": {
+                  "type": "short"
+                },
+                "telnet_telnet_comport_subopt_purge": {
+                  "type": "short"
+                },
+                "telnet_telnet_rfc_subopt_cmd": {
+                  "type": "short"
+                },
+                "telnet_telnet_tabstop": {
+                  "type": "short"
+                },
+                "telnet_telnet_enc_cmd": {
+                  "type": "short"
+                },
+                "telnet_telnet_enc_type": {
+                  "type": "short"
+                },
+                "telnet_telnet_enc_type_data": {
+                  "type": "byte"
+                },
+                "telnet_telnet_enc_key_id": {
+                  "type": "byte"
+                },
+                "telnet_telnet_option_data": {
+                  "type": "byte"
+                },
+                "telnet_telnet_subcommand_data": {
+                  "type": "byte"
+                },
+                "telnet_telnet_tn3270_subopt": {
+                  "type": "short"
+                },
+                "telnet_telnet_tn3270_reason": {
+                  "type": "short"
+                },
+                "telnet_telnet_tn3270_request": {
+                  "type": "short"
+                },
+                "telnet_telnet_regime_cmd": {
+                  "type": "short"
+                },
+                "telnet_telnet_starttls": {
+                  "type": "short"
+                }
+              }
+            },
+            "tls": {
+              "properties": {
+                "tls_tls_record_content_type": {
+                  "type": "short"
+                },
+                "tls_tls_record_opaque_type": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_type": {
+                  "type": "short"
+                },
+                "tls_tls_record_version": {
+                  "type": "integer"
+                },
+                "tls_tls_record_length": {
+                  "type": "integer"
+                },
+                "tls_tls_app_data": {
+                  "type": "byte"
+                },
+                "tls_tls_record_is_escape": {
+                  "type": "boolean"
+                },
+                "tls_tls_record_padding_length": {
+                  "type": "short"
+                },
+                "tls_tls_alert_message_level": {
+                  "type": "short"
+                },
+                "tls_tls_alert_message_desc": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_cipherspec": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_npn_selected_protocol_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_npn_padding_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_npn_padding": {
+                  "type": "byte"
+                },
+                "tls_tls_heartbeat_message_type": {
+                  "type": "short"
+                },
+                "tls_tls_heartbeat_message_payload_length": {
+                  "type": "integer"
+                },
+                "tls_tls_heartbeat_message_payload": {
+                  "type": "byte"
+                },
+                "tls_tls_heartbeat_message_padding": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_cipher_spec_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_session_id_length": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_challenge_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_clear_key_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_encrypted_key_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_key_arg_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_session_id_hit": {
+                  "type": "boolean"
+                },
+                "tls_tls_handshake_cert_type": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_connection_id_length": {
+                  "type": "integer"
+                },
+                "tls_tls_segment_overlap": {
+                  "type": "boolean"
+                },
+                "tls_tls_segment_overlap_conflict": {
+                  "type": "boolean"
+                },
+                "tls_tls_segment_multipletails": {
+                  "type": "boolean"
+                },
+                "tls_tls_segment_toolongfragment": {
+                  "type": "boolean"
+                },
+                "tls_tls_segment_error": {
+                  "type": "long"
+                },
+                "tls_tls_segment_count": {
+                  "type": "long"
+                },
+                "tls_tls_segment": {
+                  "type": "long"
+                },
+                "tls_tls_reassembled_in": {
+                  "type": "long"
+                },
+                "tls_tls_reassembled_length": {
+                  "type": "long"
+                },
+                "tls_tls_reassembled_data": {
+                  "type": "byte"
+                },
+                "tls_tls_segment_data": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_fragment_count": {
+                  "type": "long"
+                },
+                "tls_tls_handshake_fragment": {
+                  "type": "long"
+                },
+                "tls_tls_handshake_reassembled_in": {
+                  "type": "long"
+                },
+                "tls_tls_handshake_extensions_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extension_type": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extension_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extension_data": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_extensions_supported_groups_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_supported_group": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_ec_point_formats_length": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_ec_point_format": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_alpn_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_alpn_str_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_npn_str_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_reneg_info_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_reneg_info": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_extensions_key_share_client_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_key_share_group": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_key_share_key_exchange_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_key_share_key_exchange": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_extensions_key_share_selected_group": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_psk_identities_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_psk_identity_identity_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_psk_identity_identity": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_extensions_psk_identity_obfuscated_ticket_age": {
+                  "type": "long"
+                },
+                "tls_tls_handshake_extensions_psk_binders_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_psk_identity_selected": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_supported_versions_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_supported_version": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_cookie_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_cookie": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_extensions_server_name_list_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_server_name_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_server_name_type": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_max_fragment_length": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_padding_data": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_cert_url_type": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_cert_url_url_hash_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_cert_url_url_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_cert_type_type": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_cert_type_types_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_cert_url_sha1": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_extensions_status_request_type": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_extensions_status_request_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_status_request_responder_ids_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_status_request_exts_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_extensions_status_request_list_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_ocsp_response_list_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_ocsp_response_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_sig_hash_alg_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_sig_hash_alg": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_sig_hash_hash": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_sig_hash_sig": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_epms_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_epms": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_modulus_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_exponent_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_sig_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_p_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_g_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_ys_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_yc_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_client_point_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_server_point_len": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_p": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_g": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_server_curve_type": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_server_named_curve": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_ys": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_yc": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_server_point": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_client_point": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_modulus": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_exponent": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_sig": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_hint_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_hint": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_identity_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_identity": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_extension_heartbeat_mode": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_certificates_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_certificate": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_certificate_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_cert_types_count": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_dnames_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_dname_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_random": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_random_time": {
+                  "type": "date"
+                },
+                "tls_tls_handshake_random_bytes": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_session_id": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_version": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_cipher_suites_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_ciphersuite": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_comp_methods_length": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_comp_method": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_session_ticket_lifetime_hint": {
+                  "type": "long"
+                },
+                "tls_tls_handshake_session_ticket_age_add": {
+                  "type": "long"
+                },
+                "tls_tls_handshake_session_ticket_nonce_length": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_session_ticket_nonce": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_session_ticket_length": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_session_ticket": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_client_cert_vrfy_sig_len": {
+                  "type": "integer"
+                },
+                "tls_tls_handshake_client_cert_vrfy_sig": {
+                  "type": "byte"
+                },
+                "tls_tls_extension_psk_ke_modes_length": {
+                  "type": "short"
+                },
+                "tls_tls_extension_psk_ke_mode": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_certificate_request_context_length": {
+                  "type": "short"
+                },
+                "tls_tls_handshake_certificate_request_context": {
+                  "type": "byte"
+                },
+                "tls_tls_handshake_key_update_request_update": {
+                  "type": "short"
+                },
+                "tls_tls_sct_scts_length": {
+                  "type": "integer"
+                },
+                "tls_tls_sct_sct_length": {
+                  "type": "integer"
+                },
+                "tls_tls_sct_sct_version": {
+                  "type": "short"
+                },
+                "tls_tls_sct_sct_logid": {
+                  "type": "byte"
+                },
+                "tls_tls_sct_sct_timestamp": {
+                  "type": "date"
+                },
+                "tls_tls_sct_sct_extensions_length": {
+                  "type": "integer"
+                },
+                "tls_tls_sct_sct_signature_length": {
+                  "type": "integer"
+                },
+                "tls_tls_sct_sct_signature": {
+                  "type": "byte"
+                },
+                "tls_tls_early_data_max_early_data_size": {
+                  "type": "long"
+                },
+                "tls_tls_extension_oid_filters_length": {
+                  "type": "integer"
+                },
+                "tls_tls_extension_oid_filters_oid_length": {
+                  "type": "short"
+                },
+                "tls_tls_extension_oid_filters_values_length": {
+                  "type": "integer"
+                },
+                "tls_tls_compress_certificate_algorithms_length": {
+                  "type": "short"
+                },
+                "tls_tls_compress_certificate_algorithm": {
+                  "type": "integer"
+                },
+                "tls_tls_compress_certificate_uncompressed_length": {
+                  "type": "integer"
+                },
+                "tls_tls_compress_certificate_compressed_certificate_message_length": {
+                  "type": "integer"
+                },
+                "tls_tls_compress_certificate_compressed_certificate_message": {
+                  "type": "byte"
+                },
+                "tls_tls_record_size_limit": {
+                  "type": "integer"
+                },
+                "tls_tls_quic_len": {
+                  "type": "integer"
+                },
+                "tls_tls_quic_parameter_type": {
+                  "type": "integer"
+                },
+                "tls_tls_quic_parameter_length": {
+                  "type": "integer"
+                },
+                "tls_tls_quic_parameter_value": {
+                  "type": "byte"
+                },
+                "tls_tls_quic_parameter_ocid": {
+                  "type": "byte"
+                },
+                "tls_tls_quic_parameter_idle_timeout": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_stateless_reset_token": {
+                  "type": "byte"
+                },
+                "tls_tls_quic_parameter_max_packet_size": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_initial_max_data": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_initial_max_stream_data_bidi_local": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_initial_max_stream_data_bidi_remote": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_initial_max_stream_data_uni": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_initial_max_streams_bidi": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_initial_max_streams_uni": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_ack_delay_exponent": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_max_ack_delay": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_preferred_address_ipv4address": {
+                  "type": "ip"
+                },
+                "tls_tls_quic_parameter_preferred_address_ipv6address": {
+                  "type": "ip"
+                },
+                "tls_tls_quic_parameter_preferred_address_ipv4port": {
+                  "type": "integer"
+                },
+                "tls_tls_quic_parameter_preferred_address_ipv6port": {
+                  "type": "integer"
+                },
+                "tls_tls_quic_parameter_preferred_address_connectionid_length": {
+                  "type": "short"
+                },
+                "tls_tls_quic_parameter_preferred_address_connectionid": {
+                  "type": "byte"
+                },
+                "tls_tls_quic_parameter_preferred_address_statelessresettoken": {
+                  "type": "byte"
+                },
+                "tls_tls_quic_parameter_active_connection_id_limit": {
+                  "type": "long"
+                },
+                "tls_tls_quic_parameter_max_datagram_frame_size": {
+                  "type": "long"
+                },
+                "tls_tls_esni_suite": {
+                  "type": "integer"
+                },
+                "tls_tls_esni_record_digest_length": {
+                  "type": "integer"
+                },
+                "tls_tls_esni_record_digest": {
+                  "type": "byte"
+                },
+                "tls_tls_esni_encrypted_sni_length": {
+                  "type": "integer"
+                },
+                "tls_tls_esni_encrypted_sni": {
+                  "type": "byte"
+                },
+                "tls_tls_esni_nonce": {
+                  "type": "byte"
+                }
+              }
+            },
+            "udp": {
+              "properties": {
+                "udp_udp_srcport": {
+                  "type": "integer"
+                },
+                "udp_udp_dstport": {
+                  "type": "integer"
+                },
+                "udp_udp_port": {
+                  "type": "integer"
+                },
+                "udp_udp_stream": {
+                  "type": "long"
+                },
+                "udp_udp_length": {
+                  "type": "integer"
+                },
+                "udp_udp_checksum": {
+                  "type": "integer"
+                },
+                "udp_udp_checksum_calculated": {
+                  "type": "integer"
+                },
+                "udp_udp_checksum_status": {
+                  "type": "short"
+                },
+                "udp_udp_proc_srcuid": {
+                  "type": "long"
+                },
+                "udp_udp_proc_srcpid": {
+                  "type": "long"
+                },
+                "udp_udp_proc_dstuid": {
+                  "type": "long"
+                },
+                "udp_udp_proc_dstpid": {
+                  "type": "long"
+                },
+                "udp_udp_pdu_size": {
+                  "type": "long"
+                },
+                "udp_udp_time_relative": {
+                  "type": "date"
+                },
+                "udp_udp_time_delta": {
+                  "type": "date"
+                }
+              }
+            }
+          }
+        }
+      }
+  }
+}

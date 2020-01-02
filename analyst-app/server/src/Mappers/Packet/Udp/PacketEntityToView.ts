@@ -6,12 +6,12 @@ import { mapPacketEntityEthLayerToView } from '../Eth/PacketEntityEthLayerToView
 import { mapPacketEntityFrameToView } from '../Frame/PacketEntityEthLayerToView';
 
 export function mapPacketEntityToUdpPacketView(entity: IPacketEntity): IPacketViewUdp {
-    const { layers: { eth, frame, ip, udp } } = entity;
+    const { layers: { eth, frame, ip, udp }, streamId } = entity;
 
     return {
         frame: mapPacketEntityFrameToView(frame),
         eth: mapPacketEntityEthLayerToView(eth),
         ip: mapPacketEntityIpLayerToView(ip),
-        udp: mapPacketEntityUdpLayerToView(udp),
+        udp: mapPacketEntityUdpLayerToView(streamId, udp),
     };
 }

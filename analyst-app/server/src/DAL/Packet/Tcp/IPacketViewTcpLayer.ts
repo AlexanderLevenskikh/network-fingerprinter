@@ -3,7 +3,7 @@ import { IPacketViewTcpFlags } from './IPacketViewTcpFlags';
 import { IPacketViewTcpOption } from './IPacketViewTcpOption';
 
 export interface IPacketViewTcpLayer {
-    streamId: number;
+    streamId: string;
     sourcePort: number;
     destinationPort: number;
     maximumSegmentSize: Nullable<number>;

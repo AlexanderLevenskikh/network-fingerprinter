@@ -2,7 +2,7 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { TcpStreamViewProvider } from '../DAL/Stream/Tcp/TcpStreamViewProvider';
 import { ITcpStreamView } from '../DAL/Stream/Tcp/ITcpStreamView';
 import { ITcpStreamFilter } from '../DAL/Stream/Tcp/ITcpStreamFilter';
-import { AuthenticatedGuard } from '../Domain/Guards/AuthenticatedGuard';
+import { AuthenticatedGuard } from '../Services/Guards/AuthenticatedGuard';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('api/stream/tcp')

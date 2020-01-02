@@ -1,10 +1,10 @@
 export class TcpStreamViewProviderQueries {
-    static buildTcpSynByStreamIdQuery(streamId: number) {
+    static buildTcpSynByStreamIdQuery(streamId: string) {
         return {
             query: {
                 bool: {
                     filter: [
-                        { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                        { term: { streamId } },
                         { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
                         { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '0' } },
                     ],
@@ -13,12 +13,12 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
-    static buildTcpSynAckByStreamIdQuery(streamId: number) {
+    static buildTcpSynAckByStreamIdQuery(streamId: string) {
         return {
             query: {
                 bool: {
                     filter: [
-                        { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                        { term: { streamId } },
                         { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
                         { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '1' } },
                     ],
@@ -27,12 +27,12 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
-    static buildTcpPacketSampleByStreamIdQuery(streamId: number) {
+    static buildTcpPacketSampleByStreamIdQuery(streamId: string) {
         return {
             query: {
                 bool: {
                     filter: [
-                        { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                        { term: { streamId } },
                         { exists: { field: 'layers.tcp.tcp_tcp_payload' } },
                     ],
                 },
@@ -40,12 +40,12 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
-    static buildTcpStreamMetaDataQuery(streamId: number) {
+    static buildTcpStreamMetaDataQuery(streamId: string) {
         return {
             query: {
                 bool: {
                     filter: [
-                        { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                        { term: { streamId } },
                     ],
                 },
             },
@@ -64,36 +64,40 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
-    static buildTcpStreamIdsQuery(size: number) {
+    static buildTcpStreamIdsQuery() {
         return {
-            aggs: {
-                by_stream: {
-                    composite: {
-                        size,
-                        sources : [
-                            { streamId: { terms: { field: 'layers.tcp.tcp_tcp_stream' } } },
-                        ],
+            query: {
+                bool: {
+                    filter: {
+                        term: {
+                            'layers.ip.ip_ip_proto': 6,
+                        },
                     },
+                },
+            },
+            aggs : {
+                by_stream : {
+                    terms : { field : 'streamId', size: 1000000000 },
                 },
             },
         }
     }
 
-    static buildTcpStreamDocumentCountQuery(streamId: number) {
+    static buildTcpStreamDocumentCountQuery(streamId: string) {
         return {
             query: {
                 term: {
-                    'layers.tcp.tcp_tcp_stream': streamId,
+                    streamId,
                 },
             },
         };
     }
 
-    static buildTcpStreamQuery(streamId: number) {
+    static buildTcpStreamQuery(streamId: string) {
         return {
             bool: {
                 filter: [
-                    { term: { 'layers.tcp.tcp_tcp_stream': streamId } },
+                    { term: { streamId } },
                 ],
             },
         }

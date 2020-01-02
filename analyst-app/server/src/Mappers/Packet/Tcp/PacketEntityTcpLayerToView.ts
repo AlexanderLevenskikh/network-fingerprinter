@@ -3,14 +3,14 @@ import { parseIntNullable } from '../../../Shared/Utils/parseIntNullable';
 import { IPacketViewTcpLayer } from '../../../DAL/Packet/Tcp/IPacketViewTcpLayer';
 import { mapPacketEntityTcpLayerOptionsToView } from './PacketEntityTcpLayerOptionsToView';
 
-export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): IPacketViewTcpLayer {
+export function mapPacketEntityTcpLayerToView(streamId: string, entity: IPacketEntityTcp): IPacketViewTcpLayer {
     const {
         tcp_options_mss_tcp_options_mss_val, tcp_tcp_window_size_value,
         tcp_options_wscale_tcp_options_wscale_shift, tcp_tcp_seq, tcp_tcp_ack, tcp_tcp_urgent_pointer,
         tcp_flags_tcp_flags_ack, tcp_flags_tcp_flags_cwr, tcp_flags_tcp_flags_ecn,
         tcp_flags_tcp_flags_fin, tcp_flags_tcp_flags_ns, tcp_flags_tcp_flags_push, tcp_flags_tcp_flags_res,
         tcp_flags_tcp_flags_str, tcp_flags_tcp_flags_reset, tcp_flags_tcp_flags_syn,
-        tcp_flags_tcp_flags_urg, tcp_tcp_srcport, tcp_tcp_dstport, tcp_tcp_stream, tcp_tcp_options,
+        tcp_flags_tcp_flags_urg, tcp_tcp_srcport, tcp_tcp_dstport, tcp_tcp_options,
     } = entity;
 
     const maximumSegmentSize = parseIntNullable(tcp_options_mss_tcp_options_mss_val);
@@ -23,7 +23,7 @@ export function mapPacketEntityTcpLayerToView(entity: IPacketEntityTcp): IPacket
     const tcpOptions = mapPacketEntityTcpLayerOptionsToView(tcp_tcp_options);
 
     return {
-        streamId: tcp_tcp_stream,
+        streamId,
         sourcePort: Number.parseInt(tcp_tcp_srcport, 10),
         destinationPort: Number.parseInt(tcp_tcp_dstport, 10),
         maximumSegmentSize,

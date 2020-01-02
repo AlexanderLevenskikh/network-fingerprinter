@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { FlowViewProvider } from '../DAL/Flow/FlowViewProvider';
-import { AuthenticatedGuard } from '../Domain/Guards/AuthenticatedGuard';
+import { AuthenticatedGuard } from '../Services/Guards/AuthenticatedGuard';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('api/flow')

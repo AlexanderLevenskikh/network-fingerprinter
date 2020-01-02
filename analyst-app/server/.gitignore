@@ -3,6 +3,7 @@
 /node_modules
 .jest-cache
 static
+temp
 
 # Logs
 logs

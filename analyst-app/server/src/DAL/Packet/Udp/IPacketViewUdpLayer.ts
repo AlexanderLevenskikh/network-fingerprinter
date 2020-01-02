@@ -1,7 +1,7 @@
 import { Nullable } from '../../../Shared/Types/Nullable';
 
 export interface IPacketViewUdpLayer {
-    streamId: number;
+    streamId: string;
     sourcePort: Nullable<number>;
     destinationPort: number;
 }

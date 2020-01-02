@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Res, UseFilters, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
-import { LoginGuard } from '../Domain/Guards/LoginGuard';
+import { LoginGuard } from '../Services/Guards/LoginGuard';
 import { AuthExceptionFilter } from '../Filters/AuthExceptionsFilter';
 
 @UseFilters(AuthExceptionFilter)

@@ -56,7 +56,7 @@ def _make_capturing_command(interface, packet_filter):
     return command
 
 
-def capture(interface, packet_filter):
+def capture(interface, packet_filter, guid):
     command = _make_capturing_command(interface, packet_filter)
 
     global closing
@@ -66,7 +66,17 @@ def capture(interface, packet_filter):
             if packet is None:
                 continue
             else:
-                yield json.loads(packet)
+                json_packet = json.loads(packet)
+                stream_id = guid
+
+                if 'tcp' in json_packet['layers'] is not None:
+                    stream_id = guid + "-" + json_packet['layers']['tcp']['tcp_tcp_stream']
+
+                if 'udp' in json_packet['layers'] is not None:
+                    stream_id = guid + "-" + json_packet['layers']['udp']['udp_udp_stream']
+
+                json_packet['streamId'] = stream_id
+                yield json_packet
 
         if closing is True:
             print('Capture interrupted')
