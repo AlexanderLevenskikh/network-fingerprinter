@@ -9,6 +9,8 @@ export enum I18StreamsNsKeys {
     listAddressColumnTitle = 'listSideColumnTitle',
     listFingerprintColumnTitle = 'listFingerprintColumnTitle',
     listPacketsCountColumnSubTitle = 'listPacketsCountColumnTitle',
+    listPacketsApplicationLayerProtoColumnSubTitle = 'listPacketsApplicationLayerProtoColumnSubTitle',
+    listPacketsSniColumnSubTitle = 'listPacketsSniColumnSubTitle',
     listSensorIdColumnTitle = 'listSensorIdColumnTitle',
     listPortNumberColumnSubTitle = 'listPortNumberColumnSubTitle',
     // filter
