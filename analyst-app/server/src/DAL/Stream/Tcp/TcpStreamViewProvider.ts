@@ -104,6 +104,13 @@ export class TcpStreamViewProvider {
     }
 
     private sortStreams = async (query: ITcpStreamFilter, streamIds: string[]) => {
+        if (
+            (!query.dateTimeFromOrder || query.dateTimeFromOrder === TcpStreamFilterDateOrder.None) &&
+            (!query.dateTimeToOrder || query.dateTimeToOrder === TcpStreamFilterDateOrder.None)
+        ) {
+            return streamIds;
+        }
+
         const dateTimeFromOrder = query.dateTimeFromOrder === TcpStreamFilterDateOrder.Asc
             ? TcpStreamFilterDateOrder.Asc
             : TcpStreamFilterDateOrder.Desc;
