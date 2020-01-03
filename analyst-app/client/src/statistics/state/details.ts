@@ -2,14 +2,28 @@ import { ITcpSourceStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpSourceSt
 import { ITcpDestinationStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpDestinationStatisticsDetailsView';
 
 export class TcpStatisticsDetailsState {
-    sourceDetails: ITcpSourceStatisticsDetailsView[] = [];
+    sourceDetails: ITcpSourceStatisticsDetailsView = {
+        ip: '',
+        mac: '',
+        hasHttpRequest: false,
+        hasTlsClientHello: false,
+        httpFingerprints: [],
+        tlsFingerprints: [],
+        tcpFingerprints: [],
+    };
     sourceDetailsLoading: boolean = false;
     sourceDrawerOpened: boolean = false;
     sourceIp: string = '';
     sourceMac: string = '';
 
-    destinationDetails: ITcpDestinationStatisticsDetailsView[] = [];
+    destinationDetails: ITcpDestinationStatisticsDetailsView = {
+        ip: '',
+        mac: '',
+        hasHttpResponse: false,
+        httpFingerprints: [],
+        tcpFingerprints: [],
+    };
     destinationDetailsLoading: boolean = false;
-    destinationDetailsDrawerOpened: boolean = false;
+    destinationDrawerOpened: boolean = false;
     destinationIp: string = '';
 }

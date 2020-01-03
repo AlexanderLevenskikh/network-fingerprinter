@@ -30,14 +30,14 @@ export enum TcpStatisticsDetailsActionTypes {
     FetchSourceDetailsSucceed = 'statistics/details/source/fetch/succeed',
     FetchSourceDetailsFailed = 'statistics/details/source/fetch/failed',
 
-    OpenDestinationDrawer = 'statistics/details/source/drawer/open',
-    CloseDestinationDrawer = 'statistics/details/source/drawer/close',
+    OpenDestinationDrawer = 'statistics/details/destination/drawer/open',
+    CloseDestinationDrawer = 'statistics/details/destination/drawer/close',
     FetchDestinationDetails = 'statistics/details/destination/fetch',
     FetchDestinationDetailsSucceed = 'statistics/details/destination/fetch/succeed',
     FetchDestinationDetailsFailed = 'statistics/details/destination/fetch/failed',
 }
 
-export const TcpStatisticsDrawerActions = {
+export const TcpStatisticsDetailsActions = {
     OpenSourceDrawer: csa(TcpStatisticsDetailsActionTypes.OpenSourceDrawer)<IOpenSourceDrawerPayload>(),
     CloseSourceDrawer: csa(TcpStatisticsDetailsActionTypes.CloseSourceDrawer)(),
     FetchSourceDetails: csa(TcpStatisticsDetailsActionTypes.FetchSourceDetails)(),

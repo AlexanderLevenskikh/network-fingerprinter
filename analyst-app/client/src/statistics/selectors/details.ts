@@ -3,7 +3,7 @@ import { IState } from 'root/app/state';
 export class TcpStatisticsDetailsSelectors {
     static destinationDetails = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationDetails;
     static destinationDetailsLoading = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationDetailsLoading;
-    static destinationDetailsDrawerOpened = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationDetailsDrawerOpened;
+    static destinationDrawerOpened = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationDrawerOpened;
     static sourceIp = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).sourceIp;
     static sourceMac = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).sourceMac;
 

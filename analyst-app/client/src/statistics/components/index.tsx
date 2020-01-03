@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import { TcpStatisticsRouterSelectors } from 'root/statistics/selectors/router';
 import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
 import { TcpSourcesStatisticsList } from 'root/statistics/components/source/list';
+import { TcpStatisticsSourceDetailsDrawer } from 'root/statistics/components/source/drawer';
 
 interface IProps {
 }
@@ -23,6 +24,9 @@ export const StatisticsPage: FC<IProps> = ({ children }) => {
             <Content className={ styles.content }>
                 { isSourcesTab && (
                     <TcpSourcesStatisticsList />
+                )}
+                { isSourcesTab && (
+                    <TcpStatisticsSourceDetailsDrawer />
                 )}
             </Content>
         </Layout>

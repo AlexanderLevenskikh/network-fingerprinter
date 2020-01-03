@@ -8,7 +8,7 @@ interface IProps {
 }
 
 export const TcpSourcesStatisticsList: FC<IProps> = () => {
-    const { columns, loading, sources } = useTcpSourcesStatisticsList();
+    const { columns, loading, sources, openDrawer } = useTcpSourcesStatisticsList();
     const getRowKey = ({ ip, mac }: ITcpSourceStatisticsView) => `${ip}:${mac}`;
 
     return (
@@ -18,7 +18,7 @@ export const TcpSourcesStatisticsList: FC<IProps> = () => {
             dataSource={ sources }
             loading={ loading }
             size='small'
-            onRowClick={ (record, index, event) => console.log(record, index) }
+            onRowClick={ openDrawer }
             pagination={{
                 showSizeChanger: true,
                 showQuickJumper: true,

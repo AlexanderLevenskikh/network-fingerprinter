@@ -1,10 +1,12 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { TcpStatisticsListSelectors } from 'root/statistics/selectors/list';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { TcpStatisticsListActions } from 'root/statistics/actions/list';
 import { useTranslation } from 'react-i18next';
 import { I18nNamespace } from 'root/i18n/resources/namespaces';
 import { createTcpSourceStatisticsColumnsConfiguration } from 'root/statistics/components/source/list/columnConfiguration';
+import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
+import { TcpStatisticsDetailsActions } from 'root/statistics/actions/details';
 
 export function useTcpSourcesStatisticsList() {
     const sources = useSelector(TcpStatisticsListSelectors.sources);
@@ -17,6 +19,14 @@ export function useTcpSourcesStatisticsList() {
         }
     }, [ dispatch ]);
 
+    const openDrawer = useCallback(
+        (view: ITcpSourceStatisticsView) => dispatch(TcpStatisticsDetailsActions.OpenSourceDrawer({
+            ip: view.ip,
+            mac: view.mac,
+        })),
+        [ dispatch ],
+    );
+
     const { t } = useTranslation(I18nNamespace.statistics);
     const columns = createTcpSourceStatisticsColumnsConfiguration(t);
 
@@ -24,5 +34,6 @@ export function useTcpSourcesStatisticsList() {
         sources,
         loading,
         columns,
+        openDrawer,
     }
 }
