@@ -8,13 +8,13 @@ import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { SearchParamsModel } from 'root/shared/model/searchParams';
 import { PlayerRouterActions } from 'root/player/actions/router';
 import { StatisticsRouterActions, StatisticsRouterActionTypes } from 'root/statistics/actions/router';
-import { StatisticsTabsEnum } from 'root/statistics/constants/router/tab';
-import { StatisticsRouterSelectors } from 'root/statistics/selectors/router';
+import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
+import { TcpStatisticsRouterSelectors } from 'root/statistics/selectors/router';
 
 export function useHeaderMenu() {
     const page = useSelector(RouterSelectors.page);
     const transport = useSelector(StreamRouterSelectors.transport);
-    const statisticsTabName = useSelector(StatisticsRouterSelectors.tabName);
+    const statisticsTabName = useSelector(TcpStatisticsRouterSelectors.tabName);
 
     const dispatch = useDispatch();
     const onClickTcpStreams = useCallback(
@@ -32,7 +32,7 @@ export function useHeaderMenu() {
         [ dispatch ],
     );
     const onClickStatistics = useCallback(
-        (tabName: StatisticsTabsEnum) => dispatch(StatisticsRouterActions.Main(
+        (tabName: TcpStatisticsTabsEnum) => dispatch(StatisticsRouterActions.Main(
             { tabName },
         )),
         [ dispatch ],

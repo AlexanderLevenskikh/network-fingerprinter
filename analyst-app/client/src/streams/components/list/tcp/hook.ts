@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { StreamsListActions } from 'root/streams/actions/list';
 import { useTranslation } from 'react-i18next';
 import { I18nNamespace } from 'root/i18n/resources/namespaces';
-import { createColumnsConfiguration } from 'root/streams/components/list/tcp/columnConfiguration';
+import { createTcpStreamsListColumnsConfiguration } from 'root/streams/components/list/tcp/columnConfiguration';
 import { PaginationConfig } from 'antd/lib/pagination';
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { SorterResult } from 'antd/lib/table';
@@ -34,15 +34,17 @@ export function useStreamsList() {
 
     const dispatch = useDispatch();
     useEffect(() => {
-        dispatch(StreamsListActions.FetchList());
+        if (dispatch) {
+            dispatch(StreamsListActions.FetchList());
 
-        if (!searchParamsAreEmpty) {
-            dispatch(StreamsSearchActions.open());
+            if (!searchParamsAreEmpty) {
+                dispatch(StreamsSearchActions.open());
+            }
         }
     }, [ dispatch ]);
 
     const { t } = useTranslation(I18nNamespace.streams);
-    const columns = createColumnsConfiguration(
+    const columns = createTcpStreamsListColumnsConfiguration(
         searchParamsModel.dateTimeFromOrder,
         searchParamsModel.dateTimeToOrder,
         t,

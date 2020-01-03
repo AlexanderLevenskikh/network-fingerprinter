@@ -12,7 +12,7 @@ import { StreamDatesOrder } from 'root/streams/model/list/streamDatesOrder';
 import { getAntdDateTimeOrder } from 'root/streams/components/list/tcp/getAntdDateTimeOrder';
 import { renderDestinationFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/renderDestinationFingerprint';
 
-export function createColumnsConfiguration(
+export function createTcpStreamsListColumnsConfiguration(
     startDateTimeOrder: StreamDatesOrder | undefined,
     endDateTimeOrder: StreamDatesOrder | undefined,
     t: TFunction,

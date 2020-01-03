@@ -1,4 +1,4 @@
-export enum StatisticsTabsEnum {
+export enum TcpStatisticsTabsEnum {
     Sources = 'sources',
     Destination = 'destination',
 }

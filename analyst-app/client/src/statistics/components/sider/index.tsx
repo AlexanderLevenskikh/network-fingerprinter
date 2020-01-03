@@ -2,11 +2,8 @@ import React, { FC } from 'react';
 import Sider from 'antd/es/layout/Sider';
 import { Icon, Menu } from 'antd';
 import { useStatisticsSider } from 'root/statistics/components/sider/hook';
-import { RouterPages } from 'root/router/constants/pages';
-import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
-import { StatisticsTabsEnum } from 'root/statistics/constants/router/tab';
+import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
 import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
-import SubMenu from 'antd/es/menu/SubMenu';
 
 interface IProps {
 }
@@ -19,8 +16,8 @@ enum MenuItemKey {
 export const StatisticsSider: FC<IProps> = () => {
     const { statisticsTabName, t, onClickStatistics } = useStatisticsSider();
 
-    const statisticsBySourceSelected = statisticsTabName === StatisticsTabsEnum.Sources;
-    const statisticsByDestinationSelected = statisticsTabName === StatisticsTabsEnum.Destination;
+    const statisticsBySourceSelected = statisticsTabName === TcpStatisticsTabsEnum.Sources;
+    const statisticsByDestinationSelected = statisticsTabName === TcpStatisticsTabsEnum.Destination;
 
     const selectedKeys = [
         ...(statisticsBySourceSelected ? [ MenuItemKey.StatisticsBySource ] : []),
@@ -36,7 +33,7 @@ export const StatisticsSider: FC<IProps> = () => {
             >
                 <Menu.Item
                     key={ MenuItemKey.StatisticsBySource }
-                    onClick={ () => onClickStatistics(StatisticsTabsEnum.Sources) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Sources) }
                 >
                     <Icon type="logout" />
                     <span>
@@ -45,7 +42,7 @@ export const StatisticsSider: FC<IProps> = () => {
                 </Menu.Item>
                 <Menu.Item
                     key={ MenuItemKey.StatisticsByDestination }
-                    onClick={ () => onClickStatistics(StatisticsTabsEnum.Destination) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Destination) }
                 >
                     <Icon type="login" />
                     <span>

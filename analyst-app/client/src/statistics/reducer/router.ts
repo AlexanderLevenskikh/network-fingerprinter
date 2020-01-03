@@ -5,12 +5,12 @@ import { TcpStreamsSearchParamsModel } from 'root/streams/model/list/tcpStreamsS
 import { UdpStreamsSearchParamsModel } from 'root/streams/model/list/udpStreamsSearchParams';
 import { areQueryParamsEmpty } from 'root/shared/utils/areQueryParamsEmpty';
 import { StatisticsRouterActions, StatisticsRouterActionTypes } from 'root/statistics/actions/router';
-import { StatisticsRouterState } from 'root/statistics/state/router';
+import { TcpStatisticsRouterState } from 'root/statistics/state/router';
 
-export const initialState = new StatisticsRouterState();
+export const initialState = new TcpStatisticsRouterState();
 type ReducerActions = ActionType<typeof StatisticsRouterActions>;
 
-export const statisticsRouterReducer = (state = initialState, action: ReducerActions): StatisticsRouterState => {
+export const tcpStatisticsRouterReducer = (state = initialState, action: ReducerActions): TcpStatisticsRouterState => {
     switch (action.type) {
         case StatisticsRouterActionTypes.Main: {
             const { tabName } = action.payload;

@@ -1,8 +1,8 @@
 import { createAction as csa } from 'typesafe-actions';
-import { StatisticsTabsEnum } from 'root/statistics/constants/router/tab';
+import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
 
 export interface IStatisticsRouterMainActionPayload {
-    tabName: StatisticsTabsEnum;
+    tabName: TcpStatisticsTabsEnum;
 }
 
 export enum StatisticsRouterActionTypes {

@@ -1,7 +1,9 @@
 import { combineReducers } from 'redux';
-import { StatisticsState } from 'root/statistics/state';
-import { statisticsRouterReducer } from 'root/statistics/reducer/router';
+import { TcpStatisticsState } from 'root/statistics/state';
+import { tcpStatisticsRouterReducer } from 'root/statistics/reducer/router';
+import { tcpStatisticsListReducer } from 'root/statistics/reducer/list';
 
-export const statisticsReducer = combineReducers<StatisticsState>({
-    router: statisticsRouterReducer,
+export const tcpStatisticsReducer = combineReducers<TcpStatisticsState>({
+    list: tcpStatisticsListReducer,
+    router: tcpStatisticsRouterReducer,
 });

@@ -1,16 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { StatisticsRouterSelectors } from 'root/statistics/selectors/router';
+import { TcpStatisticsRouterSelectors } from 'root/statistics/selectors/router';
 import { useCallback } from 'react';
-import { StatisticsTabsEnum } from 'root/statistics/constants/router/tab';
+import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
 import { StatisticsRouterActions } from 'root/statistics/actions/router';
 import { useTranslation } from 'react-i18next';
 
 export function useStatisticsSider() {
-    const statisticsTabName = useSelector(StatisticsRouterSelectors.tabName);
+    const statisticsTabName = useSelector(TcpStatisticsRouterSelectors.tabName);
 
     const dispatch = useDispatch();
     const onClickStatistics = useCallback(
-        (tabName: StatisticsTabsEnum) => dispatch(StatisticsRouterActions.Main(
+        (tabName: TcpStatisticsTabsEnum) => dispatch(StatisticsRouterActions.Main(
             { tabName },
         )),
         [ dispatch ],

@@ -5,6 +5,8 @@ import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
 import { map } from 'rxjs/operators';
 import { PacketViewHttpProviderQueries } from './PacketViewHttpProviderQueries';
 import { PacketViewHttpProviderMappers } from './PacketViewHttpProviderMappers';
+import { Nullable } from '../../../Shared/Types/Nullable';
+import { IPacketViewHttp } from './IPacketViewHttp';
 
 @Injectable()
 export class PacketViewHttpProvider {
@@ -12,7 +14,18 @@ export class PacketViewHttpProvider {
     }
 
     public getHttpRequestAndResponsePacketsByStream = async (streamId: string): Promise<IPacketViewHttpRequestAndResponsePackets> => {
-        const requestPacket = await this.elasticsearchService
+        const request = await this.getHttpRequestByStreamId(streamId);
+        const response = await this.getHttpResponseByStreamId(streamId);
+
+        return {
+            streamId,
+            request,
+            response,
+        };
+    };
+
+    public getHttpRequestByStreamId = async (streamId: string): Promise<Nullable<IPacketViewHttp>> => {
+        const requestPackets = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 1,
@@ -23,7 +36,11 @@ export class PacketViewHttpProvider {
             .pipe(map(PacketViewHttpProviderMappers.toHttpPacketViews))
             .toPromise();
 
-        const responsePacket = await this.elasticsearchService
+        return requestPackets.length > 0 ? requestPackets[0] : null
+    };
+
+    public getHttpResponseByStreamId = async (streamId: string): Promise<Nullable<IPacketViewHttp>> => {
+        const responsePackets = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 1,
@@ -34,10 +51,6 @@ export class PacketViewHttpProvider {
             .pipe(map(PacketViewHttpProviderMappers.toHttpPacketViews))
             .toPromise();
 
-        return {
-            streamId,
-            request: requestPacket.length > 0 ? requestPacket[0] : null,
-            response: responsePacket.length > 0 ? responsePacket[0] : null,
-        };
+        return responsePackets.length > 0 ? responsePackets[0] : null
     };
 }

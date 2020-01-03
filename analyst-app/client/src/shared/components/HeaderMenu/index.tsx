@@ -6,7 +6,7 @@ import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
 import { RouterPages } from 'root/router/constants/pages';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
 import SubMenu from 'antd/es/menu/SubMenu';
-import { StatisticsTabsEnum } from 'root/statistics/constants/router/tab';
+import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
 
 interface IProps {
 }
@@ -30,8 +30,8 @@ export const HeaderMenu: FC<IProps> = () => {
     const tcpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Tcp;
     const udpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Udp;
     const statisticsSelected = page === RouterPages.Statistics;
-    const statisticsBySourceSelected = page === RouterPages.Statistics && statisticsTabName === StatisticsTabsEnum.Sources;
-    const statisticsByDestinationSelected = page === RouterPages.Statistics && statisticsTabName === StatisticsTabsEnum.Destination;
+    const statisticsBySourceSelected = page === RouterPages.Statistics && statisticsTabName === TcpStatisticsTabsEnum.Sources;
+    const statisticsByDestinationSelected = page === RouterPages.Statistics && statisticsTabName === TcpStatisticsTabsEnum.Destination;
     const playerSelected = page === RouterPages.Player;
 
     const selectedKeys = [
@@ -81,7 +81,7 @@ export const HeaderMenu: FC<IProps> = () => {
             >
                 <Menu.Item
                     key={ MenuItemKey.StatisticsBySource }
-                    onClick={ () => onClickStatistics(StatisticsTabsEnum.Sources) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Sources) }
                 >
                     <span>
                         { t(I18MainNsKeys.menuStatisticsSourcesLabel) }
@@ -89,7 +89,7 @@ export const HeaderMenu: FC<IProps> = () => {
                 </Menu.Item>
                 <Menu.Item
                     key={ MenuItemKey.StatisticsByDestination }
-                    onClick={ () => onClickStatistics(StatisticsTabsEnum.Destination) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Destination) }
                 >
                     <span>
                         { t(I18MainNsKeys.menuStatisticsDestinationLabel) }

@@ -1,10 +1,10 @@
+
 import { ITcpStreamFilter } from './ITcpStreamFilter';
 import { and } from '../../../Shared/Utils/elastic/and';
 import { term } from '../../../Shared/Utils/elastic/term';
 import { or } from '../../../Shared/Utils/elastic/or';
 import { Nullable } from '../../../Shared/Types/Nullable';
 import { range } from '../../../Shared/Utils/elastic/range';
-import { TcpStreamFilterDateOrder } from './TcpStreamFilterDateOrder';
 
 export class TcpStreamViewProviderQueries {
     static buildTcpStreamMetaDataQuery(streamId: string) {
