@@ -1,4 +1,3 @@
-// src/common/filters/auth-exceptions.filter.ts
 import {
   ExceptionFilter,
   Catch,

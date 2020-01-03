@@ -13,6 +13,8 @@ export const i18StreamsNsRuResources: EnumMap<I18StreamsNsKeys, string> = {
     [ I18StreamsNsKeys.listPortNumberColumnSubTitle ]: 'Порт',
     [ I18StreamsNsKeys.listFingerprintColumnTitle ]: 'Цифровой отпечаток',
     [ I18StreamsNsKeys.listPacketsCountColumnSubTitle ]: 'Пакетов',
+    [ I18StreamsNsKeys.listPacketsApplicationLayerProtoColumnSubTitle ]: 'Прикладные протоколы',
+    [ I18StreamsNsKeys.listPacketsSniColumnSubTitle ]: 'SNI',
     [ I18StreamsNsKeys.listSensorIdColumnTitle ]: 'ID сенсора',
     [ I18StreamsNsKeys.filterSourceIp ]: 'IP адрес источника',
     [ I18StreamsNsKeys.filterSourceMac ]: 'MAC адрес источника',

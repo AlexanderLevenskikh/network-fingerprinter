@@ -1,6 +1,6 @@
 import { IPacketViewTls } from '../../../DAL/Packet/Tls/IPacketViewTls';
 import { tcpPacketStub } from '../__test__/tcpPacketStub';
-import { TlsPacketViewCipherSuite } from '../../../DAL/Packet/Tls/TlsPacketViewCipherSuite';
+import { PacketViewTlsCipherSuite } from '../../../DAL/Packet/Tls/PacketViewTlsCipherSuite';
 import { tlsFingerprintProcessor } from './Tls';
 import md5 = require('md5');
 import { ja3SignaturesMap } from './Ja3/data';

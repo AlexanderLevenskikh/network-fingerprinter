@@ -5,11 +5,12 @@ import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
 import React from 'react';
 import { renderStreamDateTime } from 'root/streams/components/list/tcp/columns/renderDateTime';
 import { renderStreamSide } from 'root/streams/components/list/tcp/columns/side/renderSide';
-import { renderFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/renderFingerprint';
+import { renderSourceFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/renderSourceFingerprint';
 import { renderInfo } from 'root/streams/components/list/tcp/columns/info/renderInfo';
 import { DateTimeService } from 'root/shared/utils/dateTime/DateTimeService';
 import { StreamDatesOrder } from 'root/streams/model/list/streamDatesOrder';
 import { getAntdDateTimeOrder } from 'root/streams/components/list/tcp/getAntdDateTimeOrder';
+import { renderDestinationFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/renderDestinationFingerprint';
 
 export function createColumnsConfiguration(
     startDateTimeOrder: StreamDatesOrder | undefined,
@@ -70,6 +71,7 @@ export function createColumnsConfiguration(
                     render: (_, record) => renderStreamSide({
                         ip: record.destinationIp,
                         port: record.destinationPort,
+                        mac: record.destinationMac,
                         t,
                     }),
                     width: '15%',
@@ -83,15 +85,15 @@ export function createColumnsConfiguration(
                 {
                     title: t(I18StreamsNsKeys.listSourceColumnTitle),
                     key: 'sourceFingerprints',
-                    dataIndex: 'sourceFingerprints',
-                    render: text => renderFingerprint({ fingerprints: text, t }),
+                    dataIndex: 'fingerprints',
+                    render: text => renderSourceFingerprint({ fingerprints: text.source, t }),
                     width: '19%',
                 },
                 {
                     title: t(I18StreamsNsKeys.listDestinationColumnTitle),
                     key: 'destinationFingerprints',
-                    dataIndex: 'destinationFingerprints',
-                    render: text => renderFingerprint({ fingerprints: text, t }),
+                    dataIndex: 'fingerprints',
+                    render: text => renderDestinationFingerprint({ fingerprints: text.destination, t }),
                     width: '19%',
                 },
             ],

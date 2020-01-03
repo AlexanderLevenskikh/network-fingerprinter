@@ -1,45 +1,4 @@
 export class TcpStreamViewProviderQueries {
-    static buildTcpSynByStreamIdQuery(streamId: string) {
-        return {
-            query: {
-                bool: {
-                    filter: [
-                        { term: { streamId } },
-                        { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
-                        { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '0' } },
-                    ],
-                },
-            },
-        };
-    }
-
-    static buildTcpSynAckByStreamIdQuery(streamId: string) {
-        return {
-            query: {
-                bool: {
-                    filter: [
-                        { term: { streamId } },
-                        { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
-                        { term: { 'layers.tcp.tcp_flags_tcp_flags_ack': '1' } },
-                    ],
-                },
-            },
-        };
-    }
-
-    static buildTcpPacketSampleByStreamIdQuery(streamId: string) {
-        return {
-            query: {
-                bool: {
-                    filter: [
-                        { term: { streamId } },
-                        { exists: { field: 'layers.tcp.tcp_tcp_payload' } },
-                    ],
-                },
-            },
-        };
-    }
-
     static buildTcpStreamMetaDataQuery(streamId: string) {
         return {
             query: {
@@ -68,16 +27,24 @@ export class TcpStreamViewProviderQueries {
         return {
             query: {
                 bool: {
-                    filter: {
-                        term: {
-                            'layers.ip.ip_ip_proto': 6,
+                    must: [
+                        { term: { 'layers.ip.ip_ip_proto': 6 } },
+                        {
+                            bool: {
+                                should: [
+                                    { term: { 'layers.tls.tls_handshake_tls_handshake_type': '1' } },
+                                    { term: { 'layers.http.http_http_request': '1' } },
+                                    { term: { 'layers.http.http_http_response': '1' } },
+                                    { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
+                                ],
+                            },
                         },
-                    },
+                    ],
                 },
             },
-            aggs : {
-                by_stream : {
-                    terms : { field : 'streamId', size: 1000000000 },
+            aggs: {
+                by_stream: {
+                    terms: { field: 'streamId', size: 1000000000 },
                 },
             },
         }

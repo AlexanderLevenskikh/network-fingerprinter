@@ -21,6 +21,10 @@ export function tlsFingerprintProcessor(packet: IPacketViewTls): Nullable<ITlsFi
 
     const userAgent = ja3SignaturesMap[ ja3md5hash ];
 
+    if (!userAgent) {
+        return null;
+    }
+
     return {
         userAgent,
     }

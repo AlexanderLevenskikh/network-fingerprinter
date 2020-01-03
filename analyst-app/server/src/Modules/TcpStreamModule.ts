@@ -3,21 +3,26 @@ import { ElasticsearchModule } from '@nestjs/elasticsearch';
 import { ElasticsearchConfigService } from '../DAL/Elastic/ElasticsearchConfigService';
 import { TcpStreamController } from '../Controllers/TcpStreamController';
 import { TcpStreamViewProvider } from '../DAL/Stream/Tcp/TcpStreamViewProvider';
-import { HttpStreamModule } from './HttpStreamModule';
-import { HttpStreamViewProvider } from '../DAL/Stream/Http/HttpStreamViewProvider';
-import { TlsPacketViewProvider } from '../DAL/Packet/Tls/tls-packet-view-provider.service';
+import { PacketHttpModule } from './PacketHttpModule';
+import { PacketTlsModule } from './PacketTlsModule';
+import { PacketTcpModule } from './PacketTcpModule';
+import { FingerprintModule } from './FingerprintModule';
 
 @Module({
     imports: [
         ElasticsearchModule.registerAsync({
             useClass: ElasticsearchConfigService,
         }),
+        PacketTlsModule,
+        PacketHttpModule,
+        PacketTcpModule,
+        FingerprintModule,
     ],
-    controllers: [TcpStreamController],
+    controllers: [
+        TcpStreamController,
+    ],
     providers: [
         TcpStreamViewProvider,
-        HttpStreamViewProvider,
-        TlsPacketViewProvider,
     ],
 })
 export class TcpStreamModule {

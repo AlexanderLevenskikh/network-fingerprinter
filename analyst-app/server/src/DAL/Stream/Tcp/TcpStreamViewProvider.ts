@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { ITcpStreamHandshakePackets } from './ITcpStreamHandshakePackets';
 import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
 import { map } from 'rxjs/operators';
 import { TcpStreamViewProviderQueries } from './TcpStreamViewProviderQueries';
@@ -8,29 +7,25 @@ import { TcpStreamViewProviderMappers } from './TcpStreamViewProviderMappers';
 import { ITcpStreamView } from './ITcpStreamView';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 import { getApplicationLayerProtocolByFrame } from '../../../Mappers/Stream/Frame/ApplicationLayerProtocolByFrame';
-import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
-import { Nullable } from '../../../Shared/Types/Nullable';
-import { tcpFingerprintProcessor, TcpFingerprintProcessorPacketType } from '../../../Processors/Fingerprint/Tcp/Tcp';
-import { TcpPacketViewProviderMappers } from '../../Packet/Tcp/TcpPacketViewProviderMappers';
-import { HttpStreamViewProvider } from '../Http/HttpStreamViewProvider';
-import {
-    httpFingerprintProcessor,
-    HttpFingerprintProcessorPacketType,
-} from '../../../Processors/Fingerprint/Http/Http';
-import { IFingerprints } from '../../../Processors/Fingerprint/IFingerprints';
-import { TlsPacketViewProvider } from '../../Packet/Tls/tls-packet-view-provider.service';
-import { tlsFingerprintProcessor } from '../../../Processors/Fingerprint/Tls/Tls';
+import { PacketViewHttpProvider } from '../../Packet/Http/PacketViewHttpProvider';
+import { PacketViewTlsProvider } from '../../Packet/Tls/PacketViewTlsProvider';
 import { ITcpStreamFilter } from './ITcpStreamFilter';
 import { compareIsoDates } from '../../../Shared/Utils/compareIsoDates';
 import { filter } from '../../../Shared/Utils/filter';
 import { TcpStreamFilterDateOrder } from './TcpStreamFilterDateOrder';
+import { PacketViewTcpProvider } from '../../Packet/Tcp/PacketViewTcpProvider';
+import { FingerprintViewTcpProvider } from '../../Fingerprint/Tcp/FingerprintViewTcpProvider';
+import { Nullable } from '../../../Shared/Types/Nullable';
+import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
 
 @Injectable()
 export class TcpStreamViewProvider {
     constructor(
         private readonly elasticsearchService: ElasticsearchService,
-        private readonly httpStreamViewProvider: HttpStreamViewProvider,
-        private readonly tlsPacketViewProvider: TlsPacketViewProvider,
+        private readonly packetViewHttpProvider: PacketViewHttpProvider,
+        private readonly packetViewTlsProvider: PacketViewTlsProvider,
+        private readonly packetViewTcpProvider: PacketViewTcpProvider,
+        private readonly fingerprintViewTcpProvider: FingerprintViewTcpProvider,
     ) {}
 
     getTcpStreamsTotal = async (query: ITcpStreamFilter): Promise<number> => {
@@ -49,71 +44,69 @@ export class TcpStreamViewProvider {
         const current = query.current ? Number.parseInt(query.current, 10) - 1 : 0;
         const take = query.take ? Number.parseInt(query.take, 10) : 15;
         const skip = current * take;
-        const skippedStreamIds = filteredStreamIds.slice(skip, skip + take);
+        const selectedPageStreamIds = filteredStreamIds.slice(skip, skip + take);
 
-        const streamPromises = skippedStreamIds.map(async (streamId: string): Promise<ITcpStreamView> => {
-            const { syn, synAck } = await this.getTcpHandshakePacketsByStreamId(streamId);
-            const { request, response } = await this.httpStreamViewProvider.getHttpRequestAndResponsePacketsByStream(streamId);
-            const tlsClientHello = await this.tlsPacketViewProvider.getClientHelloByStreamId(streamId);
-            const sample = await this.getTcpSamplePacketByStreamId(streamId);
+        const streamPromises = selectedPageStreamIds.map(async (streamId: string): Promise<ITcpStreamView> => {
+            const { syn, synAck } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
+            const { request, response } = await this.packetViewHttpProvider.getHttpRequestAndResponsePacketsByStream(streamId);
+            const tlsClientHello = await this.packetViewTlsProvider.getClientHelloByStreamId(streamId);
             const streamMetaData = await this.getTcpStreamMetaDataByStreamId(streamId);
             const packetsCount = await this.getTcpStreamDocumentsCount(streamId);
 
-            const sourceTcpFingerprint = syn ? tcpFingerprintProcessor(syn, TcpFingerprintProcessorPacketType.Syn) : null;
-            const sourceHttpFingerprints = request ? httpFingerprintProcessor(request, HttpFingerprintProcessorPacketType.Request) : null;
-            const sourceTlsFingerprints = tlsClientHello ? tlsFingerprintProcessor(tlsClientHello) : null;
-            const sourceFingerprints: IFingerprints = {
-                tcp: sourceTcpFingerprint,
-                http: sourceHttpFingerprints,
-                tls: sourceTlsFingerprints,
-            };
-            const destinationTcpFingerprint = synAck ? tcpFingerprintProcessor(synAck, TcpFingerprintProcessorPacketType.SynAck) : null;
-            const destinationHttpFingerprints = response ? httpFingerprintProcessor(response, HttpFingerprintProcessorPacketType.Response) : null;
-            const destinationFingerprints: IFingerprints = {
-                tcp: destinationTcpFingerprint,
-                http: destinationHttpFingerprints,
-            };
+            const fingerprints = await this.fingerprintViewTcpProvider.calculateFingerprints(
+                syn, synAck, tlsClientHello, request, response,
+            );
 
-            const packetForAddressesCalculation = syn || synAck || sample;
+            const applicationLayerProtocols = await
+                this.packetViewTcpProvider.getTcpApplicationLayersProtocolsByStreamId(streamId);
 
-            const sourceMac = (packetForAddressesCalculation && packetForAddressesCalculation.eth)
-                ? packetForAddressesCalculation.eth.sourceMac
-                : null;
-            const sourceIp = (packetForAddressesCalculation && packetForAddressesCalculation.ip)
-                ? packetForAddressesCalculation.ip.sourceIp
-                : null;
-            const sourcePort = (packetForAddressesCalculation && packetForAddressesCalculation.tcp)
-                ? packetForAddressesCalculation.tcp.sourcePort
-                : null;
-            const destinationMac = (packetForAddressesCalculation && packetForAddressesCalculation.eth)
-                ? packetForAddressesCalculation.eth.destinationMac
-                : null;
-            const destinationIp = (packetForAddressesCalculation && packetForAddressesCalculation.ip)
-                ? packetForAddressesCalculation.ip.destinationIp
-                : null;
-            const destinationPort = (packetForAddressesCalculation && packetForAddressesCalculation.tcp)
-                ? packetForAddressesCalculation.tcp.destinationPort
+            const significantRequestPacket = syn || tlsClientHello || request;
+            const significantResponsePacket = synAck || response;
+
+            const sourceAndDestinationInfo = this.getSourceAndDestinationInfo(
+                significantRequestPacket || significantResponsePacket,
+                Boolean(significantRequestPacket),
+            );
+
+            const serverNameIndication = (tlsClientHello && tlsClientHello.tls)
+                ? tlsClientHello.tls.serverNameIndication
                 : null;
 
             return {
                 streamId,
                 ...streamMetaData,
-                sourceMac,
-                sourceIp,
-                sourcePort,
-                sourceFingerprints,
-                destinationMac,
-                destinationIp,
-                destinationPort,
-                destinationFingerprints,
+                ...sourceAndDestinationInfo,
+                fingerprints,
                 packetsCount,
-                applicationLayerProtocol: (sample && sample.frame) ? getApplicationLayerProtocolByFrame(sample.frame) : null,
-                serverNameIndication: (tlsClientHello && tlsClientHello.tls) ? tlsClientHello.tls.serverNameIndication : null,
+                applicationLayerProtocols,
+                serverNameIndication,
             }
         });
 
         return await Promise.all(streamPromises);
     };
+
+    private getSourceAndDestinationInfo(packet: IPacketViewTcp, isRequest: boolean) {
+        if (isRequest) {
+            return {
+                sourceMac: packet.eth ? packet.eth.sourceMac : null,
+                sourceIp: packet.ip ? packet.ip.sourceIp : null,
+                sourcePort: packet.tcp ? packet.tcp.sourcePort : null,
+                destinationMac: packet.eth ? packet.eth.destinationMac : null,
+                destinationIp: packet.ip ? packet.ip.destinationIp : null,
+                destinationPort: packet.tcp ? packet.tcp.destinationPort : null,
+            }
+        }
+
+        return {
+            sourceMac: packet.eth ? packet.eth.destinationMac : null,
+            sourceIp: packet.ip ? packet.ip.destinationIp : null,
+            sourcePort: packet.tcp ? packet.tcp.destinationPort : null,
+            destinationMac: packet.eth ? packet.eth.sourceMac : null,
+            destinationIp: packet.ip ? packet.ip.sourceIp : null,
+            destinationPort: packet.tcp ? packet.tcp.sourcePort : null,
+        }
+    }
 
     private sortStreams = async (query: ITcpStreamFilter, streamIds: string[]) => {
         const dateTimeFromOrder = query.dateTimeFromOrder === TcpStreamFilterDateOrder.Asc
@@ -174,83 +167,70 @@ export class TcpStreamViewProvider {
                 }
             }
 
-            const { syn } = await this.getTcpHandshakePacketsByStreamId(streamId);
+            const { syn, synAck } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
+            const { request, response } = await this.packetViewHttpProvider.getHttpRequestAndResponsePacketsByStream(streamId);
+            const tlsClientHello = await this.packetViewTlsProvider.getClientHelloByStreamId(streamId);
 
-            if (!syn) {
-                return !(query.sourceIp || query.sourceMac || query.sourcePort
-                    || query.destinationIp || query.destinationMac || query.destinationPort);
-            }
+            const significantRequestPacket = syn || tlsClientHello || request;
+            const significantResponsePacket = synAck || response;
+            const significantPacket = significantRequestPacket || significantResponsePacket;
 
-            const {
-                tcp: { sourcePort, destinationPort },
-                ip: { sourceIp, destinationIp },
-                eth: { destinationMac, sourceMac },
-            } = syn;
-
-            if (query.sourceIp && !query.sourceIp.includes(sourceIp)) {
+            if (!significantPacket) {
                 return false;
             }
-            if (query.sourcePort && !query.sourcePort.includes(sourcePort.toString())) {
+            const isSignificantPacketRequest = Boolean(significantRequestPacket);
+
+            let sourceMac = null;
+            let sourceIp = null;
+            let sourcePort = null;
+            let destinationMac = null;
+            let destinationIp = null;
+            let destinationPort = null;
+
+            if (significantPacket.eth) {
+                sourceMac = isSignificantPacketRequest
+                    ? significantPacket.eth.sourceMac
+                    : significantPacket.eth.destinationMac;
+                destinationMac = isSignificantPacketRequest
+                    ? significantPacket.eth.destinationMac
+                    : significantPacket.eth.sourceMac;
+            }
+            if (significantPacket.ip) {
+                sourceIp = isSignificantPacketRequest
+                    ? significantPacket.ip.sourceIp
+                    : significantPacket.ip.destinationIp;
+                destinationIp = isSignificantPacketRequest
+                    ? significantPacket.ip.destinationIp
+                    : significantPacket.ip.sourceIp;
+            }
+            if (significantPacket.tcp) {
+                sourcePort = isSignificantPacketRequest
+                    ? significantPacket.tcp.sourcePort
+                    : significantPacket.tcp.destinationPort;
+                destinationPort = isSignificantPacketRequest
+                    ? significantPacket.tcp.destinationPort
+                    : significantPacket.tcp.sourcePort;
+            }
+
+            if (query.sourceIp && sourceIp && !query.sourceIp.includes(sourceIp)) {
                 return false;
             }
-            if (query.sourceMac && !query.sourceMac.includes(sourceMac)) {
+            if (query.sourcePort && sourcePort && !query.sourcePort.includes(sourcePort.toString())) {
+                return false;
+            }
+            if (query.sourceMac && sourceMac && !query.sourceMac.includes(sourceMac)) {
                 return false;
             }
 
-            if (query.destinationIp && !query.destinationIp.includes(destinationIp)) {
+            if (query.destinationIp && destinationIp && !query.destinationIp.includes(destinationIp)) {
                 return false;
             }
-            if (query.destinationPort && !query.destinationPort.includes(destinationPort.toString())) {
+            if (query.destinationPort && destinationPort && !query.destinationPort.includes(destinationPort.toString())) {
                 return false;
             }
 
-            return !(query.destinationMac && !query.destinationMac.includes(destinationMac));
+            return !(query.destinationMac && destinationMac && !query.destinationMac.includes(destinationMac));
         };
-    };
-
-    private getTcpHandshakePacketsByStreamId = async (streamId: string): Promise<ITcpStreamHandshakePackets> => {
-        const synPacket = await this.elasticsearchService
-            .search<IPacketEntity>({
-                index: 'packets-*',
-                size: 1,
-                body: {
-                    ...TcpStreamViewProviderQueries.buildTcpSynByStreamIdQuery(streamId),
-                },
-            })
-            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
-            .toPromise();
-
-        const synAckPacket = await this.elasticsearchService
-            .search<IPacketEntity>({
-                index: 'packets-*',
-                size: 1,
-                body: {
-                    ...TcpStreamViewProviderQueries.buildTcpSynAckByStreamIdQuery(streamId),
-                },
-            })
-            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
-            .toPromise();
-
-        return {
-            streamId,
-            syn: synPacket.length > 0 ? synPacket[ 0 ] : null,
-            synAck: synAckPacket.length > 0 ? synAckPacket[ 0 ] : null,
-        };
-    };
-
-    private getTcpSamplePacketByStreamId = async (streamId: string): Promise<Nullable<IPacketViewTcp>> => {
-        const sample = await this.elasticsearchService
-            .search<IPacketEntity>({
-                index: 'packets-*',
-                size: 1,
-                body: {
-                    ...TcpStreamViewProviderQueries.buildTcpPacketSampleByStreamIdQuery(streamId),
-                },
-            })
-            .pipe(map(TcpPacketViewProviderMappers.toTcpPacketViews))
-            .toPromise();
-
-        return sample.length > 0 ? sample[ 0 ] : null;
     };
 
     private getTcpStreamMetaDataByStreamId = async (streamId: string): Promise<ITcpStreamMetaData> => {
