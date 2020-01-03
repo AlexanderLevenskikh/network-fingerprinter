@@ -1,5 +1,5 @@
 if [[ $# -ne 1 ]] ; then
-    echo "usage: template.sh node"
+    echo "usage: elk-template.sh node"
     exit
 fi
 
