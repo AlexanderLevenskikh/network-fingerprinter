@@ -1,26 +1,37 @@
 import React, { FC } from 'react';
 import Text from 'antd/es/typography/Text';
-import { ITlsFingerprint } from '../../../../../../../../../server/src/Processors/Fingerprint/Tls/Fingerprint/ITlsFingerprint';
 import styles from './styles.less';
-import { Tooltip } from 'antd';
+import { Tag, Tooltip } from 'antd';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { Nullable } from 'root/shared/types/nullable';
 
 export interface IStreamTlsFingerprintProps {
-    fingerprint: ITlsFingerprint;
+    userAgents: string[];
+    sslBlackListReason: Nullable<string>;
 }
 
-export const StreamTlsFingerprint: FC<IStreamTlsFingerprintProps> = ({ fingerprint }) => {
-    const { userAgent } = fingerprint;
-
+export const StreamTlsFingerprint: FC<IStreamTlsFingerprintProps> = ({ userAgents, sslBlackListReason }) => {
     return (
-        <Paragraph copyable={{ text: userAgent }} className={ styles.text }>
+        <Paragraph className={ styles.text }>
             <Text strong>TLS</Text>
             :&nbsp;
-            <Tooltip placement="topLeft" title={ userAgent }>
-                <Text className={ styles.ellipsis } code ellipsis>
-                    { userAgent }
-                </Text>
-            </Tooltip>
+            <div className={ styles.list }>
+                { sslBlackListReason && (
+                    <Tag color='red' style={{ marginBottom: '5px', marginLeft: '2px' }}>
+                        SSL Blacklist ({sslBlackListReason})
+                    </Tag>
+                ) }
+                { userAgents.map((userAgent, index) =>(
+                    <span key={ index }>
+                        <Tooltip placement="topLeft" title={ userAgent }>
+                            <Text className={ styles.ellipsis } code ellipsis>
+                                { userAgent }
+                            </Text>
+                        </Tooltip>
+                    </span>
+                ))}
+            </div>
+
         </Paragraph>
     )
 };

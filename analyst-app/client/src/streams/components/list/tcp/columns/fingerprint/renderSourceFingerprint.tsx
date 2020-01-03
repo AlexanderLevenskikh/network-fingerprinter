@@ -30,10 +30,11 @@ export function renderSourceFingerprint({ fingerprints, t }: IArgs) {
                     />
                 </li>
             )}
-            { tls && (
+            { tls && Array.isArray(tls.userAgent) &&  (
                 <li>
                     <StreamTlsFingerprint
-                        fingerprint={ tls }
+                        userAgents={ tls.userAgent }
+                        sslBlackListReason={ tls.sslBlackListReason }
                     />
                 </li>
             )}

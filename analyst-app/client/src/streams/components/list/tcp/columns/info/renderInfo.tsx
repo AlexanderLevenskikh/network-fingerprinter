@@ -31,7 +31,8 @@ export function renderInfo(stream: ITcpStreamView, t: TFunction) {
             { serverNameIndication && (
                 <li>
                     <Paragraph copyable={{ text: serverNameIndication }} className={ styles.text }>
-                        vfd
+                        <Text strong>{ t(I18StreamsNsKeys.listPacketsSniColumnSubTitle) }</Text>
+                        :&nbsp;
                         <Tooltip placement="topLeft" title={ serverNameIndication }>
                             <Text code ellipsis className={ styles.ellipsis }>{ serverNameIndication }</Text>
                         </Tooltip>

@@ -78,6 +78,7 @@ export class TcpStatisticsViewProvider {
 
         const tcpFingerprintsSet = new Set<string>();
         const tlsFingerprintsSet = new Set<string>();
+        const sslBlacklistsSet = new Set<string>();
         const httpFingerprintsSet = new Set<string>();
         let hasTlsClientHello = false;
         let hasHttpRequest = false;
@@ -90,7 +91,13 @@ export class TcpStatisticsViewProvider {
             }
 
             if (tls) {
-                tlsFingerprintsSet.add(tls.userAgent);
+                tls.userAgent.forEach(userAgent => {
+                    tlsFingerprintsSet.add(userAgent);
+                });
+
+                if (tls.sslBlackListReason) {
+                    sslBlacklistsSet.add(tls.sslBlackListReason);
+                }
             }
 
             if (http) {
@@ -113,6 +120,7 @@ export class TcpStatisticsViewProvider {
             hasHttpRequest,
             tcpFingerprints: Array.from(tcpFingerprintsSet),
             tlsFingerprints: Array.from(tlsFingerprintsSet),
+            sslBlackListReasons: Array.from(sslBlacklistsSet),
             httpFingerprints: Array.from(httpFingerprintsSet),
         }
     };

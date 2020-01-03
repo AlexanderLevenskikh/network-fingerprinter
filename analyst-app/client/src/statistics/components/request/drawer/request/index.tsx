@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Col, Drawer, Row, Spin } from 'antd';
+import { Col, Drawer, Row, Spin, Tag } from 'antd';
 import Text from 'antd/es/typography/Text';
 import { useTcpStatisticsRequestDetailsDrawer } from 'root/statistics/components/request/drawer/request/hook';
 import Paragraph from 'antd/es/typography/Paragraph';
@@ -14,7 +14,10 @@ interface IProps {
 
 export const TcpStatisticsRequestDetailsDrawer: FC<IProps> = () => {
     const { isOpened, details, loading, close, openStreamsAction, t } = useTcpStatisticsRequestDetailsDrawer();
-    const { tcpFingerprints, tlsFingerprints, httpFingerprints, hasTlsClientHello, hasHttpRequest, mac, ip } = details;
+    const {
+        tcpFingerprints, tlsFingerprints, httpFingerprints, hasTlsClientHello,
+        sslBlackListReasons, hasHttpRequest, mac, ip,
+    } = details;
 
     return (
         <Drawer
@@ -45,6 +48,21 @@ export const TcpStatisticsRequestDetailsDrawer: FC<IProps> = () => {
                     fingerprints={ tlsFingerprints }
                     rowTitle={ t(I18StatisticsNsKeys.detailsTlsFingerprint) }
                 />
+                { sslBlackListReasons && sslBlackListReasons.length > 0 && (
+                    <Row className={ styles.row }>
+                        <Col span={ 10 } className={ classNames(styles.col, styles.colTitle) }>
+                            SSL Blacklist
+                        </Col>
+                        <Col span={ 14 } className={ styles.col }>
+                            { sslBlackListReasons.map(sslBlackListReason => (
+                                <Tag color='red' style={ { marginBottom: '5px', marginLeft: '2px' } }>
+                                    { sslBlackListReason }
+                                </Tag>
+                            )) }
+                        </Col>
+                    </Row>
+
+                ) }
                 <TcpStatisticsDetailsFingerprints
                     t={ t }
                     showFingerprints={ hasHttpRequest }

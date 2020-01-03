@@ -5,5 +5,6 @@ export interface ITcpRequestStatisticsDetailsView {
     hasHttpRequest: boolean;
     tcpFingerprints: string[];
     tlsFingerprints: string[];
+    sslBlackListReasons: string[];
     httpFingerprints: string[];
 }

@@ -3,6 +3,7 @@ import { ja3SignaturesMap } from './Ja3/data';
 import { IPacketViewTls } from '../../../DAL/Packet/Tls/IPacketViewTls';
 import md5 = require('md5');
 import { Nullable } from '../../../Shared/Types/Nullable';
+import { sslBlacklist } from './Ja3/blacklist';
 
 export function tlsFingerprintProcessor(packet: IPacketViewTls): Nullable<ITlsFingerprint> {
     const { tls } = packet;
@@ -27,5 +28,6 @@ export function tlsFingerprintProcessor(packet: IPacketViewTls): Nullable<ITlsFi
 
     return {
         userAgent,
+        sslBlackListReason: sslBlacklist[ja3md5hash],
     }
 }
