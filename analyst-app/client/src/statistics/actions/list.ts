@@ -1,31 +1,29 @@
 import { createAction as csa } from 'typesafe-actions';
 import { IErrorPayload } from 'root/shared/types/actions/errorPayload';
-import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
-import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
-import { ITcpDestinationStatisticsView } from 'DAL/Statistics/Tcp/ITcpDestinationStatisticsView';
+import { ITcpHostStatisticsView } from 'DAL/Statistics/Tcp/ITcpHostStatisticsView';
 
-interface IFetchSourcesSucceedPayload {
-    sources: ITcpSourceStatisticsView[];
+interface IFetchRequestsSucceedPayload {
+    requests: ITcpHostStatisticsView[];
 }
 
-interface IFetchDestinationsSucceedPayload {
-    destinations: ITcpDestinationStatisticsView[];
+interface IFetchResponsesSucceedPayload {
+    responses: ITcpHostStatisticsView[];
 }
 
 export enum TcpStatisticsListActionTypes {
-    FetchSources = 'statistics/sources/list/fetch',
-    FetchSourcesSucceed = 'statistics/sources/list/fetch/succeed',
-    FetchSourcesFailed = 'statistics/sources/list/fetch/failed',
-    FetchDestinations = 'statistics/destinations/list/fetch',
-    FetchDestinationsSucceed = 'statistics/destinations/list/fetch/succeed',
-    FetchDestinationsFailed = 'statistics/destinations/list/fetch/failed',
+    FetchRequests = 'statistics/requests/list/fetch',
+    FetchRequestsSucceed = 'statistics/requests/list/fetch/succeed',
+    FetchRequestsFailed = 'statistics/requests/list/fetch/failed',
+    FetchResponses = 'statistics/responses/list/fetch',
+    FetchResponsesSucceed = 'statistics/responses/list/fetch/succeed',
+    FetchResponsesFailed = 'statistics/responses/list/fetch/failed',
 }
 
 export const TcpStatisticsListActions = {
-    FetchSources: csa(TcpStatisticsListActionTypes.FetchSources)(),
-    FetchSourcesSucceed: csa(TcpStatisticsListActionTypes.FetchSourcesSucceed)<IFetchSourcesSucceedPayload>(),
-    FetchSourcesFailed: csa(TcpStatisticsListActionTypes.FetchSourcesFailed)<IErrorPayload>(),
-    FetchDestinations: csa(TcpStatisticsListActionTypes.FetchDestinations)(),
-    FetchDestinationsSucceed: csa(TcpStatisticsListActionTypes.FetchDestinationsSucceed)<IFetchDestinationsSucceedPayload>(),
-    FetchDestinationsFailed: csa(TcpStatisticsListActionTypes.FetchDestinationsFailed)<IErrorPayload>(),
+    FetchRequests: csa(TcpStatisticsListActionTypes.FetchRequests)(),
+    FetchRequestsSucceed: csa(TcpStatisticsListActionTypes.FetchRequestsSucceed)<IFetchRequestsSucceedPayload>(),
+    FetchRequestsFailed: csa(TcpStatisticsListActionTypes.FetchRequestsFailed)<IErrorPayload>(),
+    FetchResponses: csa(TcpStatisticsListActionTypes.FetchResponses)(),
+    FetchResponsesSucceed: csa(TcpStatisticsListActionTypes.FetchResponsesSucceed)<IFetchResponsesSucceedPayload>(),
+    FetchResponsesFailed: csa(TcpStatisticsListActionTypes.FetchResponsesFailed)<IErrorPayload>(),
 };

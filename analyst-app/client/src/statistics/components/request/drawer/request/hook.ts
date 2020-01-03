@@ -4,17 +4,19 @@ import { useCallback } from 'react';
 import { TcpStatisticsDetailsActions } from 'root/statistics/actions/details';
 import { StreamsRouterActions } from 'root/streams/actions/router';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
+import { useTranslation } from 'react-i18next';
+import { I18nNamespace } from 'root/i18n/resources/namespaces';
 
-export function useTcpStatisticsSourceDetailsDrawer() {
-    const isOpened = useSelector(TcpStatisticsDetailsSelectors.sourceDrawerOpened);
-    const details = useSelector(TcpStatisticsDetailsSelectors.sourceDetails);
-    const loading = useSelector(TcpStatisticsDetailsSelectors.sourceDetailsLoading);
-    const sourceIp = useSelector(TcpStatisticsDetailsSelectors.sourceIp);
-    const sourceMac = useSelector(TcpStatisticsDetailsSelectors.sourceMac);
+export function useTcpStatisticsRequestDetailsDrawer() {
+    const isOpened = useSelector(TcpStatisticsDetailsSelectors.requestDrawerOpened);
+    const details = useSelector(TcpStatisticsDetailsSelectors.requestDetails);
+    const loading = useSelector(TcpStatisticsDetailsSelectors.requestDetailsLoading);
+    const requestIp = useSelector(TcpStatisticsDetailsSelectors.requestIp);
+    const requestMac = useSelector(TcpStatisticsDetailsSelectors.requestMac);
 
     const dispatch = useDispatch();
     const close = useCallback(
-        () => dispatch(TcpStatisticsDetailsActions.CloseSourceDrawer()),
+        () => dispatch(TcpStatisticsDetailsActions.CloseRequestDrawer()),
         [ dispatch ]
     );
 
@@ -24,10 +26,12 @@ export function useTcpStatisticsSourceDetailsDrawer() {
         query: {
             take: 15,
             current: 1,
-            sourceIp,
-            sourceMac,
+            sourceIp: requestIp,
+            sourceMac: requestMac,
         }
     });
+
+    const { t } = useTranslation(I18nNamespace.statistics);
 
     return {
         isOpened,
@@ -35,5 +39,6 @@ export function useTcpStatisticsSourceDetailsDrawer() {
         loading,
         close,
         openStreamsAction,
+        t,
     }
 }

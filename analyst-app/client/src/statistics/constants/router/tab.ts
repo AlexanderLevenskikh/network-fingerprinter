@@ -1,4 +1,4 @@
 export enum TcpStatisticsTabsEnum {
-    Sources = 'sources',
-    Destination = 'destination',
+    Request = 'request',
+    Response = 'response',
 }

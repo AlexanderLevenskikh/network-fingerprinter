@@ -1,4 +1,4 @@
-export interface ITcpDestinationStatisticsDetailsView {
+export interface ITcpResponseStatisticsDetailsView {
     ip: string;
     mac: string;
     hasHttpResponse: boolean;

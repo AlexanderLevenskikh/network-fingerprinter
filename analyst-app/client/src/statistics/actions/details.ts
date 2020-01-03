@@ -1,52 +1,50 @@
 import { createAction as csa } from 'typesafe-actions';
 import { IErrorPayload } from 'root/shared/types/actions/errorPayload';
-import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
-import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
-import { ITcpDestinationStatisticsView } from 'DAL/Statistics/Tcp/ITcpDestinationStatisticsView';
-import { ITcpSourceStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsDetailsView';
-import { ITcpDestinationStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpDestinationStatisticsDetailsView';
+import { ITcpRequestStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpRequestStatisticsDetailsView';
+import { ITcpResponseStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpResponseStatisticsDetailsView';
 
-interface IOpenSourceDrawerPayload {
+interface IOpenRequestDrawerPayload {
     ip: string;
     mac: string;
 }
 
-interface IOpenDestinationDrawerPayload {
+interface IOpenResponseDrawerPayload {
     ip: string;
+    mac: string;
 }
 
-interface IFetchSourceDetailsSucceedPayload {
-    details: ITcpSourceStatisticsDetailsView;
+interface IFetchRequestDetailsSucceedPayload {
+    details: ITcpRequestStatisticsDetailsView;
 }
 
-interface IFetchDestinationDetailsSucceedPayload {
-    details: ITcpDestinationStatisticsDetailsView;
+interface IFetchResponseDetailsSucceedPayload {
+    details: ITcpResponseStatisticsDetailsView;
 }
 
 export enum TcpStatisticsDetailsActionTypes {
-    OpenSourceDrawer = 'statistics/details/source/drawer/open',
-    CloseSourceDrawer = 'statistics/details/source/drawer/close',
-    FetchSourceDetails = 'statistics/details/source/fetch',
-    FetchSourceDetailsSucceed = 'statistics/details/source/fetch/succeed',
-    FetchSourceDetailsFailed = 'statistics/details/source/fetch/failed',
+    OpenRequestDrawer = 'statistics/details/request/drawer/open',
+    CloseRequestDrawer = 'statistics/details/request/drawer/close',
+    FetchRequestDetails = 'statistics/details/request/fetch',
+    FetchRequestDetailsSucceed = 'statistics/details/request/fetch/succeed',
+    FetchRequestDetailsFailed = 'statistics/details/request/fetch/failed',
 
-    OpenDestinationDrawer = 'statistics/details/destination/drawer/open',
-    CloseDestinationDrawer = 'statistics/details/destination/drawer/close',
-    FetchDestinationDetails = 'statistics/details/destination/fetch',
-    FetchDestinationDetailsSucceed = 'statistics/details/destination/fetch/succeed',
-    FetchDestinationDetailsFailed = 'statistics/details/destination/fetch/failed',
+    OpenResponseDrawer = 'statistics/details/response/drawer/open',
+    CloseResponseDrawer = 'statistics/details/response/drawer/close',
+    FetchResponseDetails = 'statistics/details/response/fetch',
+    FetchResponseDetailsSucceed = 'statistics/details/response/fetch/succeed',
+    FetchResponseDetailsFailed = 'statistics/details/response/fetch/failed',
 }
 
 export const TcpStatisticsDetailsActions = {
-    OpenSourceDrawer: csa(TcpStatisticsDetailsActionTypes.OpenSourceDrawer)<IOpenSourceDrawerPayload>(),
-    CloseSourceDrawer: csa(TcpStatisticsDetailsActionTypes.CloseSourceDrawer)(),
-    FetchSourceDetails: csa(TcpStatisticsDetailsActionTypes.FetchSourceDetails)(),
-    FetchSourceDetailsSucceed: csa(TcpStatisticsDetailsActionTypes.FetchSourceDetailsSucceed)<IFetchSourceDetailsSucceedPayload>(),
-    FetchSourceDetailsFailed: csa(TcpStatisticsDetailsActionTypes.FetchSourceDetailsFailed)<IErrorPayload>(),
+    OpenRequestDrawer: csa(TcpStatisticsDetailsActionTypes.OpenRequestDrawer)<IOpenRequestDrawerPayload>(),
+    CloseRequestDrawer: csa(TcpStatisticsDetailsActionTypes.CloseRequestDrawer)(),
+    FetchRequestDetails: csa(TcpStatisticsDetailsActionTypes.FetchRequestDetails)(),
+    FetchRequestDetailsSucceed: csa(TcpStatisticsDetailsActionTypes.FetchRequestDetailsSucceed)<IFetchRequestDetailsSucceedPayload>(),
+    FetchRequestDetailsFailed: csa(TcpStatisticsDetailsActionTypes.FetchRequestDetailsFailed)<IErrorPayload>(),
 
-    OpenDestinationDrawer: csa(TcpStatisticsDetailsActionTypes.OpenDestinationDrawer)<IOpenDestinationDrawerPayload>(),
-    CloseDestinationDrawer: csa(TcpStatisticsDetailsActionTypes.CloseDestinationDrawer)(),
-    FetchDestinationDetails: csa(TcpStatisticsDetailsActionTypes.FetchDestinationDetails)(),
-    FetchDestinationDetailsSucceed: csa(TcpStatisticsDetailsActionTypes.FetchDestinationDetailsSucceed)<IFetchDestinationDetailsSucceedPayload>(),
-    FetchDestinationDetailsFailed: csa(TcpStatisticsDetailsActionTypes.FetchDestinationDetailsFailed)<IErrorPayload>(),
+    OpenResponseDrawer: csa(TcpStatisticsDetailsActionTypes.OpenResponseDrawer)<IOpenResponseDrawerPayload>(),
+    CloseResponseDrawer: csa(TcpStatisticsDetailsActionTypes.CloseResponseDrawer)(),
+    FetchResponseDetails: csa(TcpStatisticsDetailsActionTypes.FetchResponseDetails)(),
+    FetchResponseDetailsSucceed: csa(TcpStatisticsDetailsActionTypes.FetchResponseDetailsSucceed)<IFetchResponseDetailsSucceedPayload>(),
+    FetchResponseDetailsFailed: csa(TcpStatisticsDetailsActionTypes.FetchResponseDetailsFailed)<IErrorPayload>(),
 };

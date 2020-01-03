@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { ITcpSourceStatisticsView } from './ITcpSourceStatisticsView';
-import { ITcpSourceStatisticsDetailsView } from './ITcpSourceStatisticsDetailsView';
+import { ITcpHostStatisticsView } from './ITcpHostStatisticsView';
+import { ITcpRequestStatisticsDetailsView } from './ITcpRequestStatisticsDetailsView';
 import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
 import { map } from 'rxjs/operators';
@@ -11,6 +11,7 @@ import { PacketViewHttpProvider } from '../../Packet/Http/PacketViewHttpProvider
 import { PacketViewTlsProvider } from '../../Packet/Tls/PacketViewTlsProvider';
 import { PacketViewTcpProvider } from '../../Packet/Tcp/PacketViewTcpProvider';
 import { FingerprintViewTcpProvider } from '../../Fingerprint/Tcp/FingerprintViewTcpProvider';
+import { ITcpResponseStatisticsDetailsView } from './ITcpResponseStatisticsDetailsView';
 
 @Injectable()
 export class TcpStatisticsViewProvider {
@@ -22,7 +23,7 @@ export class TcpStatisticsViewProvider {
         private readonly fingerprintViewTcpProvider: FingerprintViewTcpProvider,
     ) {}
 
-    public getSourcesStatistics = (): Promise<ITcpSourceStatisticsView[]> => {
+    public getRequestStatistics = (): Promise<ITcpHostStatisticsView[]> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
@@ -34,15 +35,27 @@ export class TcpStatisticsViewProvider {
             .toPromise();
     };
 
-    public getSourceStatisticsDetails = async (
+    public getResponseStatistics = (): Promise<ITcpHostStatisticsView[]> => {
+        return this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                body: {
+                    ...TcpStatisticsViewProviderQueries.buildDestinationsStatisticsQuery(),
+                },
+            })
+            .pipe(map(TcpStatisticsViewProviderMappers.toSourcesStatistics))
+            .toPromise();
+    };
+
+    public getRequestStatisticsDetails = async (
         ip: string,
         mac: string,
-    ): Promise<ITcpSourceStatisticsDetailsView> => {
+    ): Promise<ITcpRequestStatisticsDetailsView> => {
         const streamIds = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 body: {
-                    ...TcpStatisticsViewProviderQueries.buildSourceStreamsIdsQuery(ip, mac),
+                    ...TcpStatisticsViewProviderQueries.buildRequestDetailsStatisticsQuery(ip, mac),
                 },
             })
             .pipe(map(TcpStreamViewProviderMappers.toStreamIds))
@@ -54,7 +67,7 @@ export class TcpStatisticsViewProvider {
             const tlsClientHello = await this.packetViewTlsProvider.getClientHelloByStreamId(streamId);
 
             return {
-                fingerprints: this.fingerprintViewTcpProvider.calculateSourceFingerprints(
+                fingerprints: this.fingerprintViewTcpProvider.calculateRequestsFingerprints(
                     syn, tlsClientHello, request,
                 ),
                 hasTlsClientHello: Boolean(tlsClientHello),
@@ -100,6 +113,62 @@ export class TcpStatisticsViewProvider {
             hasHttpRequest,
             tcpFingerprints: Array.from(tcpFingerprintsSet),
             tlsFingerprints: Array.from(tlsFingerprintsSet),
+            httpFingerprints: Array.from(httpFingerprintsSet),
+        }
+    };
+
+    public getResponseStatisticsDetails = async (
+        ip: string,
+        mac: string,
+    ): Promise<ITcpResponseStatisticsDetailsView> => {
+        const streamIds = await this.elasticsearchService
+            .search<IPacketEntity>({
+                index: 'packets-*',
+                body: {
+                    ...TcpStatisticsViewProviderQueries.buildDestinationStatisticsDetailsQuery(ip, mac),
+                },
+            })
+            .pipe(map(TcpStreamViewProviderMappers.toStreamIds))
+            .toPromise();
+
+        const promises = streamIds.map(async (streamId) => {
+            const synAck = await this.packetViewTcpProvider.getSynAckByStreamId(streamId);
+            const response = await this.packetViewHttpProvider.getHttpResponseByStreamId(streamId);
+
+            return {
+                fingerprints: this.fingerprintViewTcpProvider.calculateResponsesFingerprints(
+                    synAck, response,
+                ),
+                hasHttpResponse: Boolean(response),
+            };
+        });
+        const fingerprints = await Promise.all(promises);
+
+        const tcpFingerprintsSet = new Set<string>();
+        const httpFingerprintsSet = new Set<string>();
+        let hasHttpResponse = false;
+
+        fingerprints.forEach(fingerprint => {
+            const { fingerprints: { http, tcp } } = fingerprint;
+
+            if (tcp) {
+                tcpFingerprintsSet.add(`${tcp.name}:${tcp.flavour}`);
+            }
+
+            if (http) {
+                httpFingerprintsSet.add(`${http.name}:${http.flavour}`);
+            }
+
+            if (fingerprint.hasHttpResponse) {
+                hasHttpResponse = true;
+            }
+        });
+
+        return {
+            ip,
+            mac,
+            hasHttpResponse,
+            tcpFingerprints: Array.from(tcpFingerprintsSet),
             httpFingerprints: Array.from(httpFingerprintsSet),
         }
     };

@@ -1,7 +1,7 @@
 export enum I18MainNsKeys {
     menuStreamsLabel = 'menuStreamsLabel',
     menuStatisticsLabel = 'menuStatisticsLabel',
-    menuStatisticsSourcesLabel = 'menuStatisticsSourcesLabel',
-    menuStatisticsDestinationLabel = 'menuStatisticsDestinationLabel',
+    menuStatisticsRequestsLabel = 'menuStatisticsRequestsLabel',
+    menuStatisticsResponsesLabel = 'menuStatisticsResponsesLabel',
     menuPlayerLabel = 'menuPlayerLabel',
 }

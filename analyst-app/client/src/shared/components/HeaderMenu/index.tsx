@@ -30,8 +30,8 @@ export const HeaderMenu: FC<IProps> = () => {
     const tcpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Tcp;
     const udpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Udp;
     const statisticsSelected = page === RouterPages.Statistics;
-    const statisticsBySourceSelected = page === RouterPages.Statistics && statisticsTabName === TcpStatisticsTabsEnum.Sources;
-    const statisticsByDestinationSelected = page === RouterPages.Statistics && statisticsTabName === TcpStatisticsTabsEnum.Destination;
+    const statisticsBySourceSelected = page === RouterPages.Statistics && statisticsTabName === TcpStatisticsTabsEnum.Request;
+    const statisticsByDestinationSelected = page === RouterPages.Statistics && statisticsTabName === TcpStatisticsTabsEnum.Response;
     const playerSelected = page === RouterPages.Player;
 
     const selectedKeys = [
@@ -81,18 +81,18 @@ export const HeaderMenu: FC<IProps> = () => {
             >
                 <Menu.Item
                     key={ MenuItemKey.StatisticsBySource }
-                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Sources) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Request) }
                 >
                     <span>
-                        { t(I18MainNsKeys.menuStatisticsSourcesLabel) }
+                        { t(I18MainNsKeys.menuStatisticsRequestsLabel) }
                     </span>
                 </Menu.Item>
                 <Menu.Item
                     key={ MenuItemKey.StatisticsByDestination }
-                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Destination) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Response) }
                 >
                     <span>
-                        { t(I18MainNsKeys.menuStatisticsDestinationLabel) }
+                        { t(I18MainNsKeys.menuStatisticsResponsesLabel) }
                     </span>
                 </Menu.Item>
             </SubMenu>

@@ -7,84 +7,85 @@ type ReducerActions = ActionType<typeof TcpStatisticsDetailsActions>;
 
 export const tcpStatisticsDetailsReducer = (state = initialState, action: ReducerActions): TcpStatisticsDetailsState => {
     switch (action.type) {
-        case TcpStatisticsDetailsActionTypes.OpenSourceDrawer: {
+        case TcpStatisticsDetailsActionTypes.OpenRequestDrawer: {
             const { ip, mac } = action.payload;
 
             return {
                 ...state,
-                sourceDrawerOpened: true,
-                sourceIp: ip,
-                sourceMac: mac,
+                requestDrawerOpened: true,
+                requestIp: ip,
+                requestMac: mac,
             };
         }
 
-        case TcpStatisticsDetailsActionTypes.CloseSourceDrawer: {
+        case TcpStatisticsDetailsActionTypes.CloseRequestDrawer: {
             return {
                 ...state,
-                sourceDrawerOpened: false,
+                requestDrawerOpened: false,
             };
         }
 
-        case TcpStatisticsDetailsActionTypes.FetchSourceDetails: {
+        case TcpStatisticsDetailsActionTypes.FetchRequestDetails: {
             return {
                 ...state,
-                sourceDetailsLoading: true,
+                requestDetailsLoading: true,
             };
         }
-        case TcpStatisticsDetailsActionTypes.FetchSourceDetailsSucceed: {
+        case TcpStatisticsDetailsActionTypes.FetchRequestDetailsSucceed: {
             const { details } = action.payload;
 
             return {
                 ...state,
-                sourceDetailsLoading: false,
-                sourceDetails: details,
+                requestDetailsLoading: false,
+                requestDetails: details,
             }
         }
 
-        case TcpStatisticsDetailsActionTypes.FetchSourceDetailsFailed:  {
+        case TcpStatisticsDetailsActionTypes.FetchRequestDetailsFailed:  {
             return {
                 ...state,
-                sourceDetailsLoading: false,
+                requestDetailsLoading: false,
             }
         }
 
-        case TcpStatisticsDetailsActionTypes.OpenDestinationDrawer: {
-            const { ip } = action.payload;
+        case TcpStatisticsDetailsActionTypes.OpenResponseDrawer: {
+            const { ip, mac } = action.payload;
 
             return {
                 ...state,
-                destinationDrawerOpened: true,
-                destinationIp: ip,
+                responseDrawerOpened: true,
+                responseIp: ip,
+                responseMac: mac,
             };
         }
 
-        case TcpStatisticsDetailsActionTypes.CloseDestinationDrawer: {
+        case TcpStatisticsDetailsActionTypes.CloseResponseDrawer: {
             return {
                 ...state,
-                destinationDrawerOpened: false,
+                responseDrawerOpened: false,
             };
         }
 
-        case TcpStatisticsDetailsActionTypes.FetchDestinationDetails: {
+        case TcpStatisticsDetailsActionTypes.FetchResponseDetails: {
             return {
                 ...state,
-                destinationDetailsLoading: true,
+                responseDetailsLoading: true,
             };
         }
-        case TcpStatisticsDetailsActionTypes.FetchDestinationDetailsSucceed: {
+        case TcpStatisticsDetailsActionTypes.FetchResponseDetailsSucceed: {
             const { details } = action.payload;
 
             return {
                 ...state,
-                destinationDetailsLoading: false,
-                destinationDetails: details,
+                responseDetailsLoading: false,
+                responseDetails: details,
             }
         }
 
-        case TcpStatisticsDetailsActionTypes.FetchDestinationDetailsFailed:  {
+        case TcpStatisticsDetailsActionTypes.FetchResponseDetailsFailed:  {
             return {
                 ...state,
-                destinationDetailsLoading: false,
+                responseDetailsLoading: false,
             }
         }
 

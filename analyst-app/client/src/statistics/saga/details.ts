@@ -4,25 +4,45 @@ import { TcpStatisticsDetailsActions, TcpStatisticsDetailsActionTypes } from 'ro
 import { TcpStatisticsDetailsSelectors } from 'root/statistics/selectors/details';
 
 export function* tcpStatisticsDetailsSagaArray() {
-    yield spawn(watchFetchTcpStatisticsSourceDetailsSaga);
+    yield spawn(watchFetchTcpStatisticsRequestDetailsSaga);
+    yield spawn(watchFetchTcpStatisticsResponseDetailsSaga);
 }
 
-export function* watchFetchTcpStatisticsSourceDetailsSaga() {
-    yield takeLatest(TcpStatisticsDetailsActionTypes.OpenSourceDrawer, fetchTcpStatisticsSourceDetailsSaga);
+export function* watchFetchTcpStatisticsRequestDetailsSaga() {
+    yield takeLatest(TcpStatisticsDetailsActionTypes.OpenRequestDrawer, fetchTcpStatisticsRequestDetailsSaga);
 }
 
-export function* fetchTcpStatisticsSourceDetailsSaga() {
+export function* fetchTcpStatisticsRequestDetailsSaga() {
     try {
-        yield put(TcpStatisticsDetailsActions.FetchSourceDetails());
+        yield put(TcpStatisticsDetailsActions.FetchRequestDetails());
         const { tcpStatisticsApi } = (yield getContext('dependencies')) as IDependencies;
-        const ip = yield select(TcpStatisticsDetailsSelectors.sourceIp);
-        const mac = yield select(TcpStatisticsDetailsSelectors.sourceMac);
+        const ip = yield select(TcpStatisticsDetailsSelectors.requestIp);
+        const mac = yield select(TcpStatisticsDetailsSelectors.requestMac);
 
-        const details = yield call(tcpStatisticsApi.getSourceStatisticsDetails, mac, ip);
+        const details = yield call(tcpStatisticsApi.getRequestStatisticsDetails, mac, ip);
 
-        yield put(TcpStatisticsDetailsActions.FetchSourceDetailsSucceed({ details }));
+        yield put(TcpStatisticsDetailsActions.FetchRequestDetailsSucceed({ details }));
     } catch (error) {
-        yield put(TcpStatisticsDetailsActions.FetchSourceDetailsFailed({ error }));
+        yield put(TcpStatisticsDetailsActions.FetchRequestDetailsFailed({ error }));
+    }
+}
+
+export function* watchFetchTcpStatisticsResponseDetailsSaga() {
+    yield takeLatest(TcpStatisticsDetailsActionTypes.OpenResponseDrawer, fetchTcpStatisticsResponseDetailsSaga);
+}
+
+export function* fetchTcpStatisticsResponseDetailsSaga() {
+    try {
+        yield put(TcpStatisticsDetailsActions.FetchResponseDetails());
+        const { tcpStatisticsApi } = (yield getContext('dependencies')) as IDependencies;
+        const ip = yield select(TcpStatisticsDetailsSelectors.responseIp);
+        const mac = yield select(TcpStatisticsDetailsSelectors.responseMac);
+
+        const details = yield call(tcpStatisticsApi.getResponseStatisticsDetails, mac, ip);
+
+        yield put(TcpStatisticsDetailsActions.FetchResponseDetailsSucceed({ details }));
+    } catch (error) {
+        yield put(TcpStatisticsDetailsActions.FetchResponseDetailsFailed({ error }));
     }
 }
 

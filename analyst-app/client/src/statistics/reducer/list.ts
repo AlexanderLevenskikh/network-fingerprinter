@@ -7,49 +7,49 @@ type ReducerActions = ActionType<typeof TcpStatisticsListActions>;
 
 export const tcpStatisticsListReducer = (state = initialState, action: ReducerActions): TcpStatisticsListState => {
     switch (action.type) {
-        case TcpStatisticsListActionTypes.FetchSources: {
+        case TcpStatisticsListActionTypes.FetchRequests: {
             return {
                 ...state,
-                sourcesLoading: true,
+                requestsLoading: true,
             };
         }
-        case TcpStatisticsListActionTypes.FetchSourcesSucceed: {
-            const { sources } = action.payload;
+        case TcpStatisticsListActionTypes.FetchRequestsSucceed: {
+            const { requests } = action.payload;
 
             return {
                 ...state,
-                sourcesLoading: false,
-                sources,
+                requestsLoading: false,
+                requests,
             }
         }
 
-        case TcpStatisticsListActionTypes.FetchSourcesFailed:  {
+        case TcpStatisticsListActionTypes.FetchRequestsFailed:  {
             return {
                 ...state,
-                sourcesLoading: false,
+                requestsLoading: false,
             }
         }
 
-        case TcpStatisticsListActionTypes.FetchDestinations: {
+        case TcpStatisticsListActionTypes.FetchResponses: {
             return {
                 ...state,
-                destinationsLoading: true,
+                responsesLoading: true,
             };
         }
-        case TcpStatisticsListActionTypes.FetchDestinationsSucceed: {
-            const { destinations } = action.payload;
+        case TcpStatisticsListActionTypes.FetchResponsesSucceed: {
+            const { responses } = action.payload;
 
             return {
                 ...state,
-                destinationsLoading: false,
-                destinations,
+                responsesLoading: false,
+                responses,
             }
         }
 
-        case TcpStatisticsListActionTypes.FetchDestinationsFailed:  {
+        case TcpStatisticsListActionTypes.FetchResponsesFailed:  {
             return {
                 ...state,
-                destinationsLoading: false,
+                responsesLoading: false,
             }
         }
 

@@ -1,24 +1,23 @@
 import { ColumnProps } from 'antd/lib/table';
 import { TFunction } from 'i18next';
 import React from 'react';
-import { StreamDatesOrder } from 'root/streams/model/list/streamDatesOrder';
-import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
+import { ITcpHostStatisticsView } from 'DAL/Statistics/Tcp/ITcpHostStatisticsView';
 import { I18StatisticsNsKeys } from 'root/i18n/resources/statistics/keys';
-import styles from './styles.less';
+import styles from '../styles.less';
 
-export function createTcpSourceStatisticsColumnsConfiguration(
+export function createTcpResponsesStatisticsColumnsConfiguration(
     t: TFunction,
-): ColumnProps<ITcpSourceStatisticsView>[] {
+): ColumnProps<ITcpHostStatisticsView>[] {
     return [
         {
-            title: t(I18StatisticsNsKeys.listSourceIpColumnTitle),
+            title: t(I18StatisticsNsKeys.listResponseIpColumnTitle),
             key: 'ip',
             dataIndex: 'ip',
             width: '50%',
             className: styles.column,
         },
         {
-            title: t(I18StatisticsNsKeys.listSourceMacColumnTitle),
+            title: t(I18StatisticsNsKeys.listResponseMacColumnTitle),
             key: 'mac',
             dataIndex: 'mac',
             width: '50%',

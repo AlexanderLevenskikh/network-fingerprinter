@@ -1,29 +1,55 @@
 import { httpClient, HttpClientMethod, HttpClientResponseType } from 'root/api/httpClient';
-import { ITcpStreamsApi } from 'root/api/interface/tcpStreams';
-import { ITcpStreamFilter } from 'DAL/Stream/Tcp/ITcpStreamFilter';
-import { ITcpStreamsView } from 'DAL/Stream/Tcp/ITcpStreamsView';
 import { ITcpStatisticsApi } from 'root/api/interface/tcpStatistics';
-import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
-import { ITcpSourceStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsDetailsView';
+import { ITcpHostStatisticsView } from 'DAL/Statistics/Tcp/ITcpHostStatisticsView';
+import { ITcpRequestStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpRequestStatisticsDetailsView';
+import { ITcpResponseStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpResponseStatisticsDetailsView';
 
 export class TcpStatisticsApi implements ITcpStatisticsApi {
-    getSourcesStatistics(): Promise<ITcpSourceStatisticsView[]> {
+    getRequestStatistics(): Promise<ITcpHostStatisticsView[]> {
         return httpClient({
             controller: 'api/statistics/tcp',
-            action: 'source',
+            action: 'request',
             method: HttpClientMethod.GET,
             request: {},
             responseType: HttpClientResponseType.JSON,
         });
     }
 
-    getSourceStatisticsDetails(
+    getRequestStatisticsDetails(
         mac: string,
         ip: string,
-    ): Promise<ITcpSourceStatisticsDetailsView> {
+    ): Promise<ITcpRequestStatisticsDetailsView> {
         return httpClient({
             controller: 'api/statistics/tcp',
-            action: 'source/details',
+            action: 'request/details',
+            method: HttpClientMethod.GET,
+            request: {
+                query: {
+                    mac,
+                    ip,
+                }
+            },
+            responseType: HttpClientResponseType.JSON,
+        });
+    }
+
+    getResponseStatistics(): Promise<ITcpHostStatisticsView[]> {
+        return httpClient({
+            controller: 'api/statistics/tcp',
+            action: 'response',
+            method: HttpClientMethod.GET,
+            request: {},
+            responseType: HttpClientResponseType.JSON,
+        });
+    }
+
+    getResponseStatisticsDetails(
+        mac: string,
+        ip: string,
+    ): Promise<ITcpResponseStatisticsDetailsView> {
+        return httpClient({
+            controller: 'api/statistics/tcp',
+            action: 'response/details',
             method: HttpClientMethod.GET,
             request: {
                 query: {

@@ -16,8 +16,8 @@ enum MenuItemKey {
 export const StatisticsSider: FC<IProps> = () => {
     const { statisticsTabName, t, onClickStatistics } = useStatisticsSider();
 
-    const statisticsBySourceSelected = statisticsTabName === TcpStatisticsTabsEnum.Sources;
-    const statisticsByDestinationSelected = statisticsTabName === TcpStatisticsTabsEnum.Destination;
+    const statisticsBySourceSelected = statisticsTabName === TcpStatisticsTabsEnum.Request;
+    const statisticsByDestinationSelected = statisticsTabName === TcpStatisticsTabsEnum.Response;
 
     const selectedKeys = [
         ...(statisticsBySourceSelected ? [ MenuItemKey.StatisticsBySource ] : []),
@@ -33,20 +33,20 @@ export const StatisticsSider: FC<IProps> = () => {
             >
                 <Menu.Item
                     key={ MenuItemKey.StatisticsBySource }
-                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Sources) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Request) }
                 >
                     <Icon type="logout" />
                     <span>
-                        { t(I18MainNsKeys.menuStatisticsSourcesLabel) }
+                        { t(I18MainNsKeys.menuStatisticsRequestsLabel) }
                     </span>
                 </Menu.Item>
                 <Menu.Item
                     key={ MenuItemKey.StatisticsByDestination }
-                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Destination) }
+                    onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Response) }
                 >
                     <Icon type="login" />
                     <span>
-                        { t(I18MainNsKeys.menuStatisticsDestinationLabel) }
+                        { t(I18MainNsKeys.menuStatisticsResponsesLabel) }
                     </span>
                 </Menu.Item>
             </Menu>

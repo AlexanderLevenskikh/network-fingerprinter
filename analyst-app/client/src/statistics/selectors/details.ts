@@ -1,16 +1,17 @@
 import { IState } from 'root/app/state';
 
 export class TcpStatisticsDetailsSelectors {
-    static destinationDetails = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationDetails;
-    static destinationDetailsLoading = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationDetailsLoading;
-    static destinationDrawerOpened = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationDrawerOpened;
-    static sourceIp = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).sourceIp;
-    static sourceMac = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).sourceMac;
+    static requestIp = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).requestIp;
+    static requestMac = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).requestMac;
+    static requestDetails = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).requestDetails;
+    static requestDetailsLoading = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).requestDetailsLoading;
+    static requestDrawerOpened = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).requestDrawerOpened;
 
-    static sourceDetails = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).sourceDetails;
-    static sourceDetailsLoading = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).sourceDetailsLoading;
-    static sourceDrawerOpened = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).sourceDrawerOpened;
-    static destinationIp = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).destinationIp;
+    static responseIp = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).responseIp;
+    static responseMac = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).responseMac;
+    static responseDetails = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).responseDetails;
+    static responseDetailsLoading = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).responseDetailsLoading;
+    static responseDrawerOpened = (state: IState) => TcpStatisticsDetailsSelectors.selectSlice(state).responseDrawerOpened;
 
     private static selectSlice = (state: IState) => state.statistics.details;
 }

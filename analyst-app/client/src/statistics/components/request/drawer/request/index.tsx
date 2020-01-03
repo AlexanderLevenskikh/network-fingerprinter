@@ -1,19 +1,19 @@
 import React, { FC } from 'react';
-import { Button, Col, Drawer, Row, Spin } from 'antd';
+import { Col, Drawer, Row, Spin } from 'antd';
 import Text from 'antd/es/typography/Text';
-import { useTcpStatisticsSourceDetailsDrawer } from 'root/statistics/components/source/drawer/hook';
-import Title from 'antd/es/typography/Title';
+import { useTcpStatisticsRequestDetailsDrawer } from 'root/statistics/components/request/drawer/request/hook';
 import Paragraph from 'antd/es/typography/Paragraph';
-import styles from './styles.less';
+import styles from '../styles.less';
 import { TcpStatisticsDetailsFingerprints } from 'root/statistics/components/shared/drawer/fingerprints';
 import classNames from 'classnames';
 import { RouterLink } from 'root/shared/components/RouterLink';
+import { I18StatisticsNsKeys } from 'root/i18n/resources/statistics/keys';
 
 interface IProps {
 }
 
-export const TcpStatisticsSourceDetailsDrawer: FC<IProps> = () => {
-    const { isOpened, details, loading, close, openStreamsAction } = useTcpStatisticsSourceDetailsDrawer();
+export const TcpStatisticsRequestDetailsDrawer: FC<IProps> = () => {
+    const { isOpened, details, loading, close, openStreamsAction, t } = useTcpStatisticsRequestDetailsDrawer();
     const { tcpFingerprints, tlsFingerprints, httpFingerprints, hasTlsClientHello, hasHttpRequest, mac, ip } = details;
 
     return (
@@ -27,30 +27,33 @@ export const TcpStatisticsSourceDetailsDrawer: FC<IProps> = () => {
                 <Row className={ styles.titleRow }>
                     <Paragraph>
                         <span className={ styles.title }>
-                            Статистика по источнику
+                            { t(I18StatisticsNsKeys.detailsRequestTitle) }
                         </span>
                         &nbsp;
                         <Text code>{ ip }</Text>:<Text code>{ mac }</Text>
                     </Paragraph>
                 </Row>
                 <TcpStatisticsDetailsFingerprints
+                    t={ t }
                     showFingerprints
                     fingerprints={ tcpFingerprints }
-                    rowTitle='Цифровой отпечаток TCP'
+                    rowTitle={ t(I18StatisticsNsKeys.detailsTcpFingerprint) }
                 />
                 <TcpStatisticsDetailsFingerprints
+                    t={ t }
                     showFingerprints={ hasTlsClientHello }
                     fingerprints={ tlsFingerprints }
-                    rowTitle='Цифровой отпечаток TLS'
+                    rowTitle={ t(I18StatisticsNsKeys.detailsTlsFingerprint) }
                 />
                 <TcpStatisticsDetailsFingerprints
+                    t={ t }
                     showFingerprints={ hasHttpRequest }
                     fingerprints={ httpFingerprints }
-                    rowTitle={ httpFingerprints.length > 1 ? 'Цифровые отпечатки HTTP' : 'Цифровой отпечаток HTTP' }
+                    rowTitle={ t(I18StatisticsNsKeys.detailsHttpFingerprint) }
                 />
                 <Row className={ styles.row }>
                     <Col span={ 10 } className={ classNames(styles.col, styles.colTitle) }>
-                        Потоки
+                        { t(I18StatisticsNsKeys.detailsStreams) }
                     </Col>
                     <Col span={ 14 } className={ styles.col }>
                         <RouterLink
@@ -58,7 +61,7 @@ export const TcpStatisticsSourceDetailsDrawer: FC<IProps> = () => {
                             target='_blank'
                             rel='noopener noreferrer'
                         >
-                            Открыть в новой вкладке
+                            { t(I18StatisticsNsKeys.detailsStreamsOpenInNewTab) }
                         </RouterLink>
                     </Col>
                 </Row>

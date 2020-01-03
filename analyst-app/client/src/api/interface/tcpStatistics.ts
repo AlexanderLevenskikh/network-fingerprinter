@@ -1,11 +1,19 @@
-import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
-import { ITcpSourceStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsDetailsView';
+import { ITcpHostStatisticsView } from 'DAL/Statistics/Tcp/ITcpHostStatisticsView';
+import { ITcpRequestStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpRequestStatisticsDetailsView';
+import { ITcpResponseStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpResponseStatisticsDetailsView';
 
 export interface ITcpStatisticsApi {
-    getSourcesStatistics(): Promise<ITcpSourceStatisticsView[]>;
+    getRequestStatistics(): Promise<ITcpHostStatisticsView[]>;
 
-    getSourceStatisticsDetails(
+    getRequestStatisticsDetails(
         mac: string,
         ip: string,
-    ): Promise<ITcpSourceStatisticsDetailsView>;
+    ): Promise<ITcpRequestStatisticsDetailsView>;
+
+    getResponseStatistics(): Promise<ITcpHostStatisticsView[]>;
+
+    getResponseStatisticsDetails(
+        mac: string,
+        ip: string,
+    ): Promise<ITcpResponseStatisticsDetailsView>;
 }

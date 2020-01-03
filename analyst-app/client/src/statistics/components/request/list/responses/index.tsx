@@ -1,18 +1,17 @@
 import React, { FC } from 'react';
-import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { Table } from 'antd';
-import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
-import { useTcpSourcesStatisticsList } from 'root/statistics/components/source/list/hook';
+import { ITcpHostStatisticsView } from 'DAL/Statistics/Tcp/ITcpHostStatisticsView';
+import { useTcpResponsesStatisticsList } from 'root/statistics/components/request/list/responses/hook';
 
 interface IProps {
 }
 
-export const TcpSourcesStatisticsList: FC<IProps> = () => {
-    const { columns, loading, sources, openDrawer } = useTcpSourcesStatisticsList();
-    const getRowKey = ({ ip, mac }: ITcpSourceStatisticsView) => `${ip}:${mac}`;
+export const TcpResponsesStatisticsList: FC<IProps> = () => {
+    const { columns, loading, sources, openDrawer } = useTcpResponsesStatisticsList();
+    const getRowKey = ({ ip, mac }: ITcpHostStatisticsView) => `${ip}:${mac}`;
 
     return (
-        <Table<ITcpSourceStatisticsView>
+        <Table<ITcpHostStatisticsView>
             columns={ columns }
             rowKey={ getRowKey }
             dataSource={ sources }

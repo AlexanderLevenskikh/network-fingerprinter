@@ -5,28 +5,36 @@ import styles from './styles.less';
 import { useSelector } from 'react-redux';
 import { TcpStatisticsRouterSelectors } from 'root/statistics/selectors/router';
 import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
-import { TcpSourcesStatisticsList } from 'root/statistics/components/source/list';
-import { TcpStatisticsSourceDetailsDrawer } from 'root/statistics/components/source/drawer';
+import { TcpRequestsStatisticsList } from 'root/statistics/components/request/list/requests';
+import { TcpStatisticsRequestDetailsDrawer } from 'root/statistics/components/request/drawer/request';
+import { TcpResponsesStatisticsList } from 'root/statistics/components/request/list/responses';
+import { TcpStatisticsResponseDetailsDrawer } from 'root/statistics/components/request/drawer/response';
 
 interface IProps {
 }
 
 const { Content } = Layout;
 
-export const StatisticsPage: FC<IProps> = ({ children }) => {
+export const StatisticsPage: FC<IProps> = () => {
     const tabName = useSelector(TcpStatisticsRouterSelectors.tabName);
-    const isSourcesTab = tabName === TcpStatisticsTabsEnum.Sources;
-    const isDestinationsTab = tabName === TcpStatisticsTabsEnum.Destination;
+    const isRequestTab = tabName === TcpStatisticsTabsEnum.Request;
+    const isResponseTab = tabName === TcpStatisticsTabsEnum.Response;
 
     return (
         <Layout className={ styles.wrapper }>
             <StatisticsSider />
             <Content className={ styles.content }>
-                { isSourcesTab && (
-                    <TcpSourcesStatisticsList />
+                { isRequestTab && (
+                    <TcpRequestsStatisticsList />
                 )}
-                { isSourcesTab && (
-                    <TcpStatisticsSourceDetailsDrawer />
+                { isRequestTab && (
+                    <TcpStatisticsRequestDetailsDrawer />
+                )}
+                { isResponseTab && (
+                    <TcpResponsesStatisticsList />
+                )}
+                { isResponseTab && (
+                    <TcpStatisticsResponseDetailsDrawer />
                 )}
             </Content>
         </Layout>

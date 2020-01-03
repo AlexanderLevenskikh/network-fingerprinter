@@ -1,4 +1,4 @@
-export interface ITcpSourceStatisticsDetailsView {
+export interface ITcpRequestStatisticsDetailsView {
     ip: string;
     mac: string;
     hasTlsClientHello: boolean;

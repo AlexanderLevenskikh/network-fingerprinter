@@ -1,29 +1,41 @@
-import { spawn, call, getContext, put, takeLatest, select } from 'redux-saga/effects';
+import { call, getContext, put, spawn, takeLatest } from 'redux-saga/effects';
 import { IDependencies } from 'root/app/dependencies';
-import { StreamsListActions, StreamsListActionTypes } from 'root/streams/actions/list';
-import { StreamsRouterActionTypes } from 'root/streams/actions/router';
-import { StreamRouterSelectors } from 'root/streams/selectors/router';
-import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
-import { mapSearchParamsToDto } from 'root/streams/mappers/search/tcpSearchParams';
 import { TcpStatisticsListActions, TcpStatisticsListActionTypes } from 'root/statistics/actions/list';
 
 export function* tcpStatisticsListSagaArray() {
-    yield spawn(watchFetchTcpSourcesStatisticsListSaga);
+    yield spawn(watchFetchTcpRequestsStatisticsListSaga);
+    yield spawn(watchFetchTcpResponsesStatisticsListSaga);
 }
 
-export function* watchFetchTcpSourcesStatisticsListSaga() {
-    yield takeLatest(TcpStatisticsListActionTypes.FetchSources, fetchTcpSourcesStatisticsListSaga);
+export function* watchFetchTcpRequestsStatisticsListSaga() {
+    yield takeLatest(TcpStatisticsListActionTypes.FetchRequests, fetchTcpRequestsStatisticsListSaga);
 }
 
-export function* fetchTcpSourcesStatisticsListSaga() {
+export function* fetchTcpRequestsStatisticsListSaga() {
     try {
         const { tcpStatisticsApi } = (yield getContext('dependencies')) as IDependencies;
 
-        const sources = yield call(tcpStatisticsApi.getSourcesStatistics);
+        const requests = yield call(tcpStatisticsApi.getRequestStatistics);
 
-        yield put(TcpStatisticsListActions.FetchSourcesSucceed({ sources }));
+        yield put(TcpStatisticsListActions.FetchRequestsSucceed({ requests }));
     } catch (error) {
-        yield put(TcpStatisticsListActions.FetchSourcesFailed({ error }));
+        yield put(TcpStatisticsListActions.FetchRequestsFailed({ error }));
+    }
+}
+
+export function* watchFetchTcpResponsesStatisticsListSaga() {
+    yield takeLatest(TcpStatisticsListActionTypes.FetchResponses, fetchTcpResponsesStatisticsListSaga);
+}
+
+export function* fetchTcpResponsesStatisticsListSaga() {
+    try {
+        const { tcpStatisticsApi } = (yield getContext('dependencies')) as IDependencies;
+
+        const responses = yield call(tcpStatisticsApi.getResponseStatistics);
+
+        yield put(TcpStatisticsListActions.FetchResponsesSucceed({ responses }));
+    } catch (error) {
+        yield put(TcpStatisticsListActions.FetchResponsesFailed({ error }));
     }
 }
 

@@ -1,9 +1,8 @@
-import { ITcpSourceStatisticsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsView';
-import { ITcpDestinationStatisticsView } from 'DAL/Statistics/Tcp/ITcpDestinationStatisticsView';
+import { ITcpHostStatisticsView } from 'DAL/Statistics/Tcp/ITcpHostStatisticsView';
 
 export class TcpStatisticsListState {
-    sources: ITcpSourceStatisticsView[] = [];
-    destinations: ITcpDestinationStatisticsView[] = [];
-    sourcesLoading: boolean = false;
-    destinationsLoading: boolean = false;
+    requests: ITcpHostStatisticsView[] = [];
+    responses: ITcpHostStatisticsView[] = [];
+    requestsLoading: boolean = false;
+    responsesLoading: boolean = false;
 }

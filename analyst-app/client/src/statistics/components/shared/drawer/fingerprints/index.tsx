@@ -4,16 +4,19 @@ import Text from 'antd/es/typography/Text';
 import styles from './styles.less';
 import classNames from 'classnames';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { TFunction } from 'i18next';
+import { I18StatisticsNsKeys } from 'root/i18n/resources/statistics/keys';
 
 interface IProps {
     rowTitle: string;
     showFingerprints: boolean;
     fingerprints: string[];
+    t: TFunction;
     onAddSignature?(): void;
 }
 
 export const TcpStatisticsDetailsFingerprints: FC<IProps> = props => {
-    const { fingerprints, onAddSignature, rowTitle, showFingerprints } = props;
+    const { fingerprints, onAddSignature, rowTitle, showFingerprints, t } = props;
 
     if (!showFingerprints) {
         return null;
@@ -24,10 +27,12 @@ export const TcpStatisticsDetailsFingerprints: FC<IProps> = props => {
             return (
                 <>
                     <Tag color="red">
-                        Не определен
+                        { t(I18StatisticsNsKeys.detailsNotRecognized) }
                     </Tag>
                     { onAddSignature && (
-                        <Button type='link'>Добавить сигнатуру?</Button>
+                        <Button type='link'>
+                            { t(I18StatisticsNsKeys.detailsAddSignature) }
+                        </Button>
                     )}
                 </>
             )
@@ -53,7 +58,7 @@ export const TcpStatisticsDetailsFingerprints: FC<IProps> = props => {
             <ul className={ styles.ul }>
                 <li>
                     <Tag color="orange">
-                        Обнаружено несколько совпадений
+                        { t(I18StatisticsNsKeys.detailsSeveralMatches) }
                     </Tag>
                 </li>
                 { fingerprints.map((fingerprint, index) => {

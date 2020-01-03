@@ -22,8 +22,8 @@ export class FingerprintViewTcpProvider {
         httpRequest: Nullable<IPacketViewHttp>,
         httpResponse: Nullable<IPacketViewHttp>,
     ): IFingerprintViewTcp {
-        const source = this.calculateSourceFingerprints(tcpSyn, tlsClientHello, httpRequest);
-        const destination = this.calculateDestinationFingerprints(tcpSynAck, httpResponse);
+        const source = this.calculateRequestsFingerprints(tcpSyn, tlsClientHello, httpRequest);
+        const destination = this.calculateResponsesFingerprints(tcpSynAck, httpResponse);
 
         return {
             source,
@@ -31,7 +31,7 @@ export class FingerprintViewTcpProvider {
         }
     }
 
-    public calculateSourceFingerprints(
+    public calculateRequestsFingerprints(
         tcpSyn: Nullable<IPacketViewTcp>,
         tlsClientHello: Nullable<IPacketViewTls>,
         httpRequest: Nullable<IPacketViewHttp>,
@@ -49,7 +49,7 @@ export class FingerprintViewTcpProvider {
         };
     }
 
-    public calculateDestinationFingerprints(
+    public calculateResponsesFingerprints(
         tcpSynAck: Nullable<IPacketViewTcp>,
         httpResponse: Nullable<IPacketViewHttp>,
     ): IDestinationFingerprintsView {

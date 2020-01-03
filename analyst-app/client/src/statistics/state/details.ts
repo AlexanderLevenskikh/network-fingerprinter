@@ -1,8 +1,8 @@
-import { ITcpSourceStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpSourceStatisticsDetailsView';
-import { ITcpDestinationStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpDestinationStatisticsDetailsView';
+import { ITcpRequestStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpRequestStatisticsDetailsView';
+import { ITcpResponseStatisticsDetailsView } from 'DAL/Statistics/Tcp/ITcpResponseStatisticsDetailsView';
 
 export class TcpStatisticsDetailsState {
-    sourceDetails: ITcpSourceStatisticsDetailsView = {
+    requestDetails: ITcpRequestStatisticsDetailsView = {
         ip: '',
         mac: '',
         hasHttpRequest: false,
@@ -11,19 +11,20 @@ export class TcpStatisticsDetailsState {
         tlsFingerprints: [],
         tcpFingerprints: [],
     };
-    sourceDetailsLoading: boolean = false;
-    sourceDrawerOpened: boolean = false;
-    sourceIp: string = '';
-    sourceMac: string = '';
+    requestDetailsLoading: boolean = false;
+    requestDrawerOpened: boolean = false;
+    requestIp: string = '';
+    requestMac: string = '';
 
-    destinationDetails: ITcpDestinationStatisticsDetailsView = {
+    responseDetails: ITcpResponseStatisticsDetailsView = {
         ip: '',
         mac: '',
         hasHttpResponse: false,
         httpFingerprints: [],
         tcpFingerprints: [],
     };
-    destinationDetailsLoading: boolean = false;
-    destinationDrawerOpened: boolean = false;
-    destinationIp: string = '';
+    responseDetailsLoading: boolean = false;
+    responseDrawerOpened: boolean = false;
+    responseIp: string = '';
+    responseMac: string = '';
 }
