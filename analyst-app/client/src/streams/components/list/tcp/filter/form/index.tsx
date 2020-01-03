@@ -62,6 +62,11 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
                         <TcpStreamsFilterFormSourceMac />
                     </Form.Item>
                 </Col>
+                <Col span={ 10 }>
+                    <Form.Item label={ t(I18StreamsNsKeys.filterDestinationMac) } labelAlign='left' className={ styles.item }>
+                        <TcpStreamsFilterFormDestinationMac />
+                    </Form.Item>
+                </Col>
             </Row>
             <Row gutter={ 20 } type='flex' justify='start'>
                 <Col span={ 10 }>

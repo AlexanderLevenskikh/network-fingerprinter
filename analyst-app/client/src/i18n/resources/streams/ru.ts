@@ -21,6 +21,7 @@ export const i18StreamsNsRuResources: EnumMap<I18StreamsNsKeys, string> = {
     [ I18StreamsNsKeys.filterSourcePort ]: 'Порт источника',
     [ I18StreamsNsKeys.filterDestinationIp ]: 'IP-адрес назначения',
     [ I18StreamsNsKeys.filterDestinationPort ]: 'Порт назначения',
+    [ I18StreamsNsKeys.filterDestinationMac ]: 'MAC адрес назначения',
     [ I18StreamsNsKeys.filterDateRange ]: 'Промежуток дат',
     [ I18StreamsNsKeys.filterSearchButtonLabel ]: 'Поиск',
     [ I18StreamsNsKeys.filterCancelSearchButtonLabel ]: 'Отменить',

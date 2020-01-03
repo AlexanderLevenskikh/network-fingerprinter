@@ -11,10 +11,12 @@ import { RouterSelectors } from 'root/router/selectors/router';
 import { RouterPages } from 'root/router/constants/pages';
 import { StreamsPage } from 'root/streams/components';
 import { PlayerPage } from 'root/player/components';
+import { StatisticsPage } from 'root/statistics/components';
 
 export const App: FC = () => {
     const page = useSelector(RouterSelectors.page);
     const isStreamsPage = page === RouterPages.Streams;
+    const isStatisticsPage = page === RouterPages.Statistics;
     const isUploadPage = page === RouterPages.Player;
 
     const { i18n } = useTranslation();
@@ -34,6 +36,9 @@ export const App: FC = () => {
                 <AppLayout>
                     { isStreamsPage && (
                         <StreamsPage />
+                    )}
+                    { isStatisticsPage && (
+                        <StatisticsPage />
                     )}
                     { isUploadPage && (
                         <PlayerPage />

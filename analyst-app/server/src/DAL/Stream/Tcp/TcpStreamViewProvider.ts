@@ -6,17 +6,15 @@ import { TcpStreamViewProviderQueries } from './TcpStreamViewProviderQueries';
 import { TcpStreamViewProviderMappers } from './TcpStreamViewProviderMappers';
 import { ITcpStreamView } from './ITcpStreamView';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
-import { getApplicationLayerProtocolByFrame } from '../../../Mappers/Stream/Frame/ApplicationLayerProtocolByFrame';
 import { PacketViewHttpProvider } from '../../Packet/Http/PacketViewHttpProvider';
 import { PacketViewTlsProvider } from '../../Packet/Tls/PacketViewTlsProvider';
 import { ITcpStreamFilter } from './ITcpStreamFilter';
 import { compareIsoDates } from '../../../Shared/Utils/compareIsoDates';
-import { filter } from '../../../Shared/Utils/filter';
 import { TcpStreamFilterDateOrder } from './TcpStreamFilterDateOrder';
 import { PacketViewTcpProvider } from '../../Packet/Tcp/PacketViewTcpProvider';
 import { FingerprintViewTcpProvider } from '../../Fingerprint/Tcp/FingerprintViewTcpProvider';
-import { Nullable } from '../../../Shared/Types/Nullable';
 import { IPacketViewTcp } from '../../Packet/Tcp/IPacketViewTcp';
+import { ITcpStreamsView } from './ITcpStreamsView';
 
 @Injectable()
 export class TcpStreamViewProvider {
@@ -28,23 +26,15 @@ export class TcpStreamViewProvider {
         private readonly fingerprintViewTcpProvider: FingerprintViewTcpProvider,
     ) {}
 
-    getTcpStreamsTotal = async (query: ITcpStreamFilter): Promise<number> => {
-        const streamsFilter = this.createStreamsFilter(query);
-        const streamIds = await filter(await this.getStreamIds(), streamsFilter);
-
-        return streamIds.length;
-    };
-
-    getTcpStreams = async (query: ITcpStreamFilter): Promise<ITcpStreamView[]> => {
-        const streamsFilter = this.createStreamsFilter(query);
-        const streamIds = await this.getStreamIds();
+    getTcpStreams = async (query: ITcpStreamFilter): Promise<ITcpStreamsView> => {
+        const streamIds = await this.getStreamIds(query);
         const sortedStreamIds = await this.sortStreams(query, streamIds);
-        const filteredStreamIds = await filter(sortedStreamIds, streamsFilter);
+        const total = sortedStreamIds.length;
 
         const current = query.current ? Number.parseInt(query.current, 10) - 1 : 0;
         const take = query.take ? Number.parseInt(query.take, 10) : 15;
         const skip = current * take;
-        const selectedPageStreamIds = filteredStreamIds.slice(skip, skip + take);
+        const selectedPageStreamIds = sortedStreamIds.slice(skip, skip + take);
 
         const streamPromises = selectedPageStreamIds.map(async (streamId: string): Promise<ITcpStreamView> => {
             const { syn, synAck } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
@@ -83,7 +73,12 @@ export class TcpStreamViewProvider {
             }
         });
 
-        return await Promise.all(streamPromises);
+        const streams = await Promise.all(streamPromises);
+
+        return {
+            total,
+            streams,
+        }
     };
 
     private getSourceAndDestinationInfo(packet: IPacketViewTcp, isRequest: boolean) {
@@ -109,6 +104,13 @@ export class TcpStreamViewProvider {
     }
 
     private sortStreams = async (query: ITcpStreamFilter, streamIds: string[]) => {
+        if (
+            (!query.dateTimeFromOrder || query.dateTimeFromOrder === TcpStreamFilterDateOrder.None) &&
+            (!query.dateTimeToOrder || query.dateTimeToOrder === TcpStreamFilterDateOrder.None)
+        ) {
+            return streamIds;
+        }
+
         const dateTimeFromOrder = query.dateTimeFromOrder === TcpStreamFilterDateOrder.Asc
             ? TcpStreamFilterDateOrder.Asc
             : TcpStreamFilterDateOrder.Desc;
@@ -139,100 +141,6 @@ export class TcpStreamViewProvider {
         return streamsMetaData.map(x => x.streamId);
     };
 
-    private createStreamsFilter = (query: ITcpStreamFilter) => {
-        return async (streamId: string) => {
-            if (query.dateTimeFrom || query.dateTimeTo) {
-                const { endDateTime, startDateTime } = await this.getTcpStreamMetaDataByStreamId(streamId);
-
-                if (query.dateTimeFrom) {
-                    if (!startDateTime) {
-                        return false;
-                    }
-                    const comparisionResult = compareIsoDates(startDateTime, query.dateTimeFrom);
-
-                    if (comparisionResult < 0) {
-                        return false;
-                    }
-                }
-
-                if (query.dateTimeTo) {
-                    if (!endDateTime) {
-                        return false;
-                    }
-                    const comparisionResult = compareIsoDates(query.dateTimeTo, endDateTime);
-
-                    if (comparisionResult < 0) {
-                        return false;
-                    }
-                }
-            }
-
-            const { syn, synAck } = await this.packetViewTcpProvider.getTcpHandshakePacketsByStreamId(streamId);
-            const { request, response } = await this.packetViewHttpProvider.getHttpRequestAndResponsePacketsByStream(streamId);
-            const tlsClientHello = await this.packetViewTlsProvider.getClientHelloByStreamId(streamId);
-
-            const significantRequestPacket = syn || tlsClientHello || request;
-            const significantResponsePacket = synAck || response;
-            const significantPacket = significantRequestPacket || significantResponsePacket;
-
-            if (!significantPacket) {
-                return false;
-            }
-            const isSignificantPacketRequest = Boolean(significantRequestPacket);
-
-            let sourceMac = null;
-            let sourceIp = null;
-            let sourcePort = null;
-            let destinationMac = null;
-            let destinationIp = null;
-            let destinationPort = null;
-
-            if (significantPacket.eth) {
-                sourceMac = isSignificantPacketRequest
-                    ? significantPacket.eth.sourceMac
-                    : significantPacket.eth.destinationMac;
-                destinationMac = isSignificantPacketRequest
-                    ? significantPacket.eth.destinationMac
-                    : significantPacket.eth.sourceMac;
-            }
-            if (significantPacket.ip) {
-                sourceIp = isSignificantPacketRequest
-                    ? significantPacket.ip.sourceIp
-                    : significantPacket.ip.destinationIp;
-                destinationIp = isSignificantPacketRequest
-                    ? significantPacket.ip.destinationIp
-                    : significantPacket.ip.sourceIp;
-            }
-            if (significantPacket.tcp) {
-                sourcePort = isSignificantPacketRequest
-                    ? significantPacket.tcp.sourcePort
-                    : significantPacket.tcp.destinationPort;
-                destinationPort = isSignificantPacketRequest
-                    ? significantPacket.tcp.destinationPort
-                    : significantPacket.tcp.sourcePort;
-            }
-
-            if (query.sourceIp && sourceIp && !query.sourceIp.includes(sourceIp)) {
-                return false;
-            }
-            if (query.sourcePort && sourcePort && !query.sourcePort.includes(sourcePort.toString())) {
-                return false;
-            }
-            if (query.sourceMac && sourceMac && !query.sourceMac.includes(sourceMac)) {
-                return false;
-            }
-
-            if (query.destinationIp && destinationIp && !query.destinationIp.includes(destinationIp)) {
-                return false;
-            }
-            if (query.destinationPort && destinationPort && !query.destinationPort.includes(destinationPort.toString())) {
-                return false;
-            }
-
-            return !(query.destinationMac && destinationMac && !query.destinationMac.includes(destinationMac));
-        };
-    };
-
     private getTcpStreamMetaDataByStreamId = async (streamId: string): Promise<ITcpStreamMetaData> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
@@ -255,13 +163,13 @@ export class TcpStreamViewProvider {
             .toPromise();
     };
 
-    private getStreamIds = async (): Promise<string[]> => {
+    private getStreamIds = async (query: ITcpStreamFilter): Promise<string[]> => {
         return this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 0,
                 body: {
-                    ...TcpStreamViewProviderQueries.buildTcpStreamIdsQuery(),
+                    ...TcpStreamViewProviderQueries.buildTcpStreamIdsQuery(query),
                 },
             })
             .pipe(map(TcpStreamViewProviderMappers.toStreamIds))

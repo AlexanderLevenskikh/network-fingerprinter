@@ -16,7 +16,18 @@ export class PacketViewTcpProvider {
     ) {}
 
     public getTcpHandshakePacketsByStreamId = async (streamId: string): Promise<IPacketViewTcpHandshakePackets> => {
-        const synPacket = await this.elasticsearchService
+        const syn = await this.getSynByStreamId(streamId);
+        const synAck = await this.getSynAckByStreamId(streamId);
+
+        return {
+            streamId,
+            syn,
+            synAck,
+        };
+    };
+
+    public getSynByStreamId = async (streamId: string): Promise<Nullable<IPacketViewTcp>> => {
+        const synPackets = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 1,
@@ -27,7 +38,11 @@ export class PacketViewTcpProvider {
             .pipe(map(PacketViewTcpProviderMappers.toTcpPacketViews))
             .toPromise();
 
-        const synAckPacket = await this.elasticsearchService
+        return synPackets.length > 0 ? synPackets[ 0 ] : null
+    };
+
+    public getSynAckByStreamId = async (streamId: string): Promise<Nullable<IPacketViewTcp>> => {
+        const synAckPackets = await this.elasticsearchService
             .search<IPacketEntity>({
                 index: 'packets-*',
                 size: 1,
@@ -38,11 +53,7 @@ export class PacketViewTcpProvider {
             .pipe(map(PacketViewTcpProviderMappers.toTcpPacketViews))
             .toPromise();
 
-        return {
-            streamId,
-            syn: synPacket.length > 0 ? synPacket[ 0 ] : null,
-            synAck: synAckPacket.length > 0 ? synAckPacket[ 0 ] : null,
-        };
+        return synAckPackets.length > 0 ? synAckPackets[ 0 ] : null
     };
 
     public getTcpApplicationLayersProtocolsByStreamId = async (

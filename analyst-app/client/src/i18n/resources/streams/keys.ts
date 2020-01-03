@@ -19,6 +19,7 @@ export enum I18StreamsNsKeys {
     filterSourcePort = 'filterSourcePort',
     filterDestinationIp = 'filterDestinationIp',
     filterDestinationPort = 'filterDestinationPort',
+    filterDestinationMac = 'filterDestinationMac',
     filterDateRange = 'filterDateRange',
     filterSearchButtonLabel = 'filterSearchButtonLabel',
     filterCancelSearchButtonLabel = 'filterCancelSearchButtonLabel',

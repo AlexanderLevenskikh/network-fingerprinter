@@ -8,10 +8,12 @@ import { AppController } from '../Controllers/AppController';
 import { ReactMiddleware } from '../Middleware/ReactMiddleware';
 import { PlayerModule } from './PlayerModule';
 import { PacketTcpModule } from './PacketTcpModule';
+import { TcpStatisticsModule } from './TcpStatisticsModule';
 
 @Module({
     imports: [
         TcpStreamModule,
+        TcpStatisticsModule,
         PacketHttpModule,
         PacketTlsModule,
         PacketTcpModule,

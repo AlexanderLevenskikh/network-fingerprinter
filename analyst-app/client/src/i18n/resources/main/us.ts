@@ -3,5 +3,8 @@ import { EnumMap } from 'root/shared/types/enumMap';
 
 export const i18MainNsUsResources: EnumMap<I18MainNsKeys, string> = {
     [ I18MainNsKeys.menuStreamsLabel ]: 'Streams',
+    [ I18MainNsKeys.menuStatisticsLabel ]: 'Statistics',
+    [ I18MainNsKeys.menuStatisticsRequestsLabel ]: 'By clients',
+    [ I18MainNsKeys.menuStatisticsResponsesLabel ]: 'By servers',
     [ I18MainNsKeys.menuPlayerLabel ]: 'Upload *.pcap',
 };

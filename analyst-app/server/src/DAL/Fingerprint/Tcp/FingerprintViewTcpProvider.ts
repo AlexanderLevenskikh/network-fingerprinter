@@ -7,7 +7,7 @@ import { IPacketViewHttp } from '../../Packet/Http/IPacketViewHttp';
 import { tcpFingerprintProcessor, TcpFingerprintProcessorPacketType } from '../../../Processors/Fingerprint/Tcp/Tcp';
 import {
     httpFingerprintProcessor,
-    HttpFingerprintProcessorPacketType
+    HttpFingerprintProcessorPacketType,
 } from '../../../Processors/Fingerprint/Http/Http';
 import { tlsFingerprintProcessor } from '../../../Processors/Fingerprint/Tls/Tls';
 import { ISourceFingerprintsView } from './ISourceFingerprintsView';
@@ -22,7 +22,21 @@ export class FingerprintViewTcpProvider {
         httpRequest: Nullable<IPacketViewHttp>,
         httpResponse: Nullable<IPacketViewHttp>,
     ): IFingerprintViewTcp {
-        const source: ISourceFingerprintsView = {
+        const source = this.calculateRequestsFingerprints(tcpSyn, tlsClientHello, httpRequest);
+        const destination = this.calculateResponsesFingerprints(tcpSynAck, httpResponse);
+
+        return {
+            source,
+            destination,
+        }
+    }
+
+    public calculateRequestsFingerprints(
+        tcpSyn: Nullable<IPacketViewTcp>,
+        tlsClientHello: Nullable<IPacketViewTls>,
+        httpRequest: Nullable<IPacketViewHttp>,
+    ): ISourceFingerprintsView {
+        return  {
             tcp: tcpSyn
                 ? tcpFingerprintProcessor(tcpSyn, TcpFingerprintProcessorPacketType.Syn)
                 : null,
@@ -33,7 +47,13 @@ export class FingerprintViewTcpProvider {
                 httpFingerprintProcessor(httpRequest, HttpFingerprintProcessorPacketType.Request)
                 : null,
         };
-        const destination: IDestinationFingerprintsView = {
+    }
+
+    public calculateResponsesFingerprints(
+        tcpSynAck: Nullable<IPacketViewTcp>,
+        httpResponse: Nullable<IPacketViewHttp>,
+    ): IDestinationFingerprintsView {
+        return  {
             tcp: tcpSynAck
                 ? tcpFingerprintProcessor(tcpSynAck, TcpFingerprintProcessorPacketType.SynAck)
                 : null,
@@ -41,10 +61,5 @@ export class FingerprintViewTcpProvider {
                 ? httpFingerprintProcessor(httpResponse, HttpFingerprintProcessorPacketType.Response)
                 : null,
         };
-
-        return {
-            source,
-            destination,
-        }
     }
 }

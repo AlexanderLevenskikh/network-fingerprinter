@@ -11,8 +11,7 @@ export class TcpStreamViewProviderMappers {
             .aggregations
             .by_stream
             .buckets
-            .map(bucket => bucket.key)
-            .sort(TcpStreamViewProviderMappers.toStreamIdsAscOrder);
+            .map(bucket => bucket.key);
     }
 
     public static toTcpStreamDocumentCount(response: CountResponse): number {
@@ -30,9 +29,5 @@ export class TcpStreamViewProviderMappers {
             startDateTime,
             endDateTime,
         }
-    }
-
-    private static toStreamIdsAscOrder(id1: number, id2: number) {
-        return id1 - id2;
     }
 }

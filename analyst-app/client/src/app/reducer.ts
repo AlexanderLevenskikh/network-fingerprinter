@@ -3,9 +3,11 @@ import { IState } from 'root/app/state';
 import { routerReducer } from 'root/router/reducer';
 import { locationReducer } from 'root/app/router';
 import { streamReducer } from 'root/streams/reducer';
+import { tcpStatisticsReducer } from 'root/statistics/reducer';
 
 export const reducer = combineReducers<IState>({
     stream: streamReducer,
+    statistics: tcpStatisticsReducer,
     router: routerReducer,
     location: locationReducer,
 });
