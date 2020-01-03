@@ -5,6 +5,8 @@ import Icon from 'antd/es/icon';
 import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
 import { RouterPages } from 'root/router/constants/pages';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
+import SubMenu from 'antd/es/menu/SubMenu';
+import { StatisticsTabsEnum } from 'root/statistics/constants/router/tab';
 
 interface IProps {
 }
@@ -12,19 +14,32 @@ interface IProps {
 enum MenuItemKey {
     TcpStream = 'TcpStream',
     UdpStream = 'UdpStream',
+    Statistics = 'Statistics',
+    StatisticsBySource = 'StatisticsBySource',
+    StatisticsByDestination = 'StatisticsByDestination',
     Player = 'Player',
 }
 
 // UDP streams item temporary disabled
 export const HeaderMenu: FC<IProps> = () => {
-    const { onClickTcpStreams, onClickUdpStreams, onClickUpload, transport, t, page } = useHeaderMenu();
+    const {
+        onClickTcpStreams, onClickUdpStreams, onClickStatistics, onClickUpload,
+        transport, t, page, statisticsTabName,
+    } = useHeaderMenu();
+
     const tcpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Tcp;
     const udpStreamsSelected = page === RouterPages.Streams && transport === StreamsRouterTransport.Udp;
+    const statisticsSelected = page === RouterPages.Statistics;
+    const statisticsBySourceSelected = page === RouterPages.Statistics && statisticsTabName === StatisticsTabsEnum.Sources;
+    const statisticsByDestinationSelected = page === RouterPages.Statistics && statisticsTabName === StatisticsTabsEnum.Destination;
     const playerSelected = page === RouterPages.Player;
 
     const selectedKeys = [
         ...(tcpStreamsSelected ? [ MenuItemKey.TcpStream ] : []),
         ...(udpStreamsSelected ? [ MenuItemKey.UdpStream ] : []),
+        ...(statisticsSelected ? [ MenuItemKey.Statistics ] : []),
+        ...(statisticsBySourceSelected ? [ MenuItemKey.StatisticsBySource ] : []),
+        ...(statisticsByDestinationSelected ? [ MenuItemKey.StatisticsByDestination ] : []),
         ...(playerSelected ? [ MenuItemKey.Player ] : []),
     ];
 
@@ -53,6 +68,35 @@ export const HeaderMenu: FC<IProps> = () => {
                     UDP { t(I18MainNsKeys.menuStreamsLabel) }
                 </span>
             </Menu.Item>*/}
+            <SubMenu
+                key={ MenuItemKey.Statistics }
+                title={
+                    <>
+                        <Icon type="bar-chart" />
+                        <span>
+                            { t(I18MainNsKeys.menuStatisticsLabel) }
+                        </span>
+                    </>
+                }
+            >
+                <Menu.Item
+                    key={ MenuItemKey.StatisticsBySource }
+                    onClick={ () => onClickStatistics(StatisticsTabsEnum.Sources) }
+                >
+                    <span>
+                        { t(I18MainNsKeys.menuStatisticsSourcesLabel) }
+                    </span>
+                </Menu.Item>
+                <Menu.Item
+                    key={ MenuItemKey.StatisticsByDestination }
+                    onClick={ () => onClickStatistics(StatisticsTabsEnum.Destination) }
+                >
+                    <span>
+                        { t(I18MainNsKeys.menuStatisticsDestinationLabel) }
+                    </span>
+                </Menu.Item>
+            </SubMenu>
+
             <Menu.Item
                 key={ MenuItemKey.Player }
                 onClick={ onClickUpload }
