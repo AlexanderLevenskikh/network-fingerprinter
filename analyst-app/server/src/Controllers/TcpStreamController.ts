@@ -3,6 +3,7 @@ import { TcpStreamViewProvider } from '../DAL/Stream/Tcp/TcpStreamViewProvider';
 import { ITcpStreamView } from '../DAL/Stream/Tcp/ITcpStreamView';
 import { ITcpStreamFilter } from '../DAL/Stream/Tcp/ITcpStreamFilter';
 import { AuthenticatedGuard } from '../Services/Guards/AuthenticatedGuard';
+import { ITcpStreamsView } from '../DAL/Stream/Tcp/ITcpStreamsView';
 
 @UseGuards(AuthenticatedGuard)
 @Controller('api/stream/tcp')
@@ -11,12 +12,7 @@ export class TcpStreamController {
     }
 
     @Get('list')
-    async getTcpPacketsStreamsWithFingerprints(@Query() query: ITcpStreamFilter): Promise<ITcpStreamView[]> {
+    async getTcpPacketsStreamsWithFingerprints(@Query() query: ITcpStreamFilter): Promise<ITcpStreamsView> {
         return this.tcpStreamViewProvider.getTcpStreams(query);
-    }
-
-    @Get('list/total')
-    async getTcpPacketsStreamsWithFingerprintsTotal(@Query() query: ITcpStreamFilter): Promise<number> {
-        return this.tcpStreamViewProvider.getTcpStreamsTotal(query);
     }
 }

@@ -30,13 +30,23 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
                   "type": "keyword"
                 },
                 "frame_frame_protocols": {
-                  "type": "keyword",
+                  "type": "keyword"
                 },
                 "frame_frame_time": {
                   "type": "keyword"
                 },
                 "frame_frame_time_epoch": {
                   "type": "double"
+                }
+              }
+            },
+            "eth": {
+              "properties": {
+                "eth_eth_src": {
+                  "type": "keyword"
+                },
+                "eth_eth_dst": {
+                  "type": "keyword"
                 }
               }
             },

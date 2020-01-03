@@ -1,3 +1,11 @@
+import { ITcpStreamFilter } from './ITcpStreamFilter';
+import { and } from '../../../Shared/Utils/elastic/and';
+import { term } from '../../../Shared/Utils/elastic/term';
+import { or } from '../../../Shared/Utils/elastic/or';
+import { Nullable } from '../../../Shared/Types/Nullable';
+import { range } from '../../../Shared/Utils/elastic/range';
+import { TcpStreamFilterDateOrder } from './TcpStreamFilterDateOrder';
+
 export class TcpStreamViewProviderQueries {
     static buildTcpStreamMetaDataQuery(streamId: string) {
         return {
@@ -23,31 +31,64 @@ export class TcpStreamViewProviderQueries {
         };
     }
 
-    static buildTcpStreamIdsQuery() {
+    static buildTcpStreamIdsQuery(query: ITcpStreamFilter) {
+        const {
+            destinationPort, destinationMac, destinationIp, sourcePort,
+            sourceMac, sourceIp, sensorId,
+            dateTimeFrom, dateTimeTo,
+        } = query;
+        const dateTimeFromEpoch = TcpStreamViewProviderQueries.getDateStrEpochTime(dateTimeFrom);
+        const dateTimeToEpoch = TcpStreamViewProviderQueries.getDateStrEpochTime(dateTimeTo);
+
         return {
-            query: {
-                bool: {
-                    must: [
-                        { term: { 'layers.ip.ip_ip_proto': 6 } },
-                        {
-                            bool: {
-                                should: [
-                                    { term: { 'layers.tls.tls_handshake_tls_handshake_type': '1' } },
-                                    { term: { 'layers.http.http_http_request': '1' } },
-                                    { term: { 'layers.http.http_http_response': '1' } },
-                                    { term: { 'layers.tcp.tcp_flags_tcp_flags_syn': '1' } },
-                                ],
-                            },
-                        },
-                    ],
-                },
-            },
+            query: and(
+                term('layers.ip.ip_ip_proto', 6),
+                or(
+                    and(
+                        or(
+                            term('layers.tls.tls_handshake_tls_handshake_type', '1'),
+                            term('layers.http.http_http_request', '1'),
+                            and(
+                                term('layers.tcp.tcp_flags_tcp_flags_syn', '1'),
+                                term('layers.tcp.tcp_flags_tcp_flags_ack', '0'),
+                            ),
+                        ),
+                        ...(sourceMac ? [term('layers.eth.eth_eth_src', sourceMac)] : []),
+                        ...(sourceIp ? [term('layers.ip.ip_ip_src', sourceIp)] : []),
+                        ...(sourcePort ? [term('layers.tcp.tcp_tcp_srcport', sourcePort)] : []),
+                        ...(destinationMac ? [term('layers.eth.eth_eth_dst', destinationMac)] : []),
+                        ...(destinationIp ? [term('layers.ip.ip_ip_dst', destinationIp)] : []),
+                        ...(destinationPort ? [term('layers.tcp.tcp_tcp_dstport', destinationPort)] : []),
+                        ...(dateTimeFromEpoch || dateTimeToEpoch
+                            ? [range('layers.frame.frame_frame_time_epoch', dateTimeFromEpoch, dateTimeToEpoch)]
+                            : []),
+                    ),
+                    and(
+                        or(
+                            term('layers.http.http_http_response', '1'),
+                            and(
+                                term('layers.tcp.tcp_flags_tcp_flags_syn', '1'),
+                                term('layers.tcp.tcp_flags_tcp_flags_ack', '1'),
+                            ),
+                        ),
+                        ...(sourceMac ? [term('layers.eth.eth_eth_dst', sourceMac)] : []),
+                        ...(sourceIp ? [term('layers.ip.ip_ip_dst', sourceIp)] : []),
+                        ...(sourcePort ? [term('layers.tcp.tcp_tcp_dstport', sourcePort)] : []),
+                        ...(destinationMac ? [term('layers.eth.eth_eth_src', destinationMac)] : []),
+                        ...(destinationIp ? [term('layers.ip.ip_ip_src', destinationIp)] : []),
+                        ...(destinationPort ? [term('layers.tcp.tcp_tcp_srcport', destinationPort)] : []),
+                        ...(dateTimeFromEpoch || dateTimeToEpoch
+                            ? [range('layers.frame.frame_frame_time_epoch', dateTimeFromEpoch, dateTimeToEpoch)]
+                            : []),
+                    ),
+                ),
+            ),
             aggs: {
                 by_stream: {
                     terms: { field: 'streamId', size: 1000000000 },
                 },
             },
-        }
+        };
     }
 
     static buildTcpStreamDocumentCountQuery(streamId: string) {
@@ -68,5 +109,11 @@ export class TcpStreamViewProviderQueries {
                 ],
             },
         }
+    }
+
+    private static getDateStrEpochTime(dateStr: string): Nullable<number> {
+        return (dateStr && !Number.isNaN(Date.parse(dateStr)))
+            ? new Date(dateStr).valueOf() / 1000
+            : null;
     }
 }
