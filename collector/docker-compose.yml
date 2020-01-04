@@ -18,7 +18,7 @@ services:
       - "9200:9200"
       - "9300:9300"
     environment:
-      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ES_JAVA_OPTS: "-Xmx512m -Xmx512m"
       ELASTIC_PASSWORD: $ELASTIC_PASSWORD
       # Use single node discovery in order to disable production mode and avoid bootstrap checks
       # see https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
@@ -52,5 +52,5 @@ volumes:
   elasticsearch:
     driver_opts:
       type: none
-      device: ./data
+      device: $PWD/data
       o: bind
