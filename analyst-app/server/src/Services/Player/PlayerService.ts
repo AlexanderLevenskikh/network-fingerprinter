@@ -45,7 +45,8 @@ export class PlayerService {
                     } catch (error) {
                         rej(error);
                     } finally {
-                        rm('-rf', './temp');
+                        rm(`./temp/${ guid }.pcap`);
+                        rm(`./temp/${ guid }-orig.pcap`);
                     }
                 }).catch(err => rej(err));
             })

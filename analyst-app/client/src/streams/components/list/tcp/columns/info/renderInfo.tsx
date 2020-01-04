@@ -23,11 +23,6 @@ export function renderInfo(stream: ITcpStreamView, t: TFunction) {
     const { packetsCount, applicationLayerProtocols, serverNameIndication } = stream;
     return (
         <ul className={ styles.list }>
-            <li>
-                <Text strong>{ t(I18StreamsNsKeys.listPacketsCountColumnSubTitle) }</Text>
-                :&nbsp;
-                <Text code>{ packetsCount }</Text>
-            </li>
             { serverNameIndication && (
                 <li>
                     <Paragraph copyable={{ text: serverNameIndication }} className={ styles.text }>
