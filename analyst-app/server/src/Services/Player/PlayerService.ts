@@ -131,7 +131,7 @@ export class PlayerService {
                 rm(`./temp/${ guid }-${ range }.pcap`);
             };
 
-            const command = `tshark -T ek -r ./temp/${ guid }-${ range }.pcap > ./temp/${ guid }-${ range }.json`;
+            const command = `tshark -T ek -r ./temp/${ guid }-${ range }.pcap > ./temp/${ guid }-${ range }.json -n`;
             if (!/^win/.test(process.platform)) {
                 exec(command, processChunkCb);
             } else {
@@ -191,7 +191,7 @@ export class PlayerService {
 
             const filter = 'tcp.flags.syn == 1 or tls.handshake.type == 1 or http.request == 1 or http.response == 1';
 
-            const command = `tshark -Y "${filter}" -r ./temp/${guid}-orig.pcap -w ./temp/${guid}.pcap`;
+            const command = `tshark -Y "${filter}" -r ./temp/${guid}-orig.pcap -w ./temp/${guid}.pcap -n`;
             if (!/^win/.test(process.platform)) {
                 exec(command, processChunkCb);
             } else {
