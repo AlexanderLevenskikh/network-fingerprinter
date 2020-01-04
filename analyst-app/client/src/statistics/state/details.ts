@@ -10,6 +10,7 @@ export class TcpStatisticsDetailsState {
         httpFingerprints: [],
         tlsFingerprints: [],
         tcpFingerprints: [],
+        sslBlackListReasons: [],
     };
     requestDetailsLoading: boolean = false;
     requestDrawerOpened: boolean = false;
