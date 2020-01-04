@@ -112,8 +112,8 @@ Every row is clickable and you can see detailed information about selected host 
 ![drawer](https://i.imgur.com/JKTtCAw.png)
 As you can see, this information includes all fingerprints from stream and reference to these streams list, also in this example showed case of multiple discovered fingerprints (TLS) and matches from SSL blacklist (Dridex, Tofsee). 
 
-Pcap uploading:
-[pcap-upload](https://i.imgur.com/dTQf184.png)\
+Pcap uploading:\
+![pcap-upload](https://i.imgur.com/dTQf184.png)\
 Simply drag'n'drop captured traffic dump (one or more files) or click directly on area to upload. After processing, streams will be available on TCP streams tab, if dump includes significant for signature analysis packets (SYN, SYN+ACK, HTTP request/response or TLS client hello)
 
 ## License
