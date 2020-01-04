@@ -50,3 +50,7 @@ networks:
 
 volumes:
   elasticsearch:
+    driver_opts:
+      type: none
+      device: ./data
+      o: bind

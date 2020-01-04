@@ -6,6 +6,7 @@ services:
       context: tshark
       args:
         ELASTIC_HOST: $ELASTIC_HOST
+        KIBANA_HOST: $KIBANA_HOST
         ELASTIC_USERNAME: $ELASTIC_USERNAME
         ELASTIC_PASSWORD: $ELASTIC_PASSWORD
     restart: on-failure

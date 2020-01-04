@@ -23,6 +23,7 @@ RUN apk --update --no-cache add tshark~=3.0.7 curl
 RUN pip install --upgrade pip
 RUN pip install click pyyaml elasticsearch
 RUN chmod +x ./elk-template.sh && ./elk-template.sh ${name}:${pass}@${host}
-RUN chmod +x ./kibana-template.sh && ./kibana-template.sh ${name}:${pass}@${kibana_host} 2> /dev/null
+# 409 is ok, kibana index pattern already was added
+RUN chmod +x ./kibana-template.sh && ./kibana-template.sh ${name}:${pass}@${kibana_host}; exit 0
 
 CMD exec python ./index.py -i $(/sbin/ip address | grep '^2: ' | awk '{ print $2 }' | tr -d [:punct:]) --elastic-url=${name}:${pass}@${host}
