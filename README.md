@@ -84,14 +84,14 @@ App consists of three tabs:
 * Statistics
 * Upload \*.pcap
 
-First tab displays filtered streams list:
+First tab displays filtered streams list:\
 ![Streams list](https://i.imgur.com/KlkwxKp.png)
 
 
-You can filter streams using `Search` form:
+You can filter streams using `Search` form:\
 ![Filter](https://i.imgur.com/X5O27Zy.png)
 
-To store data in buffer (for paste in filter, for example) click `copy` button beside data:
+To store data in buffer (for paste in filter, for example) click `copy` button beside data:\
 ![Copy](https://i.imgur.com/CEoOfhZ.png)
 
 Columns description:
@@ -102,18 +102,18 @@ Columns description:
 * **MAC, IP, Port. Source** is a host, that initiates TCP request (client) and destination is a host, that receives request and send TCP response (server), but as known, TCP is full-duplex protocol and the names "client" and "server" are conditional.
 * **Fingerprint** - defined fingerprints of stream, they may include TCP, TLS and HTTP fingerprints for source (by SYN, HTTP request and TLS client hello) and TCP, HTTP fingerprints for destination (by SYN+ACK, HTTP response)
 
-Statistics menu item has two tabs: *by clients* and *by servers*:
+Statistics menu item has two tabs: *by clients* and *by servers*:\
 ![stat-tabs](https://i.imgur.com/CoGpUNB.png)
 
-Each tab has a grid with (ip, mac) discovered tuples from traffic. 
+Each tab has a grid with (ip, mac) discovered tuples from traffic.\
 ![by-clients](https://i.imgur.com/FBhRkMb.png)
 
-Every row is clickable and you can see detailed information about selected host by click on row (opening in right-side drawer):
+Every row is clickable and you can see detailed information about selected host by click on row (opening in right-side drawer):\
 ![drawer](https://i.imgur.com/JKTtCAw.png)
 As you can see, this information includes all fingerprints from stream and reference to these streams list, also in this example showed case of multiple discovered fingerprints (TLS) and matches from SSL blacklist (Dridex, Tofsee). 
 
 Pcap uploading:
-[pcap-upload](https://i.imgur.com/dTQf184.png)
+[pcap-upload](https://i.imgur.com/dTQf184.png)\
 Simply drag'n'drop captured traffic dump (one or more files) or click directly on area to upload. After processing, streams will be available on TCP streams tab, if dump includes significant for signature analysis packets (SYN, SYN+ACK, HTTP request/response or TLS client hello)
 
 ## License
