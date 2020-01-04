@@ -21,7 +21,7 @@ export class PlayerService {
 
             const guid = uuid.v1();
 
-            const pcapFilePath = resolve(process.cwd(), `temp/${ guid }.pcap`);
+            const pcapFilePath = resolve(process.cwd(), `temp/${ guid }-orig.pcap`);
             touch(pcapFilePath);
 
             writeFile(pcapFilePath, fileBuffer, (err) => {
@@ -29,7 +29,9 @@ export class PlayerService {
                     rej(err);
                 }
 
-                this.splitPcapIntoChunks(guid).then(async (chunkPromises) => {
+                this.filterPcap(guid).then(async () => {
+                    const chunkPromises = await this.splitPcapIntoChunks(guid);
+
                     let chunkNames = [];
 
                     try {
@@ -175,6 +177,27 @@ export class PlayerService {
         }
 
         return chunkNamePromises;
+    };
+
+    private filterPcap = (guid: string) => {
+        return new Promise((res, rej) => {
+            const processChunkCb = (error, stdout, stderr) => {
+                if (error) {
+                    rej(error);
+                }
+
+                res();
+            };
+
+            const filter = 'tcp.flags.syn == 1 or tls.handshake.type == 1 or http.request == 1 or http.response == 1';
+
+            const command = `tshark -Y "${filter}" -r ./temp/${guid}-orig.pcap -w ./temp/${guid}.pcap`;
+            if (!/^win/.test(process.platform)) {
+                exec(command, processChunkCb);
+            } else {
+                exec(`cmd /s /c ${command}`, processChunkCb);
+            }
+        });
     };
 
     private getPacketsCountInPcap = (
