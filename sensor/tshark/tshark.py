@@ -46,8 +46,6 @@ def _make_capturing_command(interface, packet_filter):
     command.append('-T')
     command.append('ek')
     command.append('-n')
-    command.append('-Y')
-    command.append('"tcp.flags.syn == 1 or tls.handshake.type == 1 or http.request == 1 or http.response == 1"')
     command.append('-i')
     command.append(interface)
 
