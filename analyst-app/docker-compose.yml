@@ -6,3 +6,22 @@ services:
       context: ../analyst-app
     restart: on-failure
     network_mode: host
+
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - type: volume
+        source: postgres
+        target: $POSTGRES_CONTAINER_DATA
+    environment:
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      POSTGRES_DB: $POSTGRES_DB
+
+volumes:
+  postgres:
+    driver_opts:
+      type: none
+      device: $POSTGRES_DATA
+      o: bind
