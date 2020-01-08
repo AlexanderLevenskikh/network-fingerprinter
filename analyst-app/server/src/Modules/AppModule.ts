@@ -9,9 +9,21 @@ import { ReactMiddleware } from '../Middleware/ReactMiddleware';
 import { PlayerModule } from './PlayerModule';
 import { PacketTcpModule } from './PacketTcpModule';
 import { TcpStatisticsModule } from './TcpStatisticsModule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from '../Entities/User';
 
 @Module({
     imports: [
+        TypeOrmModule.forRoot({
+            type: 'postgres',
+            host: '192.168.1.50',
+            port: 5432,
+            username: process.env.POSTGRES_USER,
+            password: process.env.POSTGRES_PASSWORD,
+            database: process.env.POSTGRES_DB,
+            entities: [ UserEntity ],
+            synchronize: true,
+        }),
         TcpStreamModule,
         TcpStatisticsModule,
         PacketHttpModule,

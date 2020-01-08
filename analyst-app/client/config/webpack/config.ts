@@ -86,6 +86,7 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
 
     const plugins = [
         webpackDefinePlugin({
+            wds,
             isProductionApi,
             isProductionMode,
         }),

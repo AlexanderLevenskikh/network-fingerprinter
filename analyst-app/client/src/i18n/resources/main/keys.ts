@@ -4,4 +4,7 @@ export enum I18MainNsKeys {
     menuStatisticsRequestsLabel = 'menuStatisticsRequestsLabel',
     menuStatisticsResponsesLabel = 'menuStatisticsResponsesLabel',
     menuPlayerLabel = 'menuPlayerLabel',
+    menuUserLogoutLabel = 'menuUserLogoutLabel',
+    menuUserRegistrationLabel = 'menuUserRegistrationLabel',
+    menuUsersLabel = 'menuUsersLabel',
 }

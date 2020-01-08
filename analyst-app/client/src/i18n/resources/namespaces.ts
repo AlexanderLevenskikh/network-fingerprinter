@@ -3,4 +3,5 @@ export enum I18nNamespace {
     streams = 'streams',
     statistics = 'statistics',
     player = 'player',
+    user = 'user',
 }
