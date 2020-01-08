@@ -1,27 +1,25 @@
-import { Column, Entity, JoinTable, ManyToMany, OneToOne, PrimaryGeneratedColumn, TableForeignKey } from 'typeorm';
-import { Permission } from './Permission';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class UserEntity {
     @PrimaryGeneratedColumn('uuid')
     userId: string;
 
-    @ManyToMany(type => Permission, ({ permissionId }) => permissionId)
-    @JoinTable()
-    permissions: Permission[];
+    @Column({ type: 'varchar', length: 100 })
+    userName: string;
 
-    @Column({ length: 100 })
-    name: string;
+    @Column({ type: 'varchar', length: 255 })
+    passwordHash: string;
 
-    @Column({ length: 100 })
+    @Column('boolean')
+    isAdmin: boolean;
+
+    @Column({ type: 'varchar', nullable: true, length: 100 })
     firstName: string;
 
-    @Column({ length: 100 })
+    @Column({ type: 'varchar', nullable: true, length: 100 })
     lastName: string;
 
-    @Column({ nullable: true, length: 100 })
+    @Column({ type: 'varchar', nullable: true, length: 100 })
     middleName: string;
-
-    @Column({ type: 'nvarchar', length: 255 })
-    passwordHash: string;
 }
