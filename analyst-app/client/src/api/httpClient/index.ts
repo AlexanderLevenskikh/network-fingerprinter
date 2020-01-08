@@ -77,6 +77,10 @@ export function createHttpClient<T>() {
 
         return fetch(url, httpClientOptions)
             .then(async response => {
+                if (response.redirected && !IS_WDS) {
+                    window.location.href = response.url || '/';
+                }
+
                 if (response.ok) {
                     if (responseType === HttpClientResponseType.Binary) {
                         const blob = await response.blob();
