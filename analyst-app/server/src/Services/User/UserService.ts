@@ -5,6 +5,7 @@ import { UserEntity } from '../../Entities/User';
 import { Repository } from 'typeorm';
 import uuid = require('uuid');
 import md5 = require('md5');
+import { CurrentUser } from './CurrentUser';
 
 @Injectable()
 export class UserService {
