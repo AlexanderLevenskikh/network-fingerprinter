@@ -110,6 +110,7 @@ export class PlayerService {
                             obj = {
                                 ...obj,
                                 streamId,
+                                sensorId: `pcap-player-${process.env.APP_ID}`,
                             };
 
                         }

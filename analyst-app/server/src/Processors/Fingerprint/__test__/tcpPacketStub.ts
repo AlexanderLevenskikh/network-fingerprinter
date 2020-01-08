@@ -27,6 +27,7 @@ export const tcpPacketStub: IPacketViewTcp = {
     },
     tcp: {
         streamId: '1',
+        sensorId: '1',
         sourcePort: 2432,
         destinationPort: 80,
         windowScalingFactor: 7,

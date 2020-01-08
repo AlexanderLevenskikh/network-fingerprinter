@@ -4,6 +4,7 @@ import { IPacketViewTcpOption } from './IPacketViewTcpOption';
 
 export interface IPacketViewTcpLayer {
     streamId: string;
+    sensorId: string;
     sourcePort: number;
     destinationPort: number;
     maximumSegmentSize: Nullable<number>;

@@ -9,9 +9,9 @@ from tshark import capture
 from elk_utils import index_packets
 
 
-def start_capture(es_connection, interface, packet_filter, chunk_length, guid):
+def start_capture(es_connection, sensor_id, interface, packet_filter, chunk_length, guid):
     try:
-        capture_res = capture(interface, packet_filter, guid)
+        capture_res = capture(interface, sensor_id, packet_filter, guid)
         helpers.bulk(
             client=es_connection,
             actions=index_packets(capture=capture_res),
@@ -25,10 +25,11 @@ def start_capture(es_connection, interface, packet_filter, chunk_length, guid):
 
 @click.command()
 @click.option('--elastic-url', default=None, help='IP of elasticsearch')
+@click.option('--sensor-id', default='1')
 @click.option('-i', default=None, help='Network interface for capturing')
 @click.option('--filter', default=None, help='Custom packet filter')
 @click.option('--chunk-length', default=100, help='Number of packets to bulk index (default=100)')
-def main(elastic_url, i, filter, chunk_length):
+def main(elastic_url, sensor_id, i, filter, chunk_length):
     guid = str(uuid.uuid1())
 
     try:
@@ -44,6 +45,7 @@ def main(elastic_url, i, filter, chunk_length):
 
         start_capture(
             es_connection=es_connection,
+            sensor_id=sensor_id,
             interface=i,
             packet_filter=filter,
             chunk_length=chunk_length,

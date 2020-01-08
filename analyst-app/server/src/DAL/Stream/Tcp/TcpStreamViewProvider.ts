@@ -58,12 +58,15 @@ export class TcpStreamViewProvider {
                 Boolean(significantRequestPacket),
             );
 
+            const { sensorId } = (significantRequestPacket || significantResponsePacket).tcp;
+
             const serverNameIndication = (tlsClientHello && tlsClientHello.tls)
                 ? tlsClientHello.tls.serverNameIndication
                 : null;
 
             return {
                 streamId,
+                sensorId,
                 ...streamMetaData,
                 ...sourceAndDestinationInfo,
                 fingerprints,

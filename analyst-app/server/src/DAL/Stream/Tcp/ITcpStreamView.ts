@@ -5,6 +5,7 @@ import { IFingerprintViewTcp } from '../../Fingerprint/Tcp/IFingerprintViewTcp';
 
 export interface ITcpStreamView extends ITcpStreamMetaData {
     streamId: string;
+    sensorId: string;
     packetsCount: number;
     sourceMac: string;
     sourceIp: string;

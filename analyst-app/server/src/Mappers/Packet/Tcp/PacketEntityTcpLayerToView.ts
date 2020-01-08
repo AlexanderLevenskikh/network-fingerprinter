@@ -3,7 +3,11 @@ import { parseIntNullable } from '../../../Shared/Utils/parseIntNullable';
 import { IPacketViewTcpLayer } from '../../../DAL/Packet/Tcp/IPacketViewTcpLayer';
 import { mapPacketEntityTcpLayerOptionsToView } from './PacketEntityTcpLayerOptionsToView';
 
-export function mapPacketEntityTcpLayerToView(streamId: string, entity: IPacketEntityTcp): IPacketViewTcpLayer {
+export function mapPacketEntityTcpLayerToView(
+    streamId: string,
+    sensorId: string,
+    entity: IPacketEntityTcp,
+): IPacketViewTcpLayer {
     const {
         tcp_options_mss_tcp_options_mss_val, tcp_tcp_window_size_value,
         tcp_options_wscale_tcp_options_wscale_shift, tcp_tcp_seq, tcp_tcp_ack, tcp_tcp_urgent_pointer,
@@ -24,6 +28,7 @@ export function mapPacketEntityTcpLayerToView(streamId: string, entity: IPacketE
 
     return {
         streamId,
+        sensorId,
         sourcePort: Number.parseInt(tcp_tcp_srcport, 10),
         destinationPort: Number.parseInt(tcp_tcp_dstport, 10),
         maximumSegmentSize,

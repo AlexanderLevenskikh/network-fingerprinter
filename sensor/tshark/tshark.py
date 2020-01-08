@@ -59,7 +59,7 @@ def _make_capturing_command(interface, packet_filter):
     return command
 
 
-def capture(interface, packet_filter, guid):
+def capture(interface, sensor_id, packet_filter, guid):
     command = _make_capturing_command(interface, packet_filter)
 
     global closing
@@ -79,6 +79,7 @@ def capture(interface, packet_filter, guid):
                     stream_id = guid + "-" + json_packet['layers']['udp']['udp_udp_stream']
 
                 json_packet['streamId'] = stream_id
+                json_packet['sensorId'] = 'sensor-' + sensor_id
                 yield json_packet
 
         if closing is True:

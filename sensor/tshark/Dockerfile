@@ -2,16 +2,19 @@ ARG ELASTIC_HOST
 ARG KIBANA_HOST
 ARG ELASTIC_USERNAME
 ARG ELASTIC_PASSWORD
+ARG SENSOR_ID
 FROM nikolaik/python-nodejs:python3.8-nodejs13-alpine
 
 ARG ELASTIC_HOST
 ARG KIBANA_HOST
 ARG ELASTIC_USERNAME
 ARG ELASTIC_PASSWORD
+ARG SENSOR_ID
 ENV host=$ELASTIC_HOST
 ENV kibana_host=$KIBANA_HOST
 ENV name=$ELASTIC_USERNAME
 ENV pass=$ELASTIC_PASSWORD
+ENV sensor_id=$SENSOR_ID
 
 USER root
 
@@ -26,4 +29,4 @@ RUN chmod +x ./elk-template.sh && ./elk-template.sh ${name}:${pass}@${host}
 # 409 is ok, kibana index pattern already was added
 RUN chmod +x ./kibana-template.sh && ./kibana-template.sh ${name}:${pass}@${kibana_host}; exit 0
 
-CMD exec python ./index.py -i $(/sbin/ip address | grep '^2: ' | awk '{ print $2 }' | tr -d [:punct:]) --elastic-url=${name}:${pass}@${host}
+CMD exec python ./index.py -i $(/sbin/ip address | grep '^2: ' | awk '{ print $2 }' | tr -d [:punct:]) --elastic-url=${name}:${pass}@${host} --sensor-id=${sensor_id}

@@ -22,6 +22,9 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
         "streamId": {
           "type": "keyword"
         },
+        "sensorId": {
+          "type": "keyword"
+        },
         "layers": {
           "properties": {
             "frame": {
