@@ -13,7 +13,7 @@ i18n
         fallbackLng: Languages.ru,
         resources: i18nResources,
         debug: true,
-        ns: ['main', 'streams', 'statistics', 'player'],
+        ns: ['main', 'streams', 'statistics', 'player', 'user'],
         defaultNS: 'main',
         keySeparator: false,
         interpolation: {

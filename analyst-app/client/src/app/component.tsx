@@ -15,6 +15,7 @@ import { StatisticsPage } from 'root/statistics/components';
 import { StreamsListActions } from 'root/streams/actions/list';
 import { StreamsSearchActions } from 'root/streams/actions/search';
 import { UserActions } from 'root/user/actions';
+import { UserRegistration } from 'root/user/components/registration';
 
 export const App: FC = () => {
     const page = useSelector(RouterSelectors.page);
@@ -53,6 +54,7 @@ export const App: FC = () => {
                     { isUploadPage && (
                         <PlayerPage />
                     )}
+                    <UserRegistration />
                 </AppLayout>
             </Suspense>
         </ConfigProvider>

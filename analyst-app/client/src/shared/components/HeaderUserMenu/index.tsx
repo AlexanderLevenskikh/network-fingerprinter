@@ -11,10 +11,11 @@ interface IProps {
 enum MenuItemKey {
     User = 'User',
     Logout = 'Logout',
+    Registration = 'Registration',
 }
 
 export const HeaderUserMenu: FC<IProps> = () => {
-    const { name, t, onClickLogout } = useHeaderUserMenu();
+    const { name, t, onClickLogout, onClickRegistration } = useHeaderUserMenu();
 
     return (
         <Menu
@@ -39,6 +40,14 @@ export const HeaderUserMenu: FC<IProps> = () => {
                 >
                     <span>
                         { t(I18MainNsKeys.menuUserLogoutLabel) }
+                    </span>
+                </Menu.Item>
+                <Menu.Item
+                    key={ MenuItemKey.Registration }
+                    onClick={ onClickRegistration }
+                >
+                    <span>
+                        { t(I18MainNsKeys.menuUserRegistrationLabel) }
                     </span>
                 </Menu.Item>
             </SubMenu>

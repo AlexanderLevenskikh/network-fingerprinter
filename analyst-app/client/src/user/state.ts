@@ -1,4 +1,5 @@
 import { IUserView } from 'DAL/User/IUserView';
+import { IUserRegistrationModel } from 'root/user/model/registration';
 
 export class UserState {
     user: IUserView = {
@@ -8,5 +9,8 @@ export class UserState {
         lastName: null,
         firstName: null,
     };
+    registrationModalOpened: boolean = false;
+    registrationLoading: boolean = false;
+    registrationLoadError: boolean = false;
     userLoading: boolean = false;
 }

@@ -24,21 +24,8 @@ export function useHeaderUserMenu() {
         () => dispatch(UserActions.Logout()),
         [ dispatch ],
     );
-    const onClickUdpStreams = useCallback(
-        () => dispatch(StreamsRouterActions.streamsList(
-            { transport: StreamsRouterTransport.Udp },
-            { query: new SearchParamsModel() },
-        )),
-        [ dispatch ],
-    );
-    const onClickStatistics = useCallback(
-        (tabName: TcpStatisticsTabsEnum) => dispatch(StatisticsRouterActions.Main(
-            { tabName },
-        )),
-        [ dispatch ],
-    );
-    const onClickUpload = useCallback(
-        () => dispatch(PlayerRouterActions.Upload()),
+    const onClickRegistration = useCallback(
+        () => dispatch(UserActions.OpenUserRegistrationModal()),
         [ dispatch ],
     );
     const { t } = useTranslation();
@@ -47,5 +34,6 @@ export function useHeaderUserMenu() {
         name,
         t,
         onClickLogout,
+        onClickRegistration,
     }
 }

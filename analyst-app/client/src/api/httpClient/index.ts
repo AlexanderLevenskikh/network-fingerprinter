@@ -4,6 +4,7 @@ import { stringifyNonEmptyParams } from 'root/api/httpClient/stringifyNonEmptyPa
 import { objectToFormData } from 'root/api/httpClient/objectToFormData';
 import { notEmpty } from 'root/shared/utils/notEmpty';
 import { FilePolyfill } from 'root/shared/utils/filePolyfill';
+import { handleError } from 'root/api/httpClient/handleError';
 
 export enum HttpClientMethod {
     GET = 'GET',
@@ -79,6 +80,7 @@ export function createHttpClient<T>() {
             .then(async response => {
                 if (response.redirected && !IS_WDS) {
                     window.location.href = response.url || '/';
+                    return;
                 }
 
                 if (response.ok) {
@@ -115,7 +117,7 @@ export function createHttpClient<T>() {
                     }
                     return parseJSON(response);
                 } else {
-                    // Errors handling
+                    await handleError(response);
                 }
             });
     };
