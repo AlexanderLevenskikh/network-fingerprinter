@@ -1,7 +1,6 @@
 import { ActionType } from 'typesafe-actions';
 import { UserState } from 'root/user/state';
 import { UserActions, UserActionTypes } from 'root/user/actions';
-import { IUserRegistrationModel } from 'root/user/model/registration';
 
 export const initialState = new UserState();
 type ReducerActions = ActionType<typeof UserActions>;
@@ -31,6 +30,43 @@ export const userReducer = (state = initialState, action: ReducerActions): UserS
             }
         }
 
+        case UserActionTypes.OpenUsersListModal: {
+            return {
+                ...state,
+                usesListModalOpened: true,
+            };
+        }
+
+        case UserActionTypes.CloseUsersListModal: {
+            return {
+                ...state,
+                usesListModalOpened: false,
+            };
+        }
+
+        case UserActionTypes.FetchUsersList: {
+            return {
+                ...state,
+                usersListLoading: true,
+            };
+        }
+        case UserActionTypes.FetchUsersListSucceed: {
+            const { users } = action.payload;
+
+            return {
+                ...state,
+                usersListLoading: false,
+                usersList: users,
+            }
+        }
+
+        case UserActionTypes.FetchUsersListFailed:  {
+            return {
+                ...state,
+                usersListLoading: false,
+            }
+        }
+
         case UserActionTypes.OpenUserRegistrationModal: {
             return {
                 ...state,
@@ -57,7 +93,6 @@ export const userReducer = (state = initialState, action: ReducerActions): UserS
             return {
                 ...state,
                 registrationLoading: false,
-                registrationModel: new IUserRegistrationModel(),
             }
         }
 
@@ -66,15 +101,6 @@ export const userReducer = (state = initialState, action: ReducerActions): UserS
                 ...state,
                 registrationLoading: false,
                 registrationLoadError: true,
-            }
-        }
-
-        case UserActionTypes.ChangeUserRegistrationModel:  {
-            const { model } = action.payload;
-
-            return {
-                ...state,
-                registrationModel: model,
             }
         }
 

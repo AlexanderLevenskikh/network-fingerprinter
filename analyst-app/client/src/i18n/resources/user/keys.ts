@@ -8,4 +8,8 @@ export enum I18UserNsKeys {
     registerButtonLabel = 'registerButtonLabel',
     cancelButtonLabel = 'cancelButtonLabel',
     requiredField = 'requiredField',
+
+    usersListLoginLabel = 'usersListLoginLabel',
+    usersListAdminLabel = 'usersListAdminLabel',
+    usersListRemoveLabel = 'usersListRemoveLabel',
 }

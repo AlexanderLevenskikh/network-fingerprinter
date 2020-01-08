@@ -16,6 +16,7 @@ import { StreamsListActions } from 'root/streams/actions/list';
 import { StreamsSearchActions } from 'root/streams/actions/search';
 import { UserActions } from 'root/user/actions';
 import { UserRegistration } from 'root/user/components/registration';
+import { UsersList } from 'root/user/components/list';
 
 export const App: FC = () => {
     const page = useSelector(RouterSelectors.page);
@@ -55,6 +56,7 @@ export const App: FC = () => {
                         <PlayerPage />
                     )}
                     <UserRegistration />
+                    <UsersList />
                 </AppLayout>
             </Suspense>
         </ConfigProvider>

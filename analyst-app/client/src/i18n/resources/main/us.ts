@@ -9,4 +9,5 @@ export const i18MainNsUsResources: EnumMap<I18MainNsKeys, string> = {
     [I18MainNsKeys.menuPlayerLabel]: 'Upload *.pcap',
     [I18MainNsKeys.menuUserLogoutLabel]: 'Logout',
     [I18MainNsKeys.menuUserRegistrationLabel]: 'Register user',
+    [I18MainNsKeys.menuUsersLabel]: 'Users list',
 };

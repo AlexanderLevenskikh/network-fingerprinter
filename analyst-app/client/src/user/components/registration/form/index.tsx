@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Button, Form, Icon, Input, Tooltip } from 'antd';
+import { Button, Checkbox, Form, Icon, Input, Tooltip } from 'antd';
 import { useUserRegistrationForm } from 'root/user/components/registration/form/hook';
 import { FormComponentProps } from 'antd/es/form';
 import { I18UserNsKeys } from 'root/i18n/resources/user/keys';
@@ -63,6 +63,9 @@ export const UserRegistrationForm: FC<IProps & FormComponentProps> = ({ form }) 
             </Form.Item>
             <Form.Item label={ t(I18UserNsKeys.middleUserNameLabel) }>
                 { getFieldDecorator('middleName')(<Input/>) }
+            </Form.Item>
+            <Form.Item label={ t(I18UserNsKeys.isUserAdminLabel) }>
+                { getFieldDecorator('isAdmin')(<Checkbox/>) }
             </Form.Item>
             <Form.Item { ...tailFormItemLayout }>
                 <Button type="primary" htmlType="submit" disabled={ loading }>

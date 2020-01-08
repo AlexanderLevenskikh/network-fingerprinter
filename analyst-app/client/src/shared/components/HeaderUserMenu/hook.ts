@@ -28,12 +28,18 @@ export function useHeaderUserMenu() {
         () => dispatch(UserActions.OpenUserRegistrationModal()),
         [ dispatch ],
     );
+    const onClickUsers = useCallback(
+        () => dispatch(UserActions.OpenUsersListModal()),
+        [ dispatch ],
+    );
     const { t } = useTranslation();
 
     return {
+        isAdmin,
         name,
         t,
         onClickLogout,
         onClickRegistration,
+        onClickUsers,
     }
 }

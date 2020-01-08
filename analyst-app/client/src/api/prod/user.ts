@@ -29,6 +29,30 @@ export class UserApi implements IUserApi {
         });
     }
 
+    getUsersList(): Promise<IUserView[]> {
+        return httpClient({
+            controller: 'api/user',
+            action: 'list',
+            method: HttpClientMethod.GET,
+            request: {},
+            responseType: HttpClientResponseType.JSON,
+        });
+    }
+
+    remove(userId: string): Promise<any> {
+        return httpClient({
+            controller: 'api/user',
+            action: 'remove',
+            method: HttpClientMethod.DELETE,
+            request: {
+                query: {
+                    userId,
+                }
+            },
+            responseType: HttpClientResponseType.JSON,
+        });
+    }
+
     logout(): Promise<IUserView> {
         return httpClient({
             controller: 'api/auth',

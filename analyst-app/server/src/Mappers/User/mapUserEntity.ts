@@ -2,9 +2,10 @@ import { UserEntity } from '../../Entities/User';
 import { IUserView } from '../../DAL/User/IUserView';
 
 export function mapUserEntityToView(entity: UserEntity): IUserView {
-    const { firstName, userName, isAdmin, middleName, lastName } = entity;
+    const { userId, firstName, userName, isAdmin, middleName, lastName } = entity;
 
     return {
+        userId,
         userName,
         firstName,
         lastName,

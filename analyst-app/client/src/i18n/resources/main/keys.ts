@@ -6,4 +6,5 @@ export enum I18MainNsKeys {
     menuPlayerLabel = 'menuPlayerLabel',
     menuUserLogoutLabel = 'menuUserLogoutLabel',
     menuUserRegistrationLabel = 'menuUserRegistrationLabel',
+    menuUsersLabel = 'menuUsersLabel',
 }

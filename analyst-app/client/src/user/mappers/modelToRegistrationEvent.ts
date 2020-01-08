@@ -8,6 +8,6 @@ export function mapUserRegistrationModelToEvent(model: IUserRegistrationModel): 
         lastName: model.lastName ? model.lastName.trim() : '',
         middleName: model.middleName ? model.middleName.trim() : '',
         firstName: model.firstName ? model.firstName.trim() : '',
-        isAdmin: model.isAdmin,
+        isAdmin: Boolean(model.isAdmin),
     }
 }

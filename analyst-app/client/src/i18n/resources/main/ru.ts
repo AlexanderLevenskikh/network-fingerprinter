@@ -9,4 +9,5 @@ export const i18MainNsRuResources: EnumMap<I18MainNsKeys, string> = {
     [I18MainNsKeys.menuPlayerLabel]: 'Загрузка *.pcap',
     [I18MainNsKeys.menuUserLogoutLabel]: 'Выйти из системы',
     [I18MainNsKeys.menuUserRegistrationLabel]: 'Зарегистрировать пользователя',
+    [I18MainNsKeys.menuUsersLabel]: 'Список пользователей',
 };

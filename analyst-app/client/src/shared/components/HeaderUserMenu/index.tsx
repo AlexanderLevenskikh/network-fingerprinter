@@ -12,11 +12,13 @@ enum MenuItemKey {
     User = 'User',
     Logout = 'Logout',
     Registration = 'Registration',
+    Users = 'Users',
 }
 
 export const HeaderUserMenu: FC<IProps> = () => {
-    const { name, t, onClickLogout, onClickRegistration } = useHeaderUserMenu();
+    const { name, t, onClickLogout, onClickRegistration, onClickUsers, isAdmin } = useHeaderUserMenu();
 
+    // TODO проверка isAdmin на сервере
     return (
         <Menu
             theme="dark"
@@ -42,14 +44,26 @@ export const HeaderUserMenu: FC<IProps> = () => {
                         { t(I18MainNsKeys.menuUserLogoutLabel) }
                     </span>
                 </Menu.Item>
-                <Menu.Item
-                    key={ MenuItemKey.Registration }
-                    onClick={ onClickRegistration }
-                >
+                { isAdmin && (
+                    <Menu.Item
+                        key={ MenuItemKey.Registration }
+                        onClick={ onClickRegistration }
+                    >
                     <span>
                         { t(I18MainNsKeys.menuUserRegistrationLabel) }
                     </span>
-                </Menu.Item>
+                    </Menu.Item>
+                )}
+                { isAdmin && (
+                    <Menu.Item
+                        key={ MenuItemKey.Users }
+                        onClick={ onClickUsers }
+                    >
+                    <span>
+                        { t(I18MainNsKeys.menuUsersLabel) }
+                    </span>
+                    </Menu.Item>
+                )}
             </SubMenu>
         </Menu>
     );
