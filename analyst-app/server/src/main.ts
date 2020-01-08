@@ -16,6 +16,7 @@ async function bootstrap() {
 
     app.use(
         session({
+            // TODO сделать нормальный secret (не в исходниках!)
             secret: 'nest cats',
             resave: false,
             saveUninitialized: false,

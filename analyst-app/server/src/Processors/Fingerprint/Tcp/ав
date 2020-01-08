@@ -1,0 +1,20 @@
+function SignatureAnalyzer(packet, signatures, dictionary)
+    match <- Null
+
+    for signature in signatures do
+        allChecksArePassed <- True
+
+        for check in signature do
+            if check(packet) = False
+                allChecksArePassed <- False
+                break
+            end if
+        end for
+
+        if allChecksArePassed
+            match.push(dictionary[signature])
+        end if
+    end for
+
+    return match
+end function
