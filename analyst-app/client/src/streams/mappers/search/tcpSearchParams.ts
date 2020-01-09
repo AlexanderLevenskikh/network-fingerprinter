@@ -19,7 +19,6 @@ export function mapSearchParamsToDto(model: TcpStreamsSearchParamsModel): ITcpSt
         destinationMac:model.destinationMac ? model.destinationMac.trim() : undefined,
         destinationPort: model.destinationPort ? model.destinationPort.trim() : undefined,
         sensorId: model.sensorId ? model.sensorId.trim() : undefined,
-
     }
 }
 

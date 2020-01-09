@@ -20,9 +20,20 @@ const protoToColorMap: EnumMap<PacketViewTcpApplicationProtocol, string> = {
 };
 
 export function renderInfo(stream: ITcpStreamView, t: TFunction) {
-    const { packetsCount, applicationLayerProtocols, serverNameIndication } = stream;
+    const { packetsCount, applicationLayerProtocols, serverNameIndication, sensorId } = stream;
     return (
         <ul className={ styles.list }>
+            { sensorId && (
+                <li>
+                    <Paragraph copyable={{ text: sensorId }} className={ styles.text }>
+                        <Text strong>Sensor ID</Text>
+                        :&nbsp;
+                        <Tooltip placement="topLeft" title={ sensorId }>
+                            <Text code ellipsis className={ styles.ellipsis }>{ sensorId }</Text>
+                        </Tooltip>
+                    </Paragraph>
+                </li>
+            )}
             { serverNameIndication && (
                 <li>
                     <Paragraph copyable={{ text: serverNameIndication }} className={ styles.text }>

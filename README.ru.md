@@ -1,120 +1,118 @@
 # Network fingerprinter
 
-> Network fingerprinter is a scalable, easy to deploy network traffic inspection system for purely passive OS and application fingerprinting
+> Network fingerprinter - масштабируемая, простая в развертывании система анализа трафика для пассивной идентификации ОС и приложений
 
-*Read this in other languages: [Русский](README.ru.md), [Английский](README.md).*
+*Документация на других языках: [Русский](README.ru.md), [Английский](README.md).*
 
 ## Table of Contents
 
-- [Purpose](#purpose)
-- [System architecture](#system-architecture)
-	- [Sesnor](#sensor)
-	- [Collector](#collector)
-	- [Analyzer](#analyzer)
-- [Installation](#installation)
-- [Signature analysis](#signature-analysis)
+- [Назначение](#назначение)
+- [Архитектура системы](#архитектура-системы)
+	- [Сенсор](#сенсор)
+	- [Коллектор](#коллектор)
+	- [Анализатор](#анализатор)
+- [Установка](#установка)
+- [Сигнатурный анализ](#сигнатурный-анализ)
 
-## Purpose
-Well-known systems for passive OS fingerprinting such as p0f, satori, etc are powerful, but have some disadvantages for production use:
-* Embrassing inspection huge traffic alerts
-* For passive fingerprinting it's not necessary to store all traffic dump, except flow samples such as handshake tcp packets, tls client hello and others required for signature analysis packet samples. Flows are powerful, but existing solutions allow to store either all trafic or alerts only
-* Lack of GUI
-* Complicated production configuration
+## Назначение
+Хорошо известные системы фингерпринтинга, такие как p0f, satori, и т. д. достаточно функциональны, но имеют некоторые недостатки при использовании в production: 
+* Затруднительное отслеживание предпрупреждений при значительном объеме трафика
+* Для пассивной идентификации ОС и приложений нет необходимости хранить весь дамп трафика, за исключением некоторых типов пакетов в контексте потока: TCP SYN/SYN+ACK, TLS Client Hello, и других необходимых для сигнатурного анализа примеров. Потоки - хорошее решение, но существующие решения предлагают либо сохранять весь дамп, либо только алерты
+* Отсутствие графического интерфейса
+* Сложный процесс настройки для production-использования
 
-## System architecture
+## Архитектура системы
 
-Internally, system consists of 3 modules:
-* Sensor
-* Collector
-* Analyzer
+Система состоит из следующего набора модулей:
+* [Сенсор](#сенсор)
+* [Коллектор](#коллектор)
+* [Анализатор](#анализатор)
 
-#### Sensor 
+#### Сенсор 
 
-Sensor is a tshark-driven selective traffic exporter, it's exports only SYN, SYN+ACK, TLS client hello and HTTP requests/responses to external elasticsearch index. System can have as many sensors as needs.
+Сенсор работает поверх tshark, который выборочно экспортирует трафик. Экспортируются пакеты типа SYN, SYN+ACK, TLS Client Hello, HTTP запрос/ответ в индекс **elasticsearch**. Система может иметь более одного сенсора.
 
-#### Collector
+#### Коллектор
 
-Collector is an **elasticsearch **cluster. Also, system can have more than one collector if needs.
+Коллектор - это кластер **elasticsearch**. Аналогично, может быть настроено более одного коллектора.
 
-#### Analyzer
+#### Анализатор
 
-Analyzer is a **kibana** GUI for **packets-\*** index inspection and **analytics-app** traffic fingerprints view. Also, analytics-app allows to upload existing pcap[ng] dump.
+Анализатор - графический интерфейс **kibana** для анализа индекса **packets-\*** и **analytics-app** - модуль сигнатурного анализа с графическим интерфейсом. Также, в **analytics-app** можно загружать дампы ранее захваченного трафика (в форматах, распознаваемых tshark, к примеру - pcap[ng]).
 
-> All system components can be installed on signle host
+> Все компоненты системы можно установить на одном хосте
 
-## Installation
+## Установка
 
-Every module has an `.env` file with **docker-compose** configuration, you should replace data in this file. 
+Каждый модуль содержит файл `.env`, используемый **docker-compose** конфигурацией и приложением **analytics-app**. Для корректной работы, необходимо заменить данные в этих файлах в соответствии с сетевой топологией.
 
-##### Firstly, install collector module:
-You needs to create folder which will be used elasticsearch for persist data
-In our sample, it's a `./data` directory in `server` folder, as configured in `docker-compose.yml`:
+##### 1. Установка модуля коллектора:
+Вам следует создать директорию, в которой elasticsearch будет сохранять данные.
+По умолчанию это директория `collector/data`.
+
+Для этого необходимо в разделе `volumes`, строке `device` файла `docker-compose` указать абсолютный путь к данной директории:
 ```
 volumes:
   elasticsearch:
     driver_opts:
       type: none
-      device: $PWD/data
+      **device: $PWD/data**
       o: bind
 ```
-You need to replace string `device: $PWD/data`  and make sure that this directory exists, or remove lines `3-6` for use docker-driven volume.
-
-All configuration steps: 
+Также следует убедиться, что директория по данному пути существует.\
+Либо можно удалить раздел `driver_opts`, если нет необходимости в в обращении к данной директории.\
+Далее можно запустить `docker-compose` в detached-режиме:
 ```
-cd  collector
-vim .env # set environment variables
-vim docker-compose.yml # set elasticsearch volume device 
-docker-compose up -d # run in detach mode
+docker-compose up --build -d 
 ```
-Wait, until elasticsearch ready. (see docker logs CONTAINER_NAME)
 
-##### Next, let's install sensor:
+##### 2. Установка и запуск сенсора:
 
-If elasticsearch is ready (but it's not necessary - containers always restart on failure), simply edit `.env` in `sensor` directory and run `docker-compose up -d`
+Сенсор зависит от elasticsearch, но не обязательно ждать, когда elasticsearch запустится, т.к. запуск сенсора осуществляется повторно при возникновении ошибки соедения. Перед установкой достаточно отредактировать `.env`-файл в директории `sensor` и далее `docker-compose up --build -d`
 
-##### Prepare analyzer
+##### 3. Установка и запуск анализатора:
 
-Now, we can install and run analyzer as simple as edit `.env` and run `docker-compose up -d` in `analytics-app` directory.
-Open `http://${host}:5601` to open kibana GUI and `http://${host}:3000` to open analytics app, where `host` is your ip or domain name.
+Аналогично, перед установкой нужно отредактировать `.env`-файл, создать директорию для хранения данных PostgreSQL, либо удалить `driver_opts` как в шаге с установкой коллектора и запустить `docker-compose up --build -d ` в директории `analytics-app`. В первую очередь, будет произведен запуск PostgreSQL, затем - сам анализатор.\
+**Kibana** доступна по адресу `http://${host}:5601`,
+**Analytics-app** доступен по адресу `http://${host}:3000`, где `host` - ip/доменное имя хоста, на котором установлен анализатор. 
 
-## Signature analysis
+## Сигнатурный анализ
 
-App consists of three tabs:
-* Streams
-* Statistics
-* Upload \*.pcap
+Приложение содержит 3 раздела:
+* TCP-потоки
+* Статистика
+* Загрузка файлов \*.pcap
 
-First tab displays filtered streams list:
+Первый раздел отображает список потоков с возможностью сортировки/поиска:
 ![Streams list](https://i.imgur.com/KlkwxKp.png)
 
-
-You can filter streams using `Search` form:
+Фильтрация доступна по нажатию на кнопку "Поиск":
 ![Filter](https://i.imgur.com/X5O27Zy.png)
 
-To store data in buffer (for paste in filter, for example) click `copy` button beside data:
+Для сохранения данных в буфер обмена (для последующей фильтрации, к примеру), нажмите на кнопку "копировать" около данных:
 ![Copy](https://i.imgur.com/CEoOfhZ.png)
 
-Columns description:
-* First column consists **common data** about stream:
-	* **SNI** (server name indication from tls headers, if extension used)
-	* **Application layer protocols** - list of all application protocols used in stream
-* **Date and time** - timestamp of first captured packet in TCP stream (usually, SYN, but can be http request or TLS client hello)
-* **MAC, IP, Port. Source** is a host, that initiates TCP request (client) and destination is a host, that receives request and send TCP response (server), but as known, TCP is full-duplex protocol and the names "client" and "server" are conditional.
-* **Fingerprint** - defined fingerprints of stream, they may include TCP, TLS and HTTP fingerprints for source (by SYN, HTTP request and TLS client hello) and TCP, HTTP fingerprints for destination (by SYN+ACK, HTTP response)
+Описание колонок:
+* Первая колонка содержит **общие данные** о потоке:
+	* **SNI** (server name indication из tls-заголовков, если расширение было использовано)
+	* **Протоколы прикладного уровня** - список всех протоколов прикладного уровня, которые были найдены в потоке
+* **Дата и время** - временная отметка первого обнаруженного пакета в потоке (обычно это SYN, но может быть HTTP-пакетом, либо TLS Client Hello)
+* **MAC, IP, Порт.** Источник - хост, инициирующий TCP-соединение (клиент) и назначение - хост, принимающий соединение (сервер), но, как известно, TCP является полнодуплексным протколом, поэтому названия "клиент" и "сервер" являются условными.
+* **Цифровой отпечаток** - вычисленные отпечатки потока, они могут включать в себя TCP-, TLS- и HTTP-отпечатки для клиента (по SYN, HTTP-запросу и TLS client hello) и TCP-, HTTP-отпечатки для сервера (по SYN+ACK, HTTP-ответу)
 
-Statistics menu item has two tabs: *by clients* and *by servers*:
+Меню статистики содержит пункты "по клиентам" и "по серверам":
 ![stat-tabs](https://i.imgur.com/CoGpUNB.png)
 
-Each tab has a grid with (ip, mac) discovered tuples from traffic. 
+В каждой вкладке расположена список кортежей (ip, mac), обнаруженных в сетевом трафике.
 ![by-clients](https://i.imgur.com/FBhRkMb.png)
 
-Every row is clickable and you can see detailed information about selected host by click on row (opening in right-side drawer):
+Каждая строка кликабельна и при нажатии можно посмотреть более детальную информацию про выбранный хост (открывается боковая страница):
 ![drawer](https://i.imgur.com/JKTtCAw.png)
-As you can see, this information includes all fingerprints from stream and reference to these streams list, also in this example showed case of multiple discovered fingerprints (TLS) and matches from SSL blacklist (Dridex, Tofsee). 
+Как можно заметить, эта информация включает в себя все отпечатки, обнаруженные по потокам; ссылку на отфильтрованный список потоков. Также, в данном примере показан случай обнаружения более, чем 1 отпечатка (TLS) и вхождение отпечатков в черный список (Dridex, Tofsee).
 
-Pcap uploading:
+Загрузка файлов захвата трафика:
 [pcap-upload](https://i.imgur.com/dTQf184.png)
-Simply drag'n'drop captured traffic dump (one or more files) or click directly on area to upload. After processing, streams will be available on TCP streams tab, if dump includes significant for signature analysis packets (SYN, SYN+ACK, HTTP request/response or TLS client hello)
+Доступна загрузка более 1 файла. Для этого достаточно перетащить в выделенную область набор файлов, либо нажать на область и выбрать их в проводнике. После обработки, потоки будут доступны на вкладке TCP-потоки, если дамп содержит значимые пакеты (SYN, SYN+ACK, HTTP-запрос/ответ или TLS Client Hello) 
 
-## License
-This project is licensed under the terms of the Apache 2.0 open source license. Please refer to [LICENSE](LICENSE) for the full terms.
+## Лицензия
+Apache 2.0-лицензия. Подробности в [LICENSE](LICENSE)

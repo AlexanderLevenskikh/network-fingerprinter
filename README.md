@@ -8,7 +8,7 @@
 
 - [Purpose](#purpose)
 - [System architecture](#system-architecture)
-	- [Sesnor](#sensor)
+	- [Sensor](#sensor)
 	- [Collector](#collector)
 	- [Analyzer](#analyzer)
 - [Installation](#installation)
@@ -17,24 +17,24 @@
 ## Purpose
 Well-known systems for passive OS fingerprinting such as p0f, satori, etc are powerful, but have some disadvantages for production use:
 * Embrassing inspection huge traffic alerts
-* For passive fingerprinting it's not necessary to store all traffic dump, except flow samples such as handshake tcp packets, tls client hello and others required for signature analysis packet samples. Flows are powerful, but existing solutions allow to store either all trafic or alerts only
+* For passive fingerprinting it's not necessary to store all traffic dump, except flow samples such as handshake tcp SYN/SYN+ACK, tls client hello and others required for signature analysis packet samples. Flows are powerful, but existing solutions allow to store either all trafic or alerts only
 * Lack of GUI
 * Complicated production configuration
 
 ## System architecture
 
 Internally, system consists of 3 modules:
-* Sensor
-* Collector
-* Analyzer
+* [Sensor](#sensor)
+* [Collector](#collector)
+* [Analyzer](#analyzer)
 
 #### Sensor 
 
-Sensor is a tshark-driven selective traffic exporter, it's exports only SYN, SYN+ACK, TLS client hello and HTTP requests/responses to external elasticsearch index. System can have as many sensors as needs.
+Sensor is a **tshark**-driven selective traffic exporter, it's exports only SYN, SYN+ACK, TLS client hello and HTTP requests/responses to external **elasticsearch** index. System can have as many sensors as needs.
 
 #### Collector
 
-Collector is an **elasticsearch **cluster. Also, system can have more than one collector if needs.
+Collector is an **elasticsearch** cluster. Also, system can have more than one collector if needs.
 
 #### Analyzer
 
@@ -48,7 +48,7 @@ Every module has an `.env` file with **docker-compose** configuration, you shoul
 
 ##### Firstly, install collector module:
 You needs to create folder which will be used elasticsearch for persist data
-In our sample, it's a `./data` directory in `server` folder, as configured in `docker-compose.yml`:
+In our sample, it's a `./data` directory in `collector` folder, as configured in `docker-compose.yml`:
 ```
 volumes:
   elasticsearch:
@@ -99,7 +99,7 @@ Columns description:
 	* **SNI** (server name indication from tls headers, if extension used)
 	* **Application layer protocols** - list of all application protocols used in stream
 * **Date and time** - timestamp of first captured packet in TCP stream (usually, SYN, but can be http request or TLS client hello)
-* **MAC, IP, Port. Source** is a host, that initiates TCP request (client) and destination is a host, that receives request and send TCP response (server), but as known, TCP is full-duplex protocol and the names "client" and "server" are conditional.
+* **MAC, IP, Port.** Source is a host, that initiates TCP request (client) and destination is a host, that receives request and send TCP response (server), but as known, TCP is full-duplex protocol and the names "client" and "server" are conditional.
 * **Fingerprint** - defined fingerprints of stream, they may include TCP, TLS and HTTP fingerprints for source (by SYN, HTTP request and TLS client hello) and TCP, HTTP fingerprints for destination (by SYN+ACK, HTTP response)
 
 Statistics menu item has two tabs: *by clients* and *by servers*:\

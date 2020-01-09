@@ -12,6 +12,7 @@ import { TcpStreamsFilterFormDateTimeFrom } from 'root/streams/components/list/t
 import { TcpStreamsFilterFormDateTimeTo } from 'root/streams/components/list/tcp/filter/form/controls/dateTimeTo';
 import { useTcpStreamsFilterForm } from 'root/streams/components/list/tcp/filter/form/hook';
 import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
+import { TcpStreamsFilterFormSensorId } from 'root/streams/components/list/tcp/filter/form/controls/sensorId';
 
 interface IProps {
 }
@@ -74,6 +75,13 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
                         <TcpStreamsFilterFormDateTimeFrom />
                         &nbsp;—&nbsp;
                         <TcpStreamsFilterFormDateTimeTo />
+                    </Form.Item>
+                </Col>
+            </Row>
+            <Row gutter={ 20 } type='flex' justify='start'>
+                <Col span={ 10 }>
+                    <Form.Item label='Sensor ID' labelAlign='left' className={ styles.item }>
+                        <TcpStreamsFilterFormSensorId />
                     </Form.Item>
                 </Col>
             </Row>

@@ -43,6 +43,7 @@ export class TcpStreamViewProviderQueries {
         return {
             query: and(
                 term('layers.ip.ip_ip_proto', 6),
+                ...(sensorId ? [term('sensorId', sensorId)] : []),
                 or(
                     and(
                         or(
