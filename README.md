@@ -96,6 +96,7 @@ To store data in buffer (for paste in filter, for example) click `copy` button b
 
 Columns description:
 * First column consists **common data** about stream:
+	* **SensorID** - for sensor it matches pattern 'sensor-\*', for pcap-player - 'pcap-player-*'
 	* **SNI** (server name indication from tls headers, if extension used)
 	* **Application layer protocols** - list of all application protocols used in stream
 * **Date and time** - timestamp of first captured packet in TCP stream (usually, SYN, but can be http request or TLS client hello)
