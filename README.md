@@ -85,7 +85,7 @@ App consists of three tabs:
 * Upload \*.pcap
 
 First tab displays filtered streams list:\
-![Streams list](https://i.imgur.com/KlkwxKp.png)
+![Streams list](https://i.imgur.com/6QBX5vh.png)
 
 
 You can filter streams using `Search` form:\
