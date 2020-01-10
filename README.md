@@ -89,7 +89,7 @@ First tab displays filtered streams list:\
 
 
 You can filter streams using `Search` form:\
-![Filter](https://i.imgur.com/X5O27Zy.png)
+![Filter](https://i.imgur.com/G3YFbCi.png)
 
 To store data in buffer (for paste in filter, for example) click `copy` button beside data:\
 ![Copy](https://i.imgur.com/CEoOfhZ.png)
