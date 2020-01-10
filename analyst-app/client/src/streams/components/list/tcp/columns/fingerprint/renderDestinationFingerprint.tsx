@@ -4,6 +4,7 @@ import { TFunction } from 'i18next';
 import { StreamTcpFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/tcp';
 import { StreamHttpFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/http';
 import { IDestinationFingerprintsView } from 'DAL/Fingerprint/Tcp/IDestinationFingerprintsView';
+import { StreamsFingerprintIsUndefined } from 'root/streams/components/list/tcp/columns/fingerprint/undefinedLabel';
 
 interface IArgs {
     fingerprints: IDestinationFingerprintsView;
@@ -11,7 +12,7 @@ interface IArgs {
 }
 
 export function renderDestinationFingerprint({ fingerprints, t }: IArgs) {
-    const { http, tcp } = fingerprints;
+    const { http, tcp, isHttpUndefined, isTcpUndefined } = fingerprints;
 
     return (
         <ul className={ styles.list }>
@@ -22,11 +23,21 @@ export function renderDestinationFingerprint({ fingerprints, t }: IArgs) {
                     />
                 </li>
             )}
+            { !tcp && isTcpUndefined && (
+                <li>
+                    <StreamsFingerprintIsUndefined label='TCP'/>
+                </li>
+            )}
             { http && (
                 <li>
                     <StreamHttpFingerprint
                         fingerprint={ http }
                     />
+                </li>
+            )}
+            { !http && isHttpUndefined && (
+                <li>
+                    <StreamsFingerprintIsUndefined label='HTTP'/>
                 </li>
             )}
         </ul>

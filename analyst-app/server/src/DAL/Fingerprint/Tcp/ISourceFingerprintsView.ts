@@ -7,4 +7,7 @@ export interface ISourceFingerprintsView {
     tcp: Nullable<ITcpFingerprint>;
     tls: Nullable<ITlsFingerprint>;
     http: Nullable<IHttpFingerprint>;
+    isTcpUndefined: boolean;
+    isTlsUndefined: boolean;
+    isHttpUndefined: boolean;
 }

@@ -13,6 +13,7 @@ export enum I18StreamsNsKeys {
     listPacketsSniColumnSubTitle = 'listPacketsSniColumnSubTitle',
     listSensorIdColumnTitle = 'listSensorIdColumnTitle',
     listPortNumberColumnSubTitle = 'listPortNumberColumnSubTitle',
+    listFingerprintColumnUndefined = 'listFingerprintColumnUndefined',
     // filter
     filterSourceIp = 'filterSourceIp',
     filterSourceMac = 'filterSourceMac',

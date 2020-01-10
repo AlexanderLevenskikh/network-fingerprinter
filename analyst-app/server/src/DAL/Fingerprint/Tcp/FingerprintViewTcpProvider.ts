@@ -36,16 +36,23 @@ export class FingerprintViewTcpProvider {
         tlsClientHello: Nullable<IPacketViewTls>,
         httpRequest: Nullable<IPacketViewHttp>,
     ): ISourceFingerprintsView {
+        const tcp = tcpSyn
+            ? tcpFingerprintProcessor(tcpSyn, TcpFingerprintProcessorPacketType.Syn)
+            : null;
+        const tls = tlsClientHello
+            ? tlsFingerprintProcessor(tlsClientHello)
+            : null;
+        const http = httpRequest ?
+            httpFingerprintProcessor(httpRequest, HttpFingerprintProcessorPacketType.Request)
+            : null;
+
         return  {
-            tcp: tcpSyn
-                ? tcpFingerprintProcessor(tcpSyn, TcpFingerprintProcessorPacketType.Syn)
-                : null,
-            tls: tlsClientHello
-                ? tlsFingerprintProcessor(tlsClientHello)
-                : null,
-            http: httpRequest ?
-                httpFingerprintProcessor(httpRequest, HttpFingerprintProcessorPacketType.Request)
-                : null,
+            tcp,
+            tls,
+            http,
+            isTcpUndefined: Boolean(tcpSyn) ? !tcp : false,
+            isTlsUndefined: Boolean(tlsClientHello) ? !tls : false,
+            isHttpUndefined: Boolean(httpRequest) ? !http : false,
         };
     }
 
@@ -53,13 +60,17 @@ export class FingerprintViewTcpProvider {
         tcpSynAck: Nullable<IPacketViewTcp>,
         httpResponse: Nullable<IPacketViewHttp>,
     ): IDestinationFingerprintsView {
+        const tcp = tcpSynAck
+            ? tcpFingerprintProcessor(tcpSynAck, TcpFingerprintProcessorPacketType.SynAck)
+            : null;
+        const http = httpResponse
+            ? httpFingerprintProcessor(httpResponse, HttpFingerprintProcessorPacketType.Response)
+            : null;
         return  {
-            tcp: tcpSynAck
-                ? tcpFingerprintProcessor(tcpSynAck, TcpFingerprintProcessorPacketType.SynAck)
-                : null,
-            http: httpResponse
-                ? httpFingerprintProcessor(httpResponse, HttpFingerprintProcessorPacketType.Response)
-                : null,
+            tcp,
+            http,
+            isTcpUndefined: Boolean(tcpSynAck) ? !tcp : false,
+            isHttpUndefined: Boolean(httpResponse) ? !http : false,
         };
     }
 }

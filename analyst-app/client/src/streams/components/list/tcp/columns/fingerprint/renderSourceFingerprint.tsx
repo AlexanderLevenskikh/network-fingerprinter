@@ -5,6 +5,7 @@ import { StreamTcpFingerprint } from 'root/streams/components/list/tcp/columns/f
 import { StreamHttpFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/http';
 import { StreamTlsFingerprint } from 'root/streams/components/list/tcp/columns/fingerprint/tls';
 import { ISourceFingerprintsView } from 'DAL/Fingerprint/Tcp/ISourceFingerprintsView';
+import { StreamsFingerprintIsUndefined } from 'root/streams/components/list/tcp/columns/fingerprint/undefinedLabel';
 
 interface IArgs {
     fingerprints: ISourceFingerprintsView;
@@ -12,7 +13,7 @@ interface IArgs {
 }
 
 export function renderSourceFingerprint({ fingerprints, t }: IArgs) {
-    const { tls, http, tcp } = fingerprints;
+    const { tls, http, tcp, isHttpUndefined, isTlsUndefined, isTcpUndefined } = fingerprints;
 
     return (
         <ul className={ styles.list }>
@@ -23,11 +24,21 @@ export function renderSourceFingerprint({ fingerprints, t }: IArgs) {
                     />
                 </li>
             )}
+            { !tcp && isTcpUndefined && (
+                <li>
+                    <StreamsFingerprintIsUndefined label='TCP'/>
+                </li>
+            )}
             { http && (
                 <li>
                     <StreamHttpFingerprint
                         fingerprint={ http }
                     />
+                </li>
+            )}
+            { !http && isHttpUndefined && (
+                <li>
+                    <StreamsFingerprintIsUndefined label='HTTP'/>
                 </li>
             )}
             { tls && Array.isArray(tls.userAgent) &&  (
@@ -36,6 +47,11 @@ export function renderSourceFingerprint({ fingerprints, t }: IArgs) {
                         userAgents={ tls.userAgent }
                         sslBlackListReason={ tls.sslBlackListReason }
                     />
+                </li>
+            )}
+            { !(tls && Array.isArray(tls.userAgent)) && isTlsUndefined && (
+                <li>
+                    <StreamsFingerprintIsUndefined label='TLS'/>
                 </li>
             )}
         </ul>

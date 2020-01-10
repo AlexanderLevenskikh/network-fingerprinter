@@ -6,4 +6,6 @@ import { IHttpFingerprint } from '../../../Processors/Fingerprint/Http/Fingerpri
 export interface IDestinationFingerprintsView {
     tcp: Nullable<ITcpFingerprint>;
     http: Nullable<IHttpFingerprint>;
+    isTcpUndefined: boolean;
+    isHttpUndefined: boolean;
 }
