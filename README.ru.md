@@ -87,7 +87,7 @@ docker-compose up --build -d
 * Загрузка файлов \*.pcap
 
 Первый раздел отображает список потоков с возможностью сортировки/поиска:
-![Streams list](https://i.imgur.com/KlkwxKp.png)
+![Streams list](https://i.imgur.com/OCgxgzz.png)
 
 Фильтрация доступна по нажатию на кнопку "Поиск":
 ![Filter](https://i.imgur.com/X5O27Zy.png)
