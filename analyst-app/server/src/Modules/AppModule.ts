@@ -1,4 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { TcpStreamModule } from './TcpStreamModule';
 import { PacketHttpModule } from './PacketHttpModule';
 import { PacketTlsModule } from './PacketTlsModule';
@@ -22,6 +23,7 @@ import { UserEntity } from '../Entities/User';
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
             entities: [ UserEntity ],
+            namingStrategy: new SnakeNamingStrategy(),
         }),
         TcpStreamModule,
         TcpStatisticsModule,

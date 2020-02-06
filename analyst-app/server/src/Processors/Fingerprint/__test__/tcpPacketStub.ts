@@ -1,7 +1,4 @@
-import { IPacketViewHttp } from '../../../DAL/Packet/Http/IPacketViewHttp';
 import { PacketViewIpVersion } from '../../../DAL/Packet/Ip/PacketViewIpVersion';
-import { PacketViewHttpVersion } from '../../../DAL/Packet/Http/PacketViewHttpVersion';
-import { PacketViewHttpType } from '../../../DAL/Packet/Http/PacketViewHttpType';
 import { IPacketViewTcp } from '../../../DAL/Packet/Tcp/IPacketViewTcp';
 
 export const tcpPacketStub: IPacketViewTcp = {
