@@ -3,8 +3,9 @@ import { AuthExceptionFilter } from '../Filters/AuthExceptionsFilter';
 import { AuthenticatedGuard } from '../Services/Guards/AuthenticatedGuard';
 import { UserService } from '../Services/User/UserService';
 import { CurrentUser } from '../Services/User/CurrentUser';
-import { mapUserEntityToView } from '../Mappers/User/mapUserEntity';
+import { mapUserEntityToView } from '../Mappers/User/mapUserEntityToView';
 import { IUserRegistrationEvent } from '../Services/User/IUserRegistrationEvent';
+import { mapUserModelToView } from '../Mappers/User/mapUserModelToView';
 
 @UseFilters(AuthExceptionFilter)
 @UseGuards(AuthenticatedGuard)
@@ -21,7 +22,7 @@ export class UserController {
     async getUsersList(@CurrentUser() user) {
         const allUsers = await this.userService.findAll();
 
-        return allUsers.map(mapUserEntityToView);
+        return allUsers.map(mapUserModelToView);
     }
 
     @Delete('remove')

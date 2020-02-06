@@ -2,24 +2,24 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class UserEntity {
-    @PrimaryGeneratedColumn('uuid')
-    userId: string;
+    @PrimaryGeneratedColumn({ type: 'uuid' })
+    userid: string;
 
     @Column({ type: 'varchar', length: 100 })
-    userName: string;
+    username: string;
 
     @Column({ type: 'varchar', length: 255 })
-    passwordHash: string;
+    passwordhash: string;
 
-    @Column('boolean')
-    isAdmin: boolean;
-
-    @Column({ type: 'varchar', nullable: true, length: 100 })
-    firstName: string;
+    @Column({ type: 'boolean' })
+    isadmin: boolean;
 
     @Column({ type: 'varchar', nullable: true, length: 100 })
-    lastName: string;
+    firstname: string;
 
     @Column({ type: 'varchar', nullable: true, length: 100 })
-    middleName: string;
+    lastname: string;
+
+    @Column({ type: 'varchar', nullable: true, length: 100 })
+    middlename: string;
 }
