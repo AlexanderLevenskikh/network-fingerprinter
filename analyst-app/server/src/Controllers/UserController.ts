@@ -15,7 +15,7 @@ export class UserController {
 
     @Get('current')
     async getCurrentUser(@CurrentUser() user) {
-        return mapUserEntityToView(user);
+        return mapUserModelToView(user);
     }
 
     @Get('list')
