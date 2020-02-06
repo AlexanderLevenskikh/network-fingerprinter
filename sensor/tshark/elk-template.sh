@@ -3,7 +3,7 @@ if [[ $# -ne 1 ]] ; then
     exit
 fi
 
-curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -d '
+curl -H 'Content-Type: application/json' -X PUT 'http://'$1'/_template/packets' -d '
 {
   "index_patterns": ["packets-*"],
   "settings": {
@@ -11,6 +11,9 @@ curl -H 'Content-Type: application/json' -XPUT 'http://'$1'/_template/packets' -
       "total_fields": {
         "limit": "10000"
       }
+    },
+    "highlight": {
+      "max_analyzed_offset": "1000000000"
     }
   },
   "mappings": {

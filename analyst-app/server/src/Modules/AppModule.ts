@@ -22,7 +22,6 @@ import { UserEntity } from '../Entities/User';
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
             entities: [ UserEntity ],
-            synchronize: true,
         }),
         TcpStreamModule,
         TcpStatisticsModule,
