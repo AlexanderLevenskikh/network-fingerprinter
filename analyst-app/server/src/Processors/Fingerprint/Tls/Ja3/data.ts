@@ -1,4 +1,4 @@
-import * as userAgents from '../../../../../../../signatures/userAgents.json';
+import * as userAgents from './userAgents.json';
 
 export const ja3SignaturesMap = userAgents.reduce((result, current) => {
     return {
