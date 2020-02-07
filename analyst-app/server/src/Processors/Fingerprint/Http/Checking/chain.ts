@@ -11,5 +11,4 @@ export const httpSignatureCheckingChain: HttpChecking[] = [
     httpSignatureCheckVersion,
     httpSignatureOrderedHeaders,
     httpSignatureAbsentHeaders,
-    httpSignatureCheckExpectedUserAgentOrServer,
 ];
