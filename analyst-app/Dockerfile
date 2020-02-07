@@ -8,6 +8,8 @@ RUN apk --update --no-cache add tshark>3.0.7 curl
 WORKDIR /usr/src/app
 COPY . .
 
+RUN node ./prepareSignatures.js
+
 WORKDIR /usr/src/app/client
 RUN npm ci --loglevel error
 RUN npm run build:prod
