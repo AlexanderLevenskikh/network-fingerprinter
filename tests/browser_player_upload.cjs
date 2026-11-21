@@ -12,7 +12,7 @@ const path = require('path');
     });
     if (response.status() !== 200) throw new Error('Browser authentication failed: ' + response.status());
     const page = await context.newPage();
-    await page.goto(base + '/player');
+    await page.goto(base + '/player/upload');
     const chooser = page.locator('input[type="file"]');
     await chooser.waitFor({ state: 'attached' });
     const bad = { name: 'broken.pcap', mimeType: 'application/vnd.tcpdump.pcap', buffer: Buffer.from('not a pcap') };
