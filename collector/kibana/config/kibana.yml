@@ -1,9 +1,7 @@
+# Legacy standalone config retained for reference; root Docker Compose now passes
+# Kibana settings and credentials through runtime environment variables.
+# No passwords or host-specific IPs belong in this tracked file.
 server.name: kibana
 server.host: "0"
-elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+elasticsearch.hosts: ["http://elasticsearch:9200"]
 xpack.monitoring.ui.container.elasticsearch.enabled: true
-
-## X-Pack security credentials
-#
-elasticsearch.username: 'elastic'
-elasticsearch.password: '12345'

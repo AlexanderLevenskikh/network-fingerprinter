@@ -9,6 +9,11 @@ import * as session from 'express-session';
 import * as passport from 'passport';
 
 async function bootstrap() {
+    const sessionSecret = process.env.SESSION_SECRET;
+    if (!sessionSecret || sessionSecret.length < 32) {
+        throw new Error('SESSION_SECRET must be set to at least 32 characters');
+    }
+
     const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
     const PORT = 3000;
@@ -16,8 +21,7 @@ async function bootstrap() {
 
     app.use(
         session({
-            // TODO сделать нормальный secret (не в исходниках!)
-            secret: 'nest cats',
+            secret: sessionSecret,
             resave: false,
             saveUninitialized: false,
         }),
