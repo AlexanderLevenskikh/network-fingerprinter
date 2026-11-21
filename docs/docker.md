@@ -17,6 +17,10 @@ From the repository root, **without creating or editing any files**:
     docker compose --env-file .env.example up -d --build
     docker compose --env-file .env.example ps -a
 
+When running without a copied `.env`, add `--env-file .env.example` to **every**
+later `docker compose` command (including logs, ps and down). The examples below
+assume a copied `.env` unless explicitly shown otherwise.
+
 The sample credentials are for a **local, disposable demo only**. Everything is
 bound to 127.0.0.1 by default; never publish these demo passwords on a LAN or
 the Internet. To configure secrets for a persistent installation:
