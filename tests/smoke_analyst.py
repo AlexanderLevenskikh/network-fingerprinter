@@ -110,12 +110,12 @@ while True:
 
 # A malformed PCAP must not produce a successful import response.
 bad_boundary = "nf-" + uuid.uuid4().hex
-bad_payload = (
-    ("--" + bad_boundary + "\\r\\nContent-Disposition: form-data; name=\\"file\\"; filename=\\"invalid.pcap\\"\\r\\n"
-     "Content-Type: application/vnd.tcpdump.pcap\\r\\n\\r\\n").replace("\\r", "\r").replace("\\n", "\n").encode()
-    + b"not a pcap"
-    + ("\\r\\n--" + bad_boundary + "--\\r\\n").replace("\\r", "\r").replace("\\n", "\n").encode()
-)
+bad_header = (
+    f'--{bad_boundary}\r\n'
+    'Content-Disposition: form-data; name="file"; filename="invalid.pcap"\r\n'
+    'Content-Type: application/vnd.tcpdump.pcap\r\n\r\n'
+).encode()
+bad_payload = bad_header + b"not a pcap" + f"\r\n--{bad_boundary}--\r\n".encode()
 try:
     request("/api/player/upload", bad_payload,
             {"Content-Type": "multipart/form-data; boundary=" + bad_boundary}, timeout=30)
