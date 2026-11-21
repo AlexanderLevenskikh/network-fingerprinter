@@ -41,16 +41,15 @@ jobs:
         env:
           APP_ADMIN_PASSWORD: local-admin-change-me
         run: timeout 240 python3 tests/smoke_analyst.py
-      - name: Install isolated Playwright browser harness
-        run: |
-          npm install --prefix /tmp/nf-playwright --no-audit --no-fund playwright@1.56.1
-          PLAYWRIGHT_BROWSERS_PATH=/tmp/nf-browser-cache /tmp/nf-playwright/node_modules/.bin/playwright install --with-deps chromium
-      - name: Browser upload retry after error
+      - name: Browser upload retry after error (isolated Playwright container)
         env:
           APP_ADMIN_PASSWORD: local-admin-change-me
-          NODE_PATH: /tmp/nf-playwright/node_modules
-          PLAYWRIGHT_BROWSERS_PATH: /tmp/nf-browser-cache
-        run: timeout 120 node tests/browser_player_upload.cjs
+        run: |
+          timeout 240 docker run --rm --network host --ipc=host \
+            -v "$PWD:/work" -w /work \
+            -e APP_ADMIN_PASSWORD \
+            mcr.microsoft.com/playwright:v1.56.1-noble \
+            sh -c 'npm install --prefix /tmp/nf-playwright --no-audit --no-fund playwright@1.56.1 && NODE_PATH=/tmp/nf-playwright/node_modules node tests/browser_player_upload.cjs'
       - name: Sanitized diagnostics after failure
         if: failure()
         run: |
