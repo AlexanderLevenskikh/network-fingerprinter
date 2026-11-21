@@ -5,7 +5,7 @@ import { resolve } from 'path';
 import * as uuid from 'uuid';
 import * as fs from 'fs';
 import { writeFile } from 'fs';
-import { exec } from 'child_process';
+import { exec, execFile } from 'child_process';
 import * as ndjson from 'ndjson';
 
 @Injectable()
@@ -27,6 +27,7 @@ export class PlayerService {
             writeFile(pcapFilePath, fileBuffer, (err) => {
                 if (err) {
                     rej(err);
+                    return;
                 }
 
                 this.filterPcap(guid).then(async () => {
@@ -53,33 +54,44 @@ export class PlayerService {
         });
     }
 
-    private sendChunkToElastic = async (
-        guid: string,
-        range: string,
-    ) => {
-        return new Promise((res, rej) => {
-            const host = `${ process.env.ELASTIC_USERNAME }:${ process.env.ELASTIC_PASSWORD }@${ process.env.ELASTIC_HOST }`;
-            const cleanupCb = (error, stdout, stderr) => {
-                if (error) {
-                    rej(error);
-                }
-
-                rm(`./temp/${ guid }-${ range }.json`);
-                res();
-            };
-
-            if (!/^win/.test(process.platform)) {
-                exec(
-                    `curl ${ host }/_bulk -H 'Content-Type: application/x-ndjson' -X POST --data-binary @./temp/${ guid }-${ range }.json`,
-                    cleanupCb,
-                );
-            } else {
-                exec(
-                    `cmd /s /c curl ${ host }/_bulk -H "Content-Type: application/x-ndjson" -X POST --data-binary @./temp/${ guid }-${ range }.json`,
-                    cleanupCb,
-                );
+    private sendChunkToElastic = async (guid: string, range: string) => {
+        const path = resolve(process.cwd(), `temp/${guid}-${range}.json`);
+        const host = process.env.ELASTIC_HOST;
+        const username = process.env.ELASTIC_USERNAME;
+        const password = process.env.ELASTIC_PASSWORD;
+        if (!host || !username || !password) {
+            throw new Error('Elasticsearch connection settings are missing');
+        }
+        try {
+            const bulkResponse: string = await new Promise((resolveResponse, rejectResponse) => {
+                execFile('curl', [
+                    '--fail', '--silent', '--show-error',
+                    '--max-time', '60',
+                    '--user', `${username}:${password}`,
+                    '--header', 'Content-Type: application/x-ndjson',
+                    '--request', 'POST',
+                    '--data-binary', `@${path}`,
+                    `http://${host}/_bulk?refresh=wait_for`,
+                ], { maxBuffer: 16 * 1024 * 1024 }, (error, stdout) => {
+                    if (error) {
+                        rejectResponse(new Error('Elasticsearch bulk transport failed'));
+                        return;
+                    }
+                    resolveResponse(stdout);
+                });
+            });
+            let result: any;
+            try {
+                result = JSON.parse(bulkResponse);
+            } catch (_) {
+                throw new Error('Elasticsearch bulk response is not JSON');
             }
-        });
+            if (result.errors !== false || !Array.isArray(result.items) || result.items.length === 0) {
+                throw new Error('Elasticsearch bulk rejected one or more documents');
+            }
+        } finally {
+            rm('-f', path);
+        }
     };
 
     private transformChunk = async (
@@ -90,6 +102,7 @@ export class PlayerService {
             const processChunkCb = (error, stdout, stderr) => {
                 if (error) {
                     rej(error);
+                    return;
                 }
 
                 let transformedNdJson = '';
@@ -124,6 +137,7 @@ export class PlayerService {
                         fs.writeFile(resolve(process.cwd(), `temp/${ guid }-${ range }.json`), transformedNdJson, (err) => {
                             if (err) {
                                 rej(err);
+                                return;
                             }
 
                             res();
@@ -186,6 +200,7 @@ export class PlayerService {
             const processChunkCb = (error, stdout, stderr) => {
                 if (error) {
                     rej(error);
+                    return;
                 }
 
                 res();
@@ -209,6 +224,7 @@ export class PlayerService {
             const capInfosCb = (error, stdout, stderr) => {
                 if (error) {
                     rej(error);
+                    return;
                 }
 
                 const numberOfPackets = stdout.match(/Number of packets:\s*(\d+)/i);
