@@ -44,38 +44,23 @@ Analyzer is a **kibana** GUI for **packets-\*** index inspection and **analytics
 
 ## Installation
 
-Every module has an `.env` file with **docker-compose** configuration, you should replace data in this file. 
+The supported local quickstart uses **one Compose file at the repository root**
+(Docker Engine with Compose v2; on Windows use Docker Desktop with Linux containers).
+For an isolated demo using disposable sample credentials:
 
-##### Firstly, install collector module:
-You needs to create folder which will be used elasticsearch for persist data
-In our sample, it's a `./data` directory in `collector` folder, as configured in `docker-compose.yml`:
+```sh
+docker compose --env-file .env.example up -d --build
+docker compose --env-file .env.example ps -a
 ```
-volumes:
-  elasticsearch:
-    driver_opts:
-      type: none
-      device: $PWD/data
-      o: bind
-```
-You need to replace string `device: $PWD/data`  and make sure that this directory exists, or remove lines `3-6` for use docker-driven volume.
 
-All configuration steps: 
-```
-cd  collector
-vim .env # set environment variables
-vim docker-compose.yml # set elasticsearch volume device 
-docker-compose up -d # run in detach mode
-```
-Wait, until elasticsearch ready. (see docker logs CONTAINER_NAME)
+Open [Analyst](http://127.0.0.1:3000) or [Kibana](http://127.0.0.1:5601).
+For a persistent local setup, copy `.env.example` to gitignored `.env`,
+replace the sample passwords and session secret, then run `docker compose up -d --build`.
+**Never expose the sample credentials or these services publicly.**
 
-##### Next, let's install sensor:
-
-If elasticsearch is ready (but it's not necessary - containers always restart on failure), simply edit `.env` in `sensor` directory and run `docker-compose up -d`
-
-##### Prepare analyzer
-
-Now, we can install and run analyzer as simple as edit `.env` and run `docker-compose up -d` in `analytics-app` directory.
-Open `http://${host}:5601` to open kibana GUI and `http://${host}:3000` to open analytics app, where `host` is your ip or domain name.
+See [Docker deployment and platform notes](docs/docker.md) for initialization,
+persistent volumes, optional Linux sensor capture, troubleshooting, and the
+scope of tested configurations. Do not use the old separate module Compose files.
 
 ## Signature analysis
 
