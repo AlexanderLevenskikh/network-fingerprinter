@@ -107,3 +107,21 @@ while True:
     if time.monotonic() >= deadline:
         raise RuntimeError("Synthetic TCP stream did not appear in Analyst API")
     time.sleep(3)
+
+# A malformed PCAP must not produce a successful import response.
+bad_boundary = "nf-" + uuid.uuid4().hex
+bad_payload = (
+    ("--" + bad_boundary + "\\r\\nContent-Disposition: form-data; name=\\"file\\"; filename=\\"invalid.pcap\\"\\r\\n"
+     "Content-Type: application/vnd.tcpdump.pcap\\r\\n\\r\\n").replace("\\r", "\r").replace("\\n", "\n").encode()
+    + b"not a pcap"
+    + ("\\r\\n--" + bad_boundary + "--\\r\\n").replace("\\r", "\r").replace("\\n", "\n").encode()
+)
+try:
+    request("/api/player/upload", bad_payload,
+            {"Content-Type": "multipart/form-data; boundary=" + bad_boundary}, timeout=30)
+except urllib.error.HTTPError as exc:
+    if exc.code < 400:
+        raise RuntimeError("Invalid PCAP was accepted")
+    print("PASS malformed PCAP import fails with HTTP", exc.code)
+else:
+    raise RuntimeError("Invalid PCAP import was reported as successful")
