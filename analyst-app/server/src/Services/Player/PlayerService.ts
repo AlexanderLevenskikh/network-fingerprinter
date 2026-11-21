@@ -6,6 +6,7 @@ import * as path from 'path';
 import * as os from 'os';
 import * as fs from 'fs';
 import * as uuid from 'uuid';
+import * as readline from 'readline';
 
 const run = promisify(execFile);
 export const MAX_PCAP_BYTES = 10 * 1024 * 1024;
@@ -31,42 +32,89 @@ export class PlayerService {
         // Each request owns its own directory; no shared relative paths or shell commands.
         const dir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'nf-player-'));
         const original = path.join(dir, 'original.pcap');
-        const filtered = path.join(dir, 'filtered.pcap');
+        const decoded = path.join(dir, 'decoded.ndjson');
+        const batch = path.join(dir, 'batch.ndjson');
+        const importId = uuid.v4();
         let indexedPackets = 0;
         try {
             await fs.promises.writeFile(original, fileBuffer);
-            // capinfos validates even when the filter would select zero packets.
+            // Validate the input even if the display filter matches nothing.
+            // One tshark decode of the ORIGINAL capture preserves global tcp.stream
+            // numbers, including connections whose first packets are filtered out.
             try {
                 await this.packetCount(original);
-                await this.command('tshark', ['-Y', FILTER, '-r', original, '-w', filtered, '-n']);
             } catch (_) {
                 throw new BadRequestException('Invalid or damaged PCAP file');
             }
-            const matchedPackets = await this.packetCount(filtered);
-            if (matchedPackets === 0) {
-                return { status: 'no_matches', indexedPackets: 0 };
-            }
-
-            // Sequential chunks: at most one editcap, tshark or curl process at a time.
-            // In particular, a capture with many packets cannot fan out thousands of jobs.
-            for (let start = 1; start <= matchedPackets; start += 100) {
-                const end = Math.min(matchedPackets, start + 99);
-                const chunk = path.join(dir, 'chunk.pcap');
-                const json = path.join(dir, 'chunk.json');
-                await this.command('editcap', ['-r', filtered, chunk, String(start) + '-' + String(end)]);
-                await this.command('tshark', ['-T', 'ek', '-r', chunk, '-n'], json);
-                const count = await this.transformChunk(json, dir);
-                if (count !== end - start + 1) {
-                    throw new Error('Packet conversion count mismatch');
+            await this.command('tshark', ['-T', 'ek', '-Y', FILTER, '-r', original, '-n'], decoded);
+            const input = fs.createReadStream(decoded, { encoding: 'utf8' });
+            const lines = readline.createInterface({ input, crlfDelay: Infinity });
+            let action: any = null;
+            let documents = 0;
+            let pending = '';
+            let pendingCount = 0;
+            try {
+                for await (const line of lines) {
+                    if (!line.trim()) { continue; }
+                    const row = JSON.parse(line);
+                    if (action === null) {
+                        if (!row.index) { throw new Error('Expected tshark bulk index action'); }
+                        delete row.index._type;
+                        action = row;
+                    } else {
+                        if (!row.layers || row.index) { throw new Error('Invalid tshark bulk document'); }
+                        const stream = row.layers.tcp && row.layers.tcp.tcp_tcp_stream !== undefined
+                            ? row.layers.tcp.tcp_tcp_stream
+                            : row.layers.udp && row.layers.udp.udp_udp_stream !== undefined
+                                ? row.layers.udp.udp_udp_stream : uuid.v4();
+                        // Wireshark 4 EK renamed tcp.flags.* to tcp_tcp_flags_* and
+                        // emits booleans. Legacy Analyst queries require tcp_flags_tcp_flags_* string '1'/'0'
+                        // in _source (Elasticsearch can coerce these to integer mapping).
+                        if (row.layers.tcp) {
+                            const tcp = row.layers.tcp;
+                            for (const flag of [
+                                'urg', 'ack', 'push', 'reset', 'syn', 'fin',
+                            ]) {
+                                const modern = 'tcp_tcp_flags_' + flag;
+                                const legacy = 'tcp_flags_tcp_flags_' + flag;
+                                if (Object.prototype.hasOwnProperty.call(tcp, modern)) {
+                                    const value = tcp[modern];
+                                    tcp[legacy] = value === true || value === 1 || value === '1' ? '1' : '0';
+                                    delete tcp[modern];
+                                }
+                            }
+                            if (tcp.tcp_tcp_flags_str !== undefined) {
+                                tcp.tcp_flags_tcp_flags_str = tcp.tcp_tcp_flags_str;
+                                delete tcp.tcp_tcp_flags_str;
+                            }
+                        }
+                        row.streamId = importId + '-' + stream;
+                        row.sensorId = 'pcap-player-' + process.env.APP_ID;
+                        pending += JSON.stringify(action) + '\n' + JSON.stringify(row) + '\n';
+                        action = null;
+                        documents++;
+                        pendingCount++;
+                        if (pendingCount === 100) {
+                            await fs.promises.writeFile(batch, pending);
+                            indexedPackets += await this.sendChunkToElastic(batch, pendingCount);
+                            pending = '';
+                            pendingCount = 0;
+                        }
+                    }
                 }
-                indexedPackets += await this.sendChunkToElastic(json, count);
-                await fs.promises.unlink(chunk);
-                await fs.promises.unlink(json);
+                if (action !== null) { throw new Error('Incomplete tshark action/document pair'); }
+                if (pendingCount) {
+                    await fs.promises.writeFile(batch, pending);
+                    indexedPackets += await this.sendChunkToElastic(batch, pendingCount);
+                }
+            } finally {
+                lines.close();
+                input.destroy();
             }
-            if (indexedPackets !== matchedPackets) {
+            if (indexedPackets !== documents) {
                 throw new Error('Indexed packet count mismatch');
             }
-            return { status: 'indexed', indexedPackets };
+            return { status: documents === 0 ? 'no_matches' : 'indexed', indexedPackets };
         } catch (error) {
             if (indexedPackets > 0) {
                 // An earlier successful bulk request is not an atomic transaction.
@@ -78,7 +126,12 @@ export class PlayerService {
             }
             throw error;
         } finally {
-            await fs.promises.rmdir(dir, { recursive: true });
+            // Only flat, private temporary files are created in this directory.
+            // Delete contents before rmdir; this works with the pinned TS/Node types.
+            for (const name of await fs.promises.readdir(dir)) {
+                await fs.promises.unlink(path.join(dir, name));
+            }
+            await fs.promises.rmdir(dir);
         }
     }
 
@@ -90,6 +143,11 @@ export class PlayerService {
                 const child = require('child_process').spawn(executable, args, { stdio: ['ignore', 'pipe', 'pipe'] });
                 const output = fs.createWriteStream(outputFile);
                 let stderr = '';
+                let bytes = 0;
+                child.stdout.on('data', chunk => {
+                    bytes += chunk.length;
+                    if (bytes > 256 * 1024 * 1024) { child.kill('SIGKILL'); }
+                });
                 let settled = false;
                 const timer = setTimeout(() => child.kill('SIGKILL'), 60000);
                 child.stdout.pipe(output);
@@ -121,30 +179,6 @@ export class PlayerService {
         return Number.parseInt(match[1], 10);
     }
 
-    private async transformChunk(jsonPath: string, dir: string): Promise<number> {
-        const fileText = await fs.promises.readFile(jsonPath, 'utf8');
-        const rows = fileText.split('\n').filter(line => line.trim()).map(line => JSON.parse(line));
-        const importId = path.basename(dir);
-        let count = 0;
-        for (const row of rows) {
-            if (row.index) {
-                delete row.index._type;
-            } else {
-                if (!row.layers) { throw new Error('Missing tshark packet layers'); }
-                const stream = row.layers.tcp ? row.layers.tcp.tcp_tcp_stream
-                    : row.layers.udp ? row.layers.udp.udp_udp_stream : uuid.v1();
-                row.streamId = importId + '-' + stream;
-                row.sensorId = 'pcap-player-' + process.env.APP_ID;
-                count++;
-            }
-        }
-        if (rows.length !== count * 2) {
-            throw new Error('Invalid tshark bulk action/document pair');
-        }
-        await fs.promises.writeFile(jsonPath, rows.map(row => JSON.stringify(row)).join('\n') + '\n');
-        return count;
-    }
-
     private async sendChunkToElastic(jsonPath: string, expectedCount: number): Promise<number> {
         const host = process.env.ELASTIC_HOST;
         const username = process.env.ELASTIC_USERNAME;
@@ -152,20 +186,36 @@ export class PlayerService {
         if (!host || !username || !password) {
             throw new Error('Elasticsearch connection settings are missing');
         }
-        const body = await this.command('curl', [
-            '--fail', '--silent', '--show-error', '--max-time', '60',
-            '--user', username + ':' + password,
-            '--header', 'Content-Type: application/x-ndjson',
-            '--request', 'POST', '--data-binary', '@' + jsonPath,
-            'http://' + host + '/_bulk?refresh=wait_for',
-        ]);
+        let body: string;
+        try {
+            body = await this.command('curl', [
+                '--fail', '--silent', '--show-error', '--max-time', '60',
+                '--user', username + ':' + password,
+                '--header', 'Content-Type: application/x-ndjson',
+                '--request', 'POST', '--data-binary', '@' + jsonPath,
+                'http://' + host + '/_bulk?refresh=wait_for',
+            ]);
+        } catch (_) {
+            // execFile errors may embed argv (including ELASTIC_PASSWORD) and stderr.
+            throw new Error('Elasticsearch bulk transport failed');
+        }
         let result: any;
         try { result = JSON.parse(body); } catch (_) { throw new Error('Invalid Elasticsearch bulk response'); }
         const items = result.items;
         if (result.errors !== false || !Array.isArray(items) || items.length !== expectedCount ||
             items.some(item => !item.index || item.index.error ||
                 item.index.status < 200 || item.index.status >= 300)) {
-            throw new Error('Elasticsearch bulk did not index all packets');
+            const rejected = Array.isArray(items) ? items.find(item => !item.index ||
+                item.index.error || item.index.status < 200 || item.index.status >= 300) : null;
+            const index = rejected && rejected.index;
+            const detail = index && index.error;
+            // Only structured diagnostics: never include reason, document, or raw response.
+            const status = index && Number.isInteger(index.status) &&
+                index.status >= 100 && index.status <= 599 ? index.status : null;
+            const type = detail && typeof detail.type === 'string' &&
+                /^[a-z][a-z0-9_]{0,79}$/.test(detail.type) ? detail.type : 'unknown';
+            throw new Error('Elasticsearch bulk did not index all packets' +
+                (status === null ? '' : ' (HTTP ' + status + ')') + ': ' + type);
         }
         return items.length;
     }
