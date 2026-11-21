@@ -38,10 +38,10 @@ def packet(source, dest, source_port, dest_port, flags, seq, ack):
     return eth + ip + tcp
 
 
-def pcap_bytes():
+def pcap_bytes(flags=(2, 18)):
     packets = [
-        packet(SRC, DST, 54321, 443, 2, 100, 0),
-        packet(DST, SRC, 443, 54321, 18, 200, 101),
+        packet(SRC, DST, 54321, 443, flags[0], 100, 0),
+        packet(DST, SRC, 443, 54321, flags[1], 200, 101),
     ]
     out = bytearray(struct.pack("<IHHIIII", 0xA1B2C3D4, 2, 4, 0, 0, 65535, 1))
     for i, payload in enumerate(packets):
@@ -79,17 +79,22 @@ if status != 200 or url.rstrip("/") != BASE:
     raise RuntimeError("Login did not redirect to authenticated app")
 print("PASS authenticated login")
 
-boundary = "nf-" + uuid.uuid4().hex
-capture = pcap_bytes()
-payload = (
-    ("--" + boundary + "\r\nContent-Disposition: form-data; name=\"file\"; filename=\"synthetic.pcap\"\r\n"
-     "Content-Type: application/vnd.tcpdump.pcap\r\n\r\n").encode()
-    + capture + ("\r\n--" + boundary + "--\r\n").encode()
-)
-status, _, response = request("/api/player/upload", payload, {"Content-Type": "multipart/form-data; boundary=" + boundary}, timeout=120)
-if status < 200 or status >= 300:
-    raise RuntimeError("PCAP upload returned non-success status")
-print("PASS synthetic PCAP upload API")
+
+def upload(data, filename="synthetic.pcap", timeout=120):
+    boundary = "nf-" + uuid.uuid4().hex
+    payload = (
+        (f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+         'Content-Type: application/vnd.tcpdump.pcap\r\n\r\n').encode()
+        + data + (f'\r\n--{boundary}--\r\n').encode()
+    )
+    return request("/api/player/upload", payload,
+                   {"Content-Type": "multipart/form-data; boundary=" + boundary}, timeout=timeout)
+
+
+status, _, response = upload(pcap_bytes())
+parsed = json.loads(response)
+assert status == 201 and parsed == {"status": "indexed", "indexedPackets": 2}, (status, parsed)
+print("PASS synthetic PCAP reports exactly two indexed packets")
 
 deadline = time.monotonic() + 90
 while True:
@@ -108,20 +113,30 @@ while True:
         raise RuntimeError("Synthetic TCP stream did not appear in Analyst API")
     time.sleep(3)
 
-# A malformed PCAP must not produce a successful import response.
-bad_boundary = "nf-" + uuid.uuid4().hex
-bad_header = (
-    f'--{bad_boundary}\r\n'
-    'Content-Disposition: form-data; name="file"; filename="invalid.pcap"\r\n'
-    'Content-Type: application/vnd.tcpdump.pcap\r\n\r\n'
-).encode()
-bad_payload = bad_header + b"not a pcap" + f"\r\n--{bad_boundary}--\r\n".encode()
+status, _, response = upload(pcap_bytes(flags=(16, 16)), "no-matches.pcap")
+assert status == 201 and json.loads(response) == {"status": "no_matches", "indexedPackets": 0}
+print("PASS valid no-match capture reports zero indexed packets")
+
 try:
-    request("/api/player/upload", bad_payload,
-            {"Content-Type": "multipart/form-data; boundary=" + bad_boundary}, timeout=30)
+    upload(b"not a pcap", "invalid.pcap", timeout=30)
 except urllib.error.HTTPError as exc:
-    if exc.code < 400:
-        raise RuntimeError("Invalid PCAP was accepted")
-    print("PASS malformed PCAP import fails with HTTP", exc.code)
+    body = json.loads(exc.read())
+    assert 400 <= exc.code < 500 and body.get("message"), (exc.code, body)
+    print("PASS malformed PCAP rejected with clear HTTP 4xx")
 else:
     raise RuntimeError("Invalid PCAP import was reported as successful")
+
+try:
+    request("/api/player/upload", b"", {"Content-Type": "multipart/form-data; boundary=empty"}, timeout=30)
+except urllib.error.HTTPError as exc:
+    assert 400 <= exc.code < 500, exc.code
+    print("PASS missing PCAP rejected with HTTP 4xx")
+else:
+    raise RuntimeError("Missing PCAP was accepted")
+
+status, _, response = upload(pcap_bytes(), "retry.pcap")
+assert status == 201 and json.loads(response) == {"status": "indexed", "indexedPackets": 2}
+print("PASS successful upload immediately after failed import")
+
+# Reuse the exact synthetic capture in the real-browser retry test.
+Path("tests/browser_retry.pcap").write_bytes(pcap_bytes())
