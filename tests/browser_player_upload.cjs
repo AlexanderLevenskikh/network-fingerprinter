@@ -14,7 +14,7 @@ const path = require('path');
     const page = await context.newPage();
     await page.goto(base + '/player');
     const chooser = page.locator('input[type="file"]');
-    await chooser.waitFor();
+    await chooser.waitFor({ state: 'attached' });
     const bad = { name: 'broken.pcap', mimeType: 'application/vnd.tcpdump.pcap', buffer: Buffer.from('not a pcap') };
     await chooser.setInputFiles(bad);
     await page.getByText(/Import failed|Ошибка импорта/).waitFor({ timeout: 30000 });

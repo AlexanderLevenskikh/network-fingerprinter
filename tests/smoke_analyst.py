@@ -137,6 +137,3 @@ else:
 status, _, response = upload(pcap_bytes(), "retry.pcap")
 assert status == 201 and json.loads(response) == {"status": "indexed", "indexedPackets": 2}
 print("PASS successful upload immediately after failed import")
-
-# Reuse the exact synthetic capture in the real-browser retry test.
-Path("tests/browser_retry.pcap").write_bytes(pcap_bytes())

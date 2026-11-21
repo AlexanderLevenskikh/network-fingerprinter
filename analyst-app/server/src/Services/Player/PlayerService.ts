@@ -78,10 +78,7 @@ export class PlayerService {
             }
             throw error;
         } finally {
-            for (const name of await fs.promises.readdir(dir)) {
-                await fs.promises.unlink(path.join(dir, name));
-            }
-            await fs.promises.rmdir(dir);
+            await fs.promises.rmdir(dir, { recursive: true });
         }
     }
 
