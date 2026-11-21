@@ -141,7 +141,7 @@ services:
       - NET_ADMIN
       - NET_RAW
     environment:
-      ELASTIC_HOST: 127.0.0.1:9200
+      ELASTIC_HOST: 127.0.0.1:${ELASTIC_PORT:-9200}
       ELASTIC_USERNAME: elastic
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
       SENSOR_ID: ${SENSOR_ID:-1}
