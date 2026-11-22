@@ -37,6 +37,33 @@ jobs:
         run: |
           docker compose --env-file .env.example down -v --remove-orphans
           timeout 720 docker compose --env-file .env.example up -d --wait --wait-timeout 600
+      - name: Assert Elasticsearch 8 template and Kibana 8 data view
+        run: |
+          set -eu
+          . ./.env.example
+          curl -fsS --user "elastic:${ELASTIC_PASSWORD}" \
+            http://127.0.0.1:9200/_index_template/packets > /tmp/nf-template.json
+          python3 - <<'PY'
+          import json
+          result = json.load(open('/tmp/nf-template.json'))
+          templates = result.get('index_templates', [])
+          assert len(templates) == 1
+          value = templates[0]['index_template']
+          assert value['index_patterns'] == ['packets-*']
+          assert 'tcp' in value['template']['mappings']['properties']['layers']['properties']
+          print('PASS Elasticsearch 8 composable packet template')
+          PY
+          curl -fsS --user "elastic:${ELASTIC_PASSWORD}" \
+            -H "kbn-xsrf: network-fingerprinter" \
+            'http://127.0.0.1:5601/api/data_views/data_view/packets-%2A' \
+            > /tmp/nf-data-view.json
+          python3 - <<'PY'
+          import json
+          view = json.load(open('/tmp/nf-data-view.json'))['data_view']
+          assert view['title'] == 'packets-*'
+          assert view['timeFieldName'] == 'timestamp'
+          print('PASS Kibana 8 packets-* data view')
+          PY
       - name: Authenticate and upload synthetic SYN/SYN-ACK capture
         env:
           APP_ADMIN_PASSWORD: local-admin-change-me
@@ -54,9 +81,52 @@ jobs:
         if: failure()
         run: |
           docker compose --env-file .env.example ps -a || true
-          docker compose --env-file .env.example logs --no-color --tail=120 analyst postgres elasticsearch kibana 2>&1 |
+          docker compose --env-file .env.example logs --no-color --tail=120 analyst postgres elasticsearch elastic-init kibana kibana-init 2>&1 |
             sed -E 's/(password|passwd|secret|authorization|cookie|token)([=: ]+)[^ ,;]+/\1=[REDACTED]/Ig' |
             tail -n 400 || true
       - name: Always remove synthetic data and containers
+        if: always()
+        run: docker compose --env-file .env.example down -v --remove-orphans
+
+
+  sensor-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build sensor image from source
+        run: docker compose --env-file .env.example --profile capture-linux build --no-cache sensor
+      - name: Run Python sensor tests in actual image
+        run: |
+          docker compose --env-file .env.example --profile capture-linux run \
+            --rm --no-deps --entrypoint python sensor \
+            -m unittest -v test_sensor
+
+  sensor-to-es:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build real Sensor image
+        run: docker compose --env-file .env.example --profile capture-linux build --no-cache sensor
+      - name: Start isolated Elasticsearch 8 and one-shot template bootstrap
+        run: |
+          docker compose --env-file .env.example down -v --remove-orphans
+          timeout 420 docker compose --env-file .env.example up -d --wait --wait-timeout 360 elasticsearch
+          timeout 120 docker compose --env-file .env.example up --no-deps --exit-code-from elastic-init elastic-init
+      - name: Verify single-event flush and shutdown delivery with synthetic offline tshark
+        run: |
+          timeout 90 docker compose --env-file .env.example --profile capture-linux run \
+            -T --rm --no-deps -e PYTHONPATH=/usr/share/tshark \
+            -v "$PWD/tests/smoke_sensor_es.py:/tmp/smoke_sensor_es.py:ro" \
+            --entrypoint python sensor /tmp/smoke_sensor_es.py
+      - name: Report sanitized container status on failure
+        if: failure()
+        run: |
+          docker compose --env-file .env.example ps -a || true
+          docker compose --env-file .env.example logs --no-color --tail=35 elasticsearch elastic-init 2>&1 |
+            sed -E 's/(password|passwd|secret|authorization|cookie|token)([=: ]+)[^ ,;]+/\1=[REDACTED]/Ig' |
+            tail -n 90 || true
+      - name: Delete isolated synthetic volumes
         if: always()
         run: docker compose --env-file .env.example down -v --remove-orphans

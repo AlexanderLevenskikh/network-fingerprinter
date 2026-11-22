@@ -1,5 +1,5 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ElasticsearchService } from '../../DAL/Elastic/ElasticsearchService';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import * as path from 'path';

@@ -1,18 +1,17 @@
-# Stage 2: the legacy base/runtime remain until the dependency migration.
-# Configuration and credentials are runtime-only; no network calls in docker build.
-FROM nikolaik/python-nodejs:python3.8-nodejs13-alpine
+# Python 3.12 + distro Wireshark (multi-arch Debian Bookworm).
+# No secrets, registry calls, or Elasticsearch bootstrap at build time.
+FROM python:3.12.12-slim-bookworm
 
-USER root
-COPY . /usr/share/tshark
+ENV DEBIAN_FRONTEND=noninteractive PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends tshark ca-certificates \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /usr/share/tshark
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+COPY *.py ./
+COPY espcap.yml ./
 
-# Package versions will be pinned together with tshark/Python in Step 3.
-RUN apk add --no-cache tshark curl \
-    && pip install --upgrade pip \
-    && pip install click pyyaml elasticsearch
-
-# The Linux capture profile must explicitly select an interface.
-CMD exec python ./index.py \
-    -i "${SENSOR_INTERFACE:?Set SENSOR_INTERFACE for the capture-linux profile}" \
-    --elastic-url="${ELASTIC_USERNAME:-elastic}:${ELASTIC_PASSWORD}@${ELASTIC_HOST:-127.0.0.1:9200}" \
-    --sensor-id="${SENSOR_ID:-1}"
+# Credentials and interface are runtime environment variables.
+ENTRYPOINT ["python", "index.py"]

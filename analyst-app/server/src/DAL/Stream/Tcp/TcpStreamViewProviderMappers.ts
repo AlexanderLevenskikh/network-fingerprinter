@@ -1,4 +1,4 @@
-import { CountResponse, SearchResponse } from 'elasticsearch';
+import { CountResponse, SearchResponse } from '../../Elastic/ElasticResponse';
 import { ITcpStreamMetaData } from './ITcpStreamMetaData';
 
 export class TcpStreamViewProviderMappers {

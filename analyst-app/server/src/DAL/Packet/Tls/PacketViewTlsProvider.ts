@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ElasticsearchService } from '../../Elastic/ElasticsearchService';
 import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
 import { map } from 'rxjs/operators';
 import { PacketViewTlsProviderQueries } from './PacketViewTlsProviderQueries';

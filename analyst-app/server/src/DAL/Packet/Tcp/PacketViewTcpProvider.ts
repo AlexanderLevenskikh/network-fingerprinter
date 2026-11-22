@@ -5,7 +5,7 @@ import { map } from 'rxjs/operators';
 import { PacketViewTcpProviderMappers } from './PacketViewTcpProviderMappers';
 import { Nullable } from '../../../Shared/Types/Nullable';
 import { IPacketViewTcp } from './IPacketViewTcp';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ElasticsearchService } from '../../Elastic/ElasticsearchService';
 import { PacketViewTcpProviderQueries } from './PacketViewTcpProviderQueries';
 import { PacketViewTcpApplicationProtocol } from './PacketViewTcpApplicationProtocol';
 
