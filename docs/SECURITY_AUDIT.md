@@ -69,3 +69,40 @@ Replace `root` with the actual existing administrator username when appropriate.
 Local Compose uses HTTP on loopback, is not internet-hardened, and has no shared session store. Add TLS and reviewed reverse proxy, request-rate limits, durable session storage, CSRF policy and role-scoped credentials before external exposure. OWASP recommends scrypt `N=2^17,r=8,p=1`; this is used in v2. [OWASP password guidance](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) and [Node.js 24 crypto](https://nodejs.org/download/release/v24.21.0/docs/api/crypto.html).
 
 Next bounded patch: upgrade the vulnerable Nest/Express/Multer runtime cohort as a separately tested compatibility migration, then address browser bundle and Webpack 4 tools. Re-run npm audits and the full Docker/Chromium, Compose/PostgreSQL and optional Sensor suites for each candidate.
+
+## Runtime critical-transitive patch (#97; separate from authentication #94)
+
+The server-only npm `overrides` and v1 lockfile in this PR pin two
+transitive packages to exact, Linux-npm-resolved, integrity-checked versions.
+The public API, database layout, capture formats and client bundle are unchanged.
+
+| Transitive runtime package | Previously locked | Candidate locked | Advisory | Status in this PR |
+| --- | --- | --- | --- | --- |
+| `thenify` (through TypeORM → cli-highlight → mz) | 3.3.0 | **3.3.1** | [GHSA-29xr-v42j-r956](https://github.com/advisories/GHSA-29xr-v42j-r956) (Critical) | No longer flagged in current npm audit |
+| `proxy-addr` (through Express) | 2.0.5 | **2.0.8** | [GHSA-jqcg-44mw-7w3h](https://github.com/advisories/GHSA-jqcg-44mw-7w3h) (Critical) | No longer flagged in current npm audit |
+
+`proxy-addr` 2.0.8 additionally requires `forwarded` 0.2.0 (was 0.1.2)
+and `ipaddr.js` 1.9.1 (was 1.9.0). All four versions and tarball integrity
+values are captured in the server lock. The source-generated npm candidate
+installed successfully using Node 24/npm 11.
+
+**npm advisory comparison, exact server/client lock scopes:**
+
+| Domain | Before #97 (total / critical / high) | After #97 (total / critical / high) |
+| --- | --- | --- |
+| Server production | 44 / 7 / 20 | **42 / 5 / 20** |
+| Server including dev/build | 128 / 22 / 44 | **126 / 20 / 44** |
+| Client runtime | 18 / 0 / 15 | 18 / 0 / 15 |
+| Client including dev/build | 194 / 26 / 68 | 194 / 26 / 68 |
+
+Sources: [before-run 44995942068](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44995942068);
+[after-run 44996615552](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44996615552).
+npm audit numbers measure advisories in the lock trees, not demonstrated
+exploitability or total distinct CVEs; categories and scopes overlap.
+
+**Dependabot disposition:** legacy PR [#66](https://github.com/AlexanderLevenskikh/network-fingerprinter/pull/66)
+proposed `thenify` 3.3.0 → 3.3.1. Its particular package/advisory has
+replacement coverage in this PR **only after the new commit is merged and
+validated**; coordinator decides closure. The remaining Nest/Express/body-parser/
+Multer/qs suggestions (#76, #88, #92, #93) are **not** covered and must stay
+open. No blanket security or production-hardening claim is made.
