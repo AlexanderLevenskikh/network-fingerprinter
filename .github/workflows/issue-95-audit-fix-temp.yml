@@ -1,0 +1,52 @@
+name: Temporary issue 95 nonmajor audit-fix candidate
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/issue-95-audit-fix-temp.yml'
+  push:
+    branches:
+      - security/issue-95-server-runtime-cohort-20261122
+    paths:
+      - '.github/workflows/issue-95-audit-fix-temp.yml'
+permissions:
+  contents: read
+jobs:
+  evaluate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.3'
+          registry-url: https://registry.npmjs.org
+      - name: Evaluate compatible npm audit fix
+        working-directory: analyst-app/server
+        run: |
+          set -euo pipefail
+          npm config set registry https://registry.npmjs.org/
+          npm ci --ignore-scripts --no-audit --no-fund
+          set +e
+          npm audit fix --package-lock-only --lockfile-version=1 --ignore-scripts --no-fund > candidate.log 2>&1
+          status=$?
+          set -e
+          echo "audit_fix_exit=$status" >> candidate.log
+          test "$status" -le 1
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build
+          npm audit --omit=dev --json > candidate-prod.json || status2=$?
+          test "${status2:-0}" -le 1
+          npm audit --json > candidate-all.json || status3=$?
+          test "${status3:-0}" -le 1
+          sha256sum package.json package-lock.json > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: issue-95-audit-fix-candidate
+          if-no-files-found: error
+          path: |
+            analyst-app/server/package.json
+            analyst-app/server/package-lock.json
+            analyst-app/server/candidate.log
+            analyst-app/server/candidate-prod.json
+            analyst-app/server/candidate-all.json
+            analyst-app/server/SHA256SUMS
