@@ -81,7 +81,7 @@ jobs:
         if: failure()
         run: |
           docker compose --env-file .env.example ps -a || true
-          docker compose --env-file .env.example logs --no-color --tail=120 analyst postgres elasticsearch kibana 2>&1 |
+          docker compose --env-file .env.example logs --no-color --tail=120 analyst postgres elasticsearch elastic-init kibana kibana-init 2>&1 |
             sed -E 's/(password|passwd|secret|authorization|cookie|token)([=: ]+)[^ ,;]+/\1=[REDACTED]/Ig' |
             tail -n 400 || true
       - name: Always remove synthetic data and containers

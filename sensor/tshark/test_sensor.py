@@ -25,6 +25,39 @@ class SensorTest(unittest.TestCase):
         cmd = _make_capturing_command("eth0", "tcp port 443")
         self.assertEqual(cmd[-2:], ["-f", "tcp port 443"])
 
+    def test_real_tshark_offline_pcap(self):
+        """Decode one actual synthetic Ethernet/IP/TCP SYN through distro tshark."""
+        import socket
+        import struct
+        import subprocess
+        import tempfile
+        from pathlib import Path
+
+        src = socket.inet_aton("192.0.2.10")
+        dst = socket.inet_aton("198.51.100.20")
+        ethernet = bytes.fromhex("aabbccddeeff1122334455660800")
+        ipv4 = struct.pack("!BBHHHBBH4s4s", 0x45, 0, 40, 0, 0, 64, 6, 0, src, dst)
+        tcp = struct.pack("!HHIIBBHHH", 12345, 443, 1, 0, 0x50, 0x02, 65535, 0, 0)
+        packet = ethernet + ipv4 + tcp
+        pcap = (
+            struct.pack("<IHHIIII", 0xA1B2C3D4, 2, 4, 0, 0, 65535, 1)
+            + struct.pack("<IIII", 1767225600, 0, len(packet), len(packet))
+            + packet
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "synthetic.pcap"
+            path.write_bytes(pcap)
+            result = subprocess.run(
+                ["/usr/bin/tshark", "-T", "ek", "-n", "-Y", "tcp.flags.syn == 1",
+                 "-r", str(path)],
+                capture_output=True, text=True, check=True, timeout=15,
+            )
+            packets = list(decode_ek(result.stdout.splitlines(), "7", "offline"))
+        self.assertEqual(len(packets), 1)
+        self.assertEqual(packets[0]["streamId"], "offline-0")
+        self.assertEqual(packets[0]["layers"]["tcp"]["tcp_flags_tcp_flags_syn"], "1")
+        self.assertEqual(packets[0]["sensorId"], "sensor-7")
+
     def test_bad_ek_is_fatal(self):
         with self.assertRaises(ValueError):
             list(decode_ek(['{"not":"an EK document"}'], "1", "x"))
