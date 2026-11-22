@@ -2,7 +2,7 @@ name: Temporary issue 95 Nest migration resolver
 on:
   push:
     branches: [security/issue-95-nest10-cohort-20261122]
-    paths: ['.github/workflows/issue-95-nest-resolve-temp.yml', 'analyst-app/server/package.json']
+    paths: ['.github/workflows/issue-95-nest-resolve-temp.yml', 'analyst-app/server/package.json', 'analyst-app/server/jest.config.js']
 permissions:
   contents: read
 jobs:
