@@ -12,7 +12,8 @@ export const webpackOptimizationPart = (isProduction: boolean): Options.Optimiza
     return {
         minimizer: [
             new TerserPlugin({
-                parallel: true,
+                parallel: 2,
+                cache: false, // Avoid Terser 4 legacy MD4 cache hashing on OpenSSL 3.
                 terserOptions: {
                     output: {
                         comments: false,
