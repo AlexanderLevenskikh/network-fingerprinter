@@ -47,8 +47,7 @@ network. This replaces three hardcoded 192.168.x.x addresses.
   reaches at least yellow.
 - `elastic-init` imports the original `packets-*` index template after that
   healthcheck passes. It must exit with code zero before the analyst starts.
-- PostgreSQL initializes its schema and the configured admin on an **empty**
-  named volume. An existing database is not overwritten.
+- PostgreSQL initializes the schema on an **empty** named volume. Analyst then creates the configured administrator with scrypt-v2 on its first startup if no users exist. An existing database is not overwritten.
 - Kibana waits for Elasticsearch and the template; `kibana-init` creates the
   `packets-*` data view through the Kibana 8 API. Its successful one-shot exit\n  is required before Analyst starts; CI checks the saved view's fields.
 - `analyst` waits for a healthy PostgreSQL and Elasticsearch, and a successful
@@ -56,9 +55,12 @@ network. This replaces three hardcoded 192.168.x.x addresses.
 - Persistent data uses `elasticsearch-data-v8` and `postgres-data` Docker named
   volumes. No manual mkdir, chmod, or `$PWD/data` mount is needed.
 
-The project is **not yet production-hardened**: the analyst's
-existing password verification still uses unsalted MD5, and some frontend/backend\ndependencies remain old. Elasticsearch 8 and Node 24 do not by themselves\nmodernize or secure the application. Network-level authentication is not a substitute for TLS,
-RBAC, and modern password hashing.
+The project is **not yet production-hardened**. Newly created passwords use
+async scrypt-v2; legitimate older MD5 credentials migrate at successful login,
+but historical root/root is blocked. Existing sessions reload roles from the
+database. Persistent session storage, TLS/CSRF/rate limits and dependency
+remediation are still required before external deployment. See
+[security findings and existing-admin recovery](SECURITY_AUDIT.md).
 
 ## Live capture (Linux only, opt-in)
 

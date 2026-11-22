@@ -23,14 +23,12 @@ jobs:
           sh -n deploy/elasticsearch/init-template.sh
           sh -n deploy/kibana/init-data-view.sh
           python3 -m json.tool deploy/elasticsearch/packets-template.json >/dev/null
-      - name: Start PostgreSQL and verify first-run seed
+      - name: PostgreSQL schema is initialized without weak MD5 bootstrap
         run: |
           docker compose --env-file .env.example up -d --wait postgres
-          expected="$(printf %s 'local-admin-change-me' | md5sum | cut -d' ' -f1)"
-          actual="$(docker compose --env-file .env.example exec -T postgres psql -U fingerprinter -d analytics -Atc "SELECT passwordhash FROM user_entity WHERE username='admin';")"
-          test "$expected" = "$actual"
-          n_root="$(docker compose --env-file .env.example exec -T postgres psql -U fingerprinter -d analytics -Atc "SELECT count(*) FROM user_entity WHERE username='root';")"
-          test "$n_root" = 0
+          rows="$(docker compose --env-file .env.example exec -T postgres psql -U fingerprinter -d analytics -Atc "SELECT count(*) FROM user_entity;")"
+          test "$rows" = 0
+          echo "PASS Postgres schema has no default or MD5 admin; Analyst seeds scrypt on startup"
       - name: Clean up CI containers and demo data
         if: always()
         run: docker compose --env-file .env.example down -v --remove-orphans

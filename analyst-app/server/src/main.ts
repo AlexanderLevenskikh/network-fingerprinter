@@ -24,6 +24,7 @@ async function bootstrap() {
             secret: sessionSecret,
             resave: false,
             saveUninitialized: false,
+            cookie: { httpOnly: true, sameSite: 'lax' },
         }),
     );
 

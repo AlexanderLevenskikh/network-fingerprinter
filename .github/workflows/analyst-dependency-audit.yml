@@ -1,0 +1,71 @@
+name: Analyst dependency advisory inventory (non-blocking)
+
+on:
+  pull_request:
+    paths:
+      - 'analyst-app/**'
+      - '.github/workflows/analyst-dependency-audit.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  npm-advisory-inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Query npm advisories against both exact lockfiles
+        shell: bash
+        run: |
+          set -u
+          mkdir -p dependency-audit
+          { git rev-parse HEAD; node --version; npm --version; sha256sum analyst-app/server/package-lock.json analyst-app/client/package-lock.json; } > dependency-audit/environment.txt
+          for entry in server-prod server-all client-runtime client-all; do
+            case "$entry" in
+              server-*) dir=analyst-app/server ;;
+              client-*) dir=analyst-app/client ;;
+            esac
+            case "$entry" in
+              *-prod|*-runtime) omit=--omit=dev ;;
+              *) omit= ;;
+            esac
+            status=0
+            (cd "$dir" && npm audit --json ${omit:+$omit}) > "dependency-audit/$entry.json" 2> "dependency-audit/$entry.stderr" || status=$?
+            echo "$status" > "dependency-audit/$entry.exit"
+          done
+          python3 - <<'PY'
+          import json
+          import sys
+          from pathlib import Path
+          root = Path("dependency-audit")
+          results = {}
+          for name in ("server-prod", "server-all", "client-runtime", "client-all"):
+              exit_code = (root / (name + ".exit")).read_text().strip()
+              try:
+                  report = json.loads((root / (name + ".json")).read_text())
+                  metadata = report.get("metadata", {})
+                  counts = metadata.get("vulnerabilities")
+                  results[name] = {"exit_code": exit_code, "vulnerabilities": counts,
+                                   "error": report.get("error")}
+              except Exception as exc:
+                  results[name] = {"exit_code": exit_code, "error": str(exc)}
+          (root / "summary.json").write_text(json.dumps(results, indent=2) + "\n")
+          print(json.dumps(results, indent=2))
+          # A vulnerability exit (1) is expected; missing advisory data is not success.
+          if any(result.get('vulnerabilities') is None or result.get('error')
+                 for result in results.values()):
+              sys.exit('At least one npm advisory query was incomplete; inspect raw evidence')
+          PY
+      - name: Upload raw reproducible audit evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: analyst-npm-audit-node24
+          path: dependency-audit/
+          retention-days: 14
+          if-no-files-found: warn

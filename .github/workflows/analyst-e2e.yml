@@ -68,6 +68,24 @@ jobs:
         env:
           APP_ADMIN_PASSWORD: local-admin-change-me
         run: timeout 240 python3 tests/smoke_analyst.py
+      - name: Assert fresh administrator created directly with scrypt v2
+        run: |
+          docker compose --env-file .env.example exec -T postgres sh -ec '
+            result=$(psql -At -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "
+              SELECT CASE WHEN COUNT(*) = 1
+                AND bool_and(passwordhash LIKE '\''scrypt-v2$%'\'')
+                THEN '\''PASS'\'' ELSE '\''FAIL'\'' END
+              FROM user_entity WHERE username = '\''admin'\'';")
+            test "$result" = PASS
+            echo "PASS synthetic bootstrap admin upgraded to scrypt"
+          '
+      - name: Run server password hash regression tests inside built image
+        run: |
+          docker compose --env-file .env.example exec -T analyst node -r ./node24-compat.cjs node_modules/jest/bin/jest.js --runInBand --testPathPattern='(PasswordHash|UserController|AuthExceptionsFilter|SessionSerializer).spec.ts'
+      - name: Verify real admin and ordinary user authorization with revocation
+        env:
+          APP_ADMIN_PASSWORD: local-admin-change-me
+        run: timeout 120 python3 tests/smoke_authz.py
       - name: Browser upload retry after error (isolated Playwright container)
         env:
           APP_ADMIN_PASSWORD: local-admin-change-me
