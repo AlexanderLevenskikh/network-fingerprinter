@@ -26,8 +26,6 @@ export interface IWebpackEnv {
     wds: boolean,
 }
 
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
 const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
     const isProductionMode = mode === WebpackModeEnum.Production;
     const isProductionApi = Boolean(config.isProdApi);
@@ -47,7 +45,7 @@ const webpackConfig = ({ mode, wds }: IWebpackEnv): Configuration => {
 
     const output = webpackOutputPart({
         publicPath,
-        filename: isProductionMode ? '[name].[hash].js' : '[name].js',
+        filename: isProductionMode ? '[name].[contenthash].js' : '[name].js',
         path: path.resolve(webpackContext, 'dist'),
     });
 
