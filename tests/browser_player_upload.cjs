@@ -12,8 +12,11 @@ const path = require('path');
     });
     if (response.status() !== 200) throw new Error('Browser authentication failed: ' + response.status());
     const page = await context.newPage();
-    await page.goto(base + '/player/upload');
-    page.on('pageerror', err => console.error('BROWSER_PAGE_ERROR', String(err).slice(0, 500)));
+    page.on('pageerror', err => console.error('BROWSER_PAGE_ERROR', String(err).slice(0, 1500)));
+    page.on('console', msg => { if (msg.type() === 'error') console.error('BROWSER_CONSOLE_ERROR', msg.text().slice(0, 1500)); });
+    page.on('requestfailed', req => console.error('BROWSER_REQUEST_FAILED', req.url(), req.failure()?.errorText));
+    const navigation = await page.goto(base + '/player/upload');
+    console.log('BROWSER_PAGE_NAVIGATION', navigation && navigation.status(), page.url());
     page.on('response', async r => {
       if (r.url().includes('/api/player/upload')) {
         let body = '';
@@ -22,7 +25,14 @@ const path = require('path');
       }
     });
     const chooser = page.locator('input[type="file"]');
-    await chooser.waitFor({ state: 'attached' });
+    try {
+      await chooser.waitFor({ state: 'attached' });
+    } catch (error) {
+      console.error('BROWSER_MISSING_INPUT_URL', page.url());
+      console.error('BROWSER_MISSING_INPUT_TITLE', await page.title());
+      console.error('BROWSER_MISSING_INPUT_BODY', (await page.locator('body').innerText()).slice(0, 1500));
+      throw error;
+    }
     const bad = { name: 'broken.pcap', mimeType: 'application/vnd.tcpdump.pcap', buffer: Buffer.from('not a pcap') };
     const [badResponse] = await Promise.all([
       page.waitForResponse(resp => resp.url().includes('/api/player/upload'), { timeout: 30000 }),
