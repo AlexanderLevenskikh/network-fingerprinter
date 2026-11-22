@@ -83,6 +83,9 @@
   "overrides": {
     "thenify": "3.3.1",
     "proxy-addr": "2.0.8",
-    "qs": "6.17.1"
+    "qs": "6.17.1",
+    "express": "4.22.3",
+    "body-parser": "1.20.9",
+    "multer": "2.5.0"
   }
 }
