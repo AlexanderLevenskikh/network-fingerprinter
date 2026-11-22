@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ITcpHostStatisticsView } from './ITcpHostStatisticsView';
 import { ITcpRequestStatisticsDetailsView } from './ITcpRequestStatisticsDetailsView';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { ElasticsearchService } from '../../Elastic/ElasticsearchService';
 import { IPacketEntity } from '../../../Entities/Packet/IPacketEntity';
 import { map } from 'rxjs/operators';
 import { TcpStatisticsViewProviderQueries } from './TcpStatisticsViewProviderQueries';
