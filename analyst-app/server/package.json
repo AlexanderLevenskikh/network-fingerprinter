@@ -60,20 +60,6 @@
     "typescript": "5.5.4",
     "@types/serve-static": "1.15.10"
   },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".spec.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageDirectory": "./coverage",
-    "testEnvironment": "node"
-  },
   "overrides": {
     "thenify": "3.3.1",
     "proxy-addr": "2.0.8",

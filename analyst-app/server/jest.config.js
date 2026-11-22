@@ -1,7 +1,11 @@
 module.exports = {
-    cacheDirectory: '<rootDir>/.jest-cache',
-    preset: 'ts-jest',
+    rootDir: 'src',
+    moduleFileExtensions: ['js', 'json', 'ts'],
+    testRegex: '\\.spec.ts$',
+    transform: {
+        '^.+\\\\.(t|j)s$': 'ts-jest',
+    },
+    coverageDirectory: '../coverage',
     testEnvironment: 'node',
-    testRegex: '(test|spec)\\.ts$',
-    verbose: true,
+    cacheDirectory: '<rootDir>/.jest-cache',
 };
