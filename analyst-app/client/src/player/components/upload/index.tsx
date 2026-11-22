@@ -20,7 +20,7 @@ export const PlayerUpload: FC = () => {
     const onChange = (info: UploadChangeParam<UploadFile<ImportResult>>) => {
         // Ant Upload tracks every file separately. Keeping 'error' in the list
         // must not disable the dropzone or prevent a fresh selection.
-        setFiles(info.fileList.slice(-10));
+        setFiles([ ...info.fileList ]);
     };
 
     const label = (file: UploadFile<ImportResult>) => {
