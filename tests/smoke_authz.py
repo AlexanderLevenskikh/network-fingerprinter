@@ -76,10 +76,10 @@ assert current_status == 200 and view["isAdmin"] is False, (current_status, view
 assert "passwordHash" not in view and "passwordhash" not in view, view
 print("PASS public user view omits password hash")
 
-assert postgres("UPDATE user_entity SET isadmin = true WHERE username = 'authz-fixture-only' RETURNING isadmin;") == "t"
+assert postgres("WITH changed AS (UPDATE user_entity SET isadmin = true WHERE username = 'authz-fixture-only' RETURNING isadmin) SELECT isadmin FROM changed;") == "t"
 status, _ = request(ordinary, "/api/user/list")
 assert status == 200, ("newly elevated role", status)
-assert postgres("UPDATE user_entity SET isadmin = false WHERE username = 'authz-fixture-only' RETURNING isadmin;") == "f"
+assert postgres("WITH changed AS (UPDATE user_entity SET isadmin = false WHERE username = 'authz-fixture-only' RETURNING isadmin) SELECT isadmin FROM changed;") == "f"
 status, body = request(ordinary, "/api/user/list")
 assert status == 403, ("revoked role in existing session", status, body[:200])
 print("PASS role elevation and revocation visible in an existing Passport session")
