@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { ElasticsearchConfigService } from '../DAL/Elastic/ElasticsearchConfigService';
+import { ElasticsearchModule } from '../DAL/Elastic/ElasticsearchModule';
 import { TcpStreamController } from '../Controllers/TcpStreamController';
 import { TcpStreamViewProvider } from '../DAL/Stream/Tcp/TcpStreamViewProvider';
 import { PacketHttpModule } from './PacketHttpModule';
@@ -10,9 +9,7 @@ import { FingerprintModule } from './FingerprintModule';
 
 @Module({
     imports: [
-        ElasticsearchModule.registerAsync({
-            useClass: ElasticsearchConfigService,
-        }),
+        ElasticsearchModule,
         PacketTlsModule,
         PacketHttpModule,
         PacketTcpModule,

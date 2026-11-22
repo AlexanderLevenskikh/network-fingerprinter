@@ -1,14 +1,11 @@
 import { Module } from '@nestjs/common';
 import { PlayerController } from '../Controllers/PlayerController';
 import { PlayerService } from '../Services/Player/PlayerService';
-import { ElasticsearchModule } from '@nestjs/elasticsearch';
-import { ElasticsearchConfigService } from '../DAL/Elastic/ElasticsearchConfigService';
+import { ElasticsearchModule } from '../DAL/Elastic/ElasticsearchModule';
 
 @Module({
     imports: [
-        ElasticsearchModule.registerAsync({
-            useClass: ElasticsearchConfigService,
-        }),
+        ElasticsearchModule,
     ],
     controllers: [PlayerController],
     providers: [PlayerService],
