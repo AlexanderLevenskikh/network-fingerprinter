@@ -70,13 +70,14 @@ export function useStreamsList() {
         sorter: SorterResult<ITcpStreamView> | SorterResult<ITcpStreamView>[],
     ) => {
         const activeSorter = Array.isArray(sorter) ? sorter[0] : sorter;
+        const paging = pagination as TablePaginationConfig & { current?: number; pageSize?: number };
         dispatch(StreamsRouterActions.streamsList(
             { transport },
             {
                 query: {
                     ...searchParamsModel,
-                    current: pagination.current || searchParamsModel.current,
-                    take: pagination.pageSize || searchParamsModel.take,
+                    current: paging.current || searchParamsModel.current,
+                    take: paging.pageSize || searchParamsModel.take,
                     dateTimeFromOrder: mapAntdSorter(activeSorter,  'startDateTime'),
                     dateTimeToOrder: mapAntdSorter(activeSorter,  'endDateTime'),
                 },

@@ -9,7 +9,7 @@ interface IProps {
 }
 
 // JSX wrappers for Ant Design 4's forward-ref components under the legacy TS toolchain.
-const UserListItem = List.Item as React.ComponentType<{ actions?: React.ReactNode[]; children?: React.ReactNode }>;
+const UserListItem = List.Item as unknown as React.ComponentType<{ actions?: React.ReactNode[]; children?: React.ReactNode }>;
 const UserListItemMeta = List.Item.Meta as React.ComponentType<{ avatar?: React.ReactNode; title?: React.ReactNode; description?: React.ReactNode }>;
 
 export const UsersList: FC<IProps> = () => {

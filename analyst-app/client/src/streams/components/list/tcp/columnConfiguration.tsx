@@ -24,7 +24,7 @@ export function createTcpStreamsListColumnsConfiguration(
             title: '',
             key: 'common',
             width: '15%',
-            render: text => renderInfo(text, t),
+            render: (_: unknown, record: ITcpStreamView) => renderInfo(record, t),
         },
         {
             title: t(I18StreamsNsKeys.listDateTimeColumnTitle),
@@ -32,7 +32,7 @@ export function createTcpStreamsListColumnsConfiguration(
             dataIndex: 'startDateTime',
             sorter: true,
             sortOrder: startDateTimeAntdOrder,
-            render: startDateTime => renderStreamDateTime(startDateTime),
+            render: (startDateTime: ITcpStreamView['startDateTime']) => renderStreamDateTime(startDateTime),
             width: '9%',
         },
         {
@@ -42,7 +42,7 @@ export function createTcpStreamsListColumnsConfiguration(
                 {
                     title: t(I18StreamsNsKeys.listSourceColumnTitle),
                     key: 'sourceAddress',
-                    render: (_, record) => renderStreamSide({
+                    render: (_: unknown, record: ITcpStreamView) => renderStreamSide({
                         ip: record.sourceIp,
                         port: record.sourcePort,
                         mac: record.sourceMac,
@@ -53,7 +53,7 @@ export function createTcpStreamsListColumnsConfiguration(
                 {
                     title: t(I18StreamsNsKeys.listDestinationColumnTitle),
                     key: 'destinationAddress',
-                    render: (_, record) => renderStreamSide({
+                    render: (_: unknown, record: ITcpStreamView) => renderStreamSide({
                         ip: record.destinationIp,
                         port: record.destinationPort,
                         mac: record.destinationMac,
@@ -71,14 +71,14 @@ export function createTcpStreamsListColumnsConfiguration(
                     title: t(I18StreamsNsKeys.listSourceColumnTitle),
                     key: 'sourceFingerprints',
                     dataIndex: 'fingerprints',
-                    render: text => renderSourceFingerprint({ fingerprints: text.source, t }),
+                    render: (text: ITcpStreamView['fingerprints']) => renderSourceFingerprint({ fingerprints: text.source, t }),
                     width: '22%',
                 },
                 {
                     title: t(I18StreamsNsKeys.listDestinationColumnTitle),
                     key: 'destinationFingerprints',
                     dataIndex: 'fingerprints',
-                    render: text => renderDestinationFingerprint({ fingerprints: text.destination, t }),
+                    render: (text: ITcpStreamView['fingerprints']) => renderDestinationFingerprint({ fingerprints: text.destination, t }),
                     width: '22%',
                 },
             ],
