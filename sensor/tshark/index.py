@@ -1,60 +1,50 @@
-import click
+"""Stream selected packets from tshark into Elasticsearch 8.x."""
+import os
 import sys
+from uuid import uuid4
 
-import uuid as uuid
-from elasticsearch import Elasticsearch
-from elasticsearch import helpers
+import click
+from elasticsearch import Elasticsearch, helpers
 
 from tshark import capture
 from elk_utils import index_packets
 
 
-def start_capture(es_connection, sensor_id, interface, packet_filter, chunk_length, guid):
-    try:
-        capture_res = capture(interface, sensor_id, packet_filter, guid)
-        helpers.bulk(
-            client=es_connection,
-            actions=index_packets(capture=capture_res),
-            chunk_size=chunk_length,
-            raise_on_error=True)
-
-    except Exception as e:
-        print('[ERROR] ', e)
-        sys.exit(1)
-
-
 @click.command()
-@click.option('--elastic-url', default=None, help='IP of elasticsearch')
-@click.option('--sensor-id', default='1')
-@click.option('-i', default=None, help='Network interface for capturing')
-@click.option('--filter', default=None, help='Custom packet filter')
-@click.option('--chunk-length', default=100, help='Number of packets to bulk index (default=100)')
-def main(elastic_url, sensor_id, i, filter, chunk_length):
-    guid = str(uuid.uuid1())
+@click.option("--elastic-url", envvar="ELASTIC_URL", default=None,
+              help="Elasticsearch HTTP URL without credentials")
+@click.option("--sensor-id", envvar="SENSOR_ID", default="1")
+@click.option("-i", "interface", envvar="SENSOR_INTERFACE", default=None)
+@click.option("--filter", "packet_filter", default=None)
+@click.option("--chunk-length", type=click.IntRange(min=1, max=1000), default=100)
+def main(elastic_url, sensor_id, interface, packet_filter, chunk_length):
+    elastic_url = elastic_url or "http://" + os.getenv("ELASTIC_HOST", "127.0.0.1:9200")
+    username = os.environ.get("ELASTIC_USERNAME")
+    password = os.environ.get("ELASTIC_PASSWORD")
+    if not username or not password or not interface:
+        raise click.ClickException("ELASTIC_USERNAME, ELASTIC_PASSWORD and SENSOR_INTERFACE are required")
 
+    client = Elasticsearch(
+        elastic_url,
+        basic_auth=(username, password),
+        request_timeout=20,
+        max_retries=3,
+        retry_on_timeout=True,
+    )
     try:
-        if elastic_url is None:
-            print('Elastic node is not specified')
-            sys.exit(1)
-
-        if i is None:
-            print('Network interface is not specified')
-            sys.exit(1)
-
-        es_connection = Elasticsearch(elastic_url)
-
-        start_capture(
-            es_connection=es_connection,
-            sensor_id=sensor_id,
-            interface=i,
-            packet_filter=filter,
-            chunk_length=chunk_length,
-            guid=guid)
-
-    except Exception as e:
-        print('[ERROR] ', e)
+        helpers.bulk(
+            client,
+            index_packets(capture(interface, sensor_id, packet_filter, str(uuid4()))),
+            chunk_size=chunk_length,
+            raise_on_error=True,
+        )
+    except KeyboardInterrupt:
+        return
+    except Exception:
+        # The underlying client exception may contain request URL or credentials.
+        click.echo("[ERROR] Sensor capture or indexing failed; inspect internal health", err=True)
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

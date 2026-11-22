@@ -1,12 +1,13 @@
-from datetime import datetime
+"""Elasticsearch bulk actions for the existing packets-* index layout."""
+from datetime import datetime, timezone
 
 
 def index_packets(capture):
     for packet in capture:
-        timestamp = int(packet['timestamp'])/1000
-        action = {
-            '_op_type': 'index',
-            '_index': 'packets-' + datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d'),
-            '_source': packet
+        epoch_ms = int(packet["timestamp"])
+        date = datetime.fromtimestamp(epoch_ms / 1000, timezone.utc).strftime("%Y-%m-%d")
+        yield {
+            "_op_type": "index",
+            "_index": "packets-" + date,
+            "_source": packet,
         }
-        yield action
