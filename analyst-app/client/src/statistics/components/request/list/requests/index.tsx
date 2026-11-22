@@ -18,15 +18,15 @@ export const TcpRequestsStatisticsList: FC<IProps> = () => {
             dataSource={ sources }
             loading={ loading }
             size='small'
-            onRowClick={ openDrawer }
-            pagination={{
+            onRow={ (record: ITcpHostStatisticsView) => ({ onClick: () => openDrawer(record) }) }
+            pagination={({
                 showSizeChanger: true,
                 showQuickJumper: true,
                 defaultCurrent: 1,
                 defaultPageSize: 15,
                 pageSizeOptions: [ '5', '15', '50', '200' ],
                 total: sources.length,
-            }}
+            } as unknown as import('antd/es/table/interface').TablePaginationConfig)}
         />
     );
 };

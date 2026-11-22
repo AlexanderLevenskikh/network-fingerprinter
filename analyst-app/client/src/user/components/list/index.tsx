@@ -1,11 +1,16 @@
 import React, { FC } from 'react';
-import { Button, Icon, List, Modal, Tag } from 'antd';
+import { Button, List, Modal, Tag } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import { useUsersList } from 'root/user/components/list/hook';
 import { IUserView } from 'DAL/User/IUserView';
 import { I18UserNsKeys } from 'root/i18n/resources/user/keys';
 
 interface IProps {
 }
+
+// JSX wrappers for Ant Design 4's forward-ref components under the legacy TS toolchain.
+const UserListItem = List.Item as unknown as React.ComponentType<{ actions?: React.ReactNode[]; children?: React.ReactNode }>;
+const UserListItemMeta = List.Item.Meta as React.ComponentType<{ avatar?: React.ReactNode; title?: React.ReactNode; description?: React.ReactNode }>;
 
 export const UsersList: FC<IProps> = () => {
     const { loading, modalOpened, list, t, remove, close, currentUser } = useUsersList();
@@ -27,14 +32,14 @@ export const UsersList: FC<IProps> = () => {
                 itemLayout="horizontal"
                 dataSource={ list }
                 renderItem={ item => (
-                    <List.Item actions={ item.userId !== currentUser.userId ? [
+                    <UserListItem actions={ item.userId !== currentUser.userId ? [
                         <Button
                             onClick={ () => remove(item.userId) }
                             type='link'
                         >{ t(I18UserNsKeys.usersListRemoveLabel) }</Button>
                     ] : [] }>
-                        <List.Item.Meta
-                            avatar={ <Icon type='user'/> }
+                        <UserListItemMeta
+                            avatar={ <UserOutlined /> }
                             title={ <span>{ t(I18UserNsKeys.usersListLoginLabel) }: { item.userName }</span> }
                             description={ (<div>
                                 { getName(item) }
@@ -47,7 +52,7 @@ export const UsersList: FC<IProps> = () => {
                             </div>) }
 
                         />
-                    </List.Item>
+                    </UserListItem>
                 ) }
             />,
         </Modal>

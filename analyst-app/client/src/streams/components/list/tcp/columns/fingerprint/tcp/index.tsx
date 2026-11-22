@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { ITcpFingerprint } from '../../../../../../../../../server/src/Processors/Fingerprint/Tcp/Fingerprint/ITcpFingerprint';
-import Text from 'antd/es/typography/Text';
-import Paragraph from 'antd/es/typography/Paragraph';
+import { Text } from 'root/shared/components/CompatibleAntd';
+import { Paragraph } from 'root/shared/components/CompatibleAntd';
 import styles from './styles.less';
 import { Tooltip } from 'antd';
 

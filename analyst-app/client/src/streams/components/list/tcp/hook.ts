@@ -5,9 +5,8 @@ import { StreamsListActions } from 'root/streams/actions/list';
 import { useTranslation } from 'react-i18next';
 import { I18nNamespace } from 'root/i18n/resources/namespaces';
 import { createTcpStreamsListColumnsConfiguration } from 'root/streams/components/list/tcp/columnConfiguration';
-import { PaginationConfig } from 'antd/lib/pagination';
+import { TablePaginationConfig, SorterResult, FilterValue } from 'antd/es/table/interface';
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
-import { SorterResult } from 'antd/lib/table';
 import { StreamsRouterActions } from 'root/streams/actions/router';
 import { StreamRouterSelectors } from 'root/streams/selectors/router';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
@@ -66,19 +65,21 @@ export function useStreamsList() {
     };
 
     const handleTableChange = (
-        pagination: PaginationConfig,
-        filters: Record<keyof ITcpStreamView, string[]>,
-        sorter: SorterResult<ITcpStreamView>,
+        pagination: TablePaginationConfig,
+        filters: Record<string, FilterValue | null>,
+        sorter: SorterResult<ITcpStreamView> | SorterResult<ITcpStreamView>[],
     ) => {
+        const activeSorter = Array.isArray(sorter) ? sorter[0] : sorter;
+        const paging = pagination as TablePaginationConfig & { current?: number; pageSize?: number };
         dispatch(StreamsRouterActions.streamsList(
             { transport },
             {
                 query: {
                     ...searchParamsModel,
-                    current: pagination.current || searchParamsModel.current,
-                    take: pagination.pageSize || searchParamsModel.take,
-                    dateTimeFromOrder: mapAntdSorter(sorter, 'startDateTime'),
-                    dateTimeToOrder: mapAntdSorter(sorter, 'endDateTime'),
+                    current: paging.current || searchParamsModel.current,
+                    take: paging.pageSize || searchParamsModel.take,
+                    dateTimeFromOrder: mapAntdSorter(activeSorter,  'startDateTime'),
+                    dateTimeToOrder: mapAntdSorter(activeSorter,  'endDateTime'),
                 },
             },
             ));

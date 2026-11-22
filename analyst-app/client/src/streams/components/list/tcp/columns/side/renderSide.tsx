@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './styles.less';
-import Paragraph from 'antd/es/typography/Paragraph';
-import Text from 'antd/es/typography/Text';
+import { Paragraph } from 'root/shared/components/CompatibleAntd';
+import { Text } from 'root/shared/components/CompatibleAntd';
 import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
 import { TFunction } from 'i18next';
 import { notEmpty } from 'root/shared/utils/notEmpty';

@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Row, Tag, Anchor, Col, Button, Tooltip } from 'antd';
-import Text from 'antd/es/typography/Text';
+import { Text } from 'root/shared/components/CompatibleAntd';
 import styles from './styles.less';
 import classNames from 'classnames';
-import Paragraph from 'antd/es/typography/Paragraph';
+import { Paragraph } from 'root/shared/components/CompatibleAntd';
 import { TFunction } from 'i18next';
 import { I18StatisticsNsKeys } from 'root/i18n/resources/statistics/keys';
 

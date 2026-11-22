@@ -1,13 +1,13 @@
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { TFunction } from 'i18next';
 import styles from './styles.less';
-import Text from 'antd/es/typography/Text';
+import { Text } from 'root/shared/components/CompatibleAntd';
 import React from 'react';
 import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
 import { EnumMap } from 'root/shared/types/enumMap';
 import { PacketViewTcpApplicationProtocol } from 'DAL/Packet/Tcp/PacketViewTcpApplicationProtocol';
 import { Tag, Tooltip } from 'antd';
-import Paragraph from 'antd/es/typography/Paragraph';
+import { Paragraph } from 'root/shared/components/CompatibleAntd';
 
 const protoToColorMap: EnumMap<PacketViewTcpApplicationProtocol, string> = {
     [PacketViewTcpApplicationProtocol.Ftp]: 'magenta',
