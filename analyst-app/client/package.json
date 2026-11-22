@@ -71,7 +71,9 @@
     "webpack": "5.113.0",
     "webpack-cli": "6.0.1",
     "webpack-dev-server": "6.1.0",
-    "css-minimizer-webpack-plugin": "7.0.2"
+    "css-minimizer-webpack-plugin": "7.0.2",
+    "postcss": "^8.5.0",
+    "tslib": "^2.9.1"
   },
   "dependencies": {
     "antd": "4.24.16",
