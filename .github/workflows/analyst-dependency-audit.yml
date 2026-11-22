@@ -24,6 +24,7 @@ jobs:
         run: |
           set -u
           mkdir -p dependency-audit
+          { git rev-parse HEAD; node --version; npm --version; sha256sum analyst-app/server/package-lock.json analyst-app/client/package-lock.json; } > dependency-audit/environment.txt
           for entry in server-prod server-all client-runtime client-all; do
             case "$entry" in
               server-*) dir=analyst-app/server ;;
@@ -39,6 +40,7 @@ jobs:
           done
           python3 - <<'PY'
           import json
+          import sys
           from pathlib import Path
           root = Path("dependency-audit")
           results = {}
@@ -54,6 +56,10 @@ jobs:
                   results[name] = {"exit_code": exit_code, "error": str(exc)}
           (root / "summary.json").write_text(json.dumps(results, indent=2) + "\n")
           print(json.dumps(results, indent=2))
+          # A vulnerability exit (1) is expected; missing advisory data is not success.
+          if any(result.get('vulnerabilities') is None or result.get('error')
+                 for result in results.values()):
+              sys.exit('At least one npm advisory query was incomplete; inspect raw evidence')
           PY
       - name: Upload raw reproducible audit evidence
         if: always()
