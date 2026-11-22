@@ -101,3 +101,31 @@ jobs:
           docker compose --env-file .env.example --profile capture-linux run \
             --rm --no-deps --entrypoint python sensor \
             -m unittest -v test_sensor
+
+  sensor-to-es:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build real Sensor image
+        run: docker compose --env-file .env.example --profile capture-linux build --no-cache sensor
+      - name: Start isolated Elasticsearch 8 and one-shot template bootstrap
+        run: |
+          docker compose --env-file .env.example down -v --remove-orphans
+          timeout 480 docker compose --env-file .env.example up -d --wait --wait-timeout 420 elastic-init
+      - name: Verify single-event flush and shutdown delivery with synthetic offline tshark
+        run: |
+          timeout 90 docker compose --env-file .env.example --profile capture-linux run \
+            -T --rm --no-deps \
+            -v "$PWD/tests/smoke_sensor_es.py:/tmp/smoke_sensor_es.py:ro" \
+            --entrypoint python sensor /tmp/smoke_sensor_es.py
+      - name: Report sanitized container status on failure
+        if: failure()
+        run: |
+          docker compose --env-file .env.example ps -a || true
+          docker compose --env-file .env.example logs --no-color --tail=35 elasticsearch elastic-init 2>&1 |
+            sed -E 's/(password|passwd|secret|authorization|cookie|token)([=: ]+)[^ ,;]+/\1=[REDACTED]/Ig' |
+            tail -n 90 || true
+      - name: Delete isolated synthetic volumes
+        if: always()
+        run: docker compose --env-file .env.example down -v --remove-orphans
