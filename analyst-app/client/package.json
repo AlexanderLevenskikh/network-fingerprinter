@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build:dev": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack --config config/webpack/config.ts --env.mode=development",
-    "build:prod": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack --config config/webpack/config.ts --env.mode=production",
-    "start:dev": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack-dev-server --config config/webpack/config.ts --env.mode=development --env.wds",
-    "start:prod": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack-dev-server --config config/webpack/config.ts --env.mode=production --env.wds",
+    "build:dev": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack --config config/webpack/config.ts --env mode=development",
+    "build:prod": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack --config config/webpack/config.ts --env mode=production",
+    "start:dev": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack serve --config config/webpack/config.ts --env mode=development --env wds=true",
+    "start:prod": "cross-env TS_NODE_PROJECT=config/webpack/tsconfig.json webpack serve --config config/webpack/config.ts --env mode=production --env wds=true",
     "test:unit": "npx jest",
     "test:unit:update": "npx jest ---updateSnapshot",
     "test:unit:debug": "node %NODE_DEBUG_OPTION% node_modules/jest/bin/jest.js"
