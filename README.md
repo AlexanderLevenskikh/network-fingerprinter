@@ -1,108 +1,52 @@
-# Network fingerprinter
+# Network Fingerprinter
 
-**Updated in November 2026.** Analyst runs on Node.js 24 LTS with a single Docker Compose setup. It shows import results for each PCAP file and lets you retry after an error. See [Installation](#installation).
+**Passive network traffic fingerprinting, with a local PCAP-to-results workflow.**
 
-> Network fingerprinter is a scalable, easy to deploy network traffic inspection system for purely passive OS and application fingerprinting
+[English](README.md) · [Русский](README.ru.md) · [Docker guide](docs/docker.md) · [PCAP import details](docs/pcap-import.md)
 
-*Read this in other languages: [English](README.md), [Russian](README.ru.md).*
+Network Fingerprinter extracts selected TCP, TLS and HTTP observations to help inspect TCP flows and their OS/application fingerprints. It consists of an optional **Sensor** (selective TShark capture/export), an **Elasticsearch 8 Collector**, and a browser-based **Analyst** for importing captures, viewing streams and exploring statistics. **You do not need live capture to try it.**
 
-## Table of Contents
+> **November 2026 refresh:** the local stack now uses one root Docker Compose configuration, Elasticsearch/Kibana **8.19.25**, PostgreSQL **16.16**, and an Analyst runtime on **Node.js 24**. This is a local demonstration, not a production-hardened or security-audited deployment.
 
-- [Purpose](#purpose)
-- [System architecture](#system-architecture)
-	- [Sensor](#sensor)
-	- [Collector](#collector)
-	- [Analyzer](#analyzer)
-- [Installation](#installation)
-- [Signature analysis](#signature-analysis)
+## First result: import a PCAP
 
-## Purpose
-Well-known systems for passive OS fingerprinting such as p0f, satori, etc are powerful, but have some disadvantages for production use:
-* Embrassing inspection huge traffic alerts
-* For passive fingerprinting it's not necessary to store all traffic dump, except flow samples such as handshake tcp SYN/SYN+ACK, tls client hello and others required for signature analysis packet samples. Flows are powerful, but existing solutions allow to store either all trafic or alerts only
-* Lack of GUI
-* Complicated production configuration
+Prerequisites: Docker Engine with Compose v2 (or Docker Desktop with **Linux containers**), at least **4 GiB** available to Docker, and free local ports **3000**, **5601**, and **9200**.
 
-## System architecture
+1. Clone the repository, open a terminal in its root and start the default stack. No separate module Compose files or manual database setup are needed:
 
-Internally, system consists of 3 modules:
-* [Sensor](#sensor)
-* [Collector](#collector)
-* [Analyzer](#analyzer)
+   ```sh
+   git clone https://github.com/AlexanderLevenskikh/network-fingerprinter.git
+   cd network-fingerprinter
+   docker compose --env-file .env.example up -d --build
+   docker compose --env-file .env.example ps -a
+   ```
 
-#### Sensor 
+2. Wait until `analyst`, `postgres`, `elasticsearch` and `kibana` are healthy and the one-shot `elastic-init` and `kibana-init` jobs have completed successfully. Open **[Analyst](http://127.0.0.1:3000)**. On a *fresh* PostgreSQL volume, sign in with username **`admin`** and password **`local-admin-change-me`** from [`.env.example`](.env.example).
+3. Open the **Player / PCAP upload** screen, select or drop a **PCAP** capture (up to **10 MiB per file**) containing TCP SYN/SYN-ACK, TLS ClientHello or HTTP messages. The UI reports **processing**, **indexed packet count**, **no matching packets (0)** or **error** separately for each file. A failed upload can be retried; there is no persistent import history.
+4. Open **TCP streams** to see the imported connections, addresses and available fingerprints. Use **Statistics** for aggregate client/server views. A valid capture with no relevant packets imports successfully but creates no matching stream; an invalid capture displays an error rather than a false success.
 
-Sensor is a **tshark**-driven selective traffic exporter, it's exports only SYN, SYN+ACK, TLS client hello and HTTP requests/responses to external **elasticsearch** index. System can have as many sensors as needs.
+**No PCAP handy?** Use your own *authorized* non-sensitive capture or the reproducible **synthetic PCAP** workflow exercised in [Linux E2E checks](.github/workflows/) (SYN/SYN-ACK, 0 matches, multiple TCP streams and a 102-packet boundary case). The tests do not ship real user traffic. See [import API semantics and edge cases](docs/pcap-import.md).
 
-#### Collector
+The sample passwords and HTTP endpoints are **loopback-only demo defaults**. Never expose them to a LAN or the Internet. For a persistent **local** installation, copy `.env.example` to gitignored `.env`, change **all** example passwords and `SESSION_SECRET`, and use `docker compose up -d --build` instead. Initial admin credentials apply only when the PostgreSQL volume is empty.
 
-Collector is an **elasticsearch** cluster. Also, system can have more than one collector if needs.
+## What runs where?
 
-#### Analyzer
+| Component | Role | Default access |
+| --- | --- | --- |
+| **Analyst** | Sign-in, PCAP upload, TCP streams and statistics | [127.0.0.1:3000](http://127.0.0.1:3000) |
+| **Collector** | Elasticsearch 8.19.25 packet indices; Kibana 8.19.25 data view `packets-*` | [Kibana 127.0.0.1:5601](http://127.0.0.1:5601); ES `127.0.0.1:9200` |
+| **Sensor** (optional) | Selectively captures SYN/SYN-ACK, TLS ClientHello and HTTP observations into Elasticsearch | **Linux host capture only**, `capture-linux` profile |
 
-Analyzer is a **kibana** GUI for **packets-\*** index inspection and **analytics-app** traffic fingerprints view. Also, analytics-app allows to upload existing pcap[ng] dump.
+The default Compose profile starts **without Sensor**, which makes importing existing captures the portable path on Linux, Windows Docker Desktop and macOS Docker Desktop. Live capture is an **opt-in Linux-only** workflow requiring a real `SENSOR_INTERFACE`, proper permissions and explicit authorization; Docker Desktop's VM networking does not provide equivalent physical-interface capture. See [Linux sensor setup](docs/docker.md#live-capture-linux-only-opt-in).
 
-> All system components can be installed on signle host
+## Data, compatibility and limitations
 
-## Installation
+- Named volumes: **`elasticsearch-data-v8`** and **`postgres-data`**. ES8 uses a **separate new volume**, not the old ES7 `elasticsearch-data` volume. **No ES7→ES8 migration is implemented.** Existing `.env` files may lack newer Kibana secrets; compare them with [`.env.example`](.env.example) before starting. Do not point ES8 at ES7 data or remove volumes containing data you need.
+- **Linux GitHub Actions** validates the default Compose/PG setup, Analyst API, real headless Chromium PCAP upload, and **synthetic** offline Sensor→ES8 indexing. Windows Docker Desktop is a local smoke target (image pulls may be affected by the host proxy), **not** an independently passed Windows E2E; macOS is not independently E2E-verified. Actual physical-interface capture, high traffic, production security and migration of historic data are **not** established.
+- The Analyst runs on Node 24 with compatibility code for legacy NestJS 6; the frontend still includes legacy Webpack 4 and password hashing is not production-grade. **Do not treat the upgraded runtime as a security certification.**
 
-The supported local quickstart uses **one Compose file at the repository root**
-(Docker Engine with Compose v2; on Windows use Docker Desktop with Linux containers).
-For an isolated demo using disposable sample credentials:
-
-```sh
-docker compose --env-file .env.example up -d --build
-docker compose --env-file .env.example ps -a
-```
-
-Open [Analyst](http://127.0.0.1:3000) or [Kibana](http://127.0.0.1:5601).
-For a persistent local setup, copy `.env.example` to gitignored `.env`,
-replace the sample passwords and session secret, then run `docker compose up -d --build`.
-**Never expose the sample credentials or these services publicly.**
-
-See [Docker deployment and platform notes](docs/docker.md) for initialization,
-persistent volumes, optional Linux sensor capture, troubleshooting, and the
-scope of tested configurations. Do not use the old separate module Compose files.
-
-## Signature analysis
-
-App consists of three tabs:
-* Streams
-* Statistics
-* Upload \*.pcap
-
-First tab displays filtered streams list:\
-![Streams list](https://i.imgur.com/6QBX5vh.png)
-
-
-You can filter streams using `Search` form:\
-![Filter](https://i.imgur.com/G3YFbCi.png)
-
-To store data in buffer (for paste in filter, for example) click `copy` button beside data:\
-![Copy](https://i.imgur.com/CEoOfhZ.png)
-
-Columns description:
-* First column consists **common data** about stream:
-	* **SensorID** - for sensor it matches pattern 'sensor-\*', for pcap-player - 'pcap-player-*'
-	* **SNI** (server name indication from tls headers, if extension used)
-	* **Application layer protocols** - list of all application protocols used in stream
-* **Date and time** - timestamp of first captured packet in TCP stream (usually, SYN, but can be http request or TLS client hello)
-* **MAC, IP, Port.** Source is a host, that initiates TCP request (client) and destination is a host, that receives request and send TCP response (server), but as known, TCP is full-duplex protocol and the names "client" and "server" are conditional.
-* **Fingerprint** - defined fingerprints of stream, they may include TCP, TLS and HTTP fingerprints for source (by SYN, HTTP request and TLS client hello) and TCP, HTTP fingerprints for destination (by SYN+ACK, HTTP response)
-
-Statistics menu item has two tabs: *by clients* and *by servers*:\
-![stat-tabs](https://i.imgur.com/CoGpUNB.png)
-
-Each tab has a grid with (ip, mac) discovered tuples from traffic.\
-![by-clients](https://i.imgur.com/FBhRkMb.png)
-
-Every row is clickable and you can see detailed information about selected host by click on row (opening in right-side drawer):\
-![drawer](https://i.imgur.com/JKTtCAw.png)
-As you can see, this information includes all fingerprints from stream and reference to these streams list, also in this example showed case of multiple discovered fingerprints (TLS) and matches from SSL blacklist (Dridex, Tofsee). 
-
-Pcap uploading:\
-![pcap-upload](https://i.imgur.com/dTQf184.png)\
-Simply drag'n'drop captured traffic dump (one or more files) or click directly on area to upload. After processing, streams will be available on TCP streams tab, if dump includes significant for signature analysis packets (SYN, SYN+ACK, HTTP request/response or TLS client hello)
+For diagnostics, environment variables, bootstrap order, persistence, backup cautions and shutdown (including the **destructive** `down -v` distinction), use the [Docker operations guide](docs/docker.md). For import limits, HTTP responses and partial-indexing behavior, use the [PCAP import guide](docs/pcap-import.md). [Issues](https://github.com/AlexanderLevenskikh/network-fingerprinter/issues) · [CI runs](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions).
 
 ## License
-This project is licensed under the terms of the Apache 2.0 open source license. Please refer to [LICENSE](LICENSE) for the full terms.
+
+[Apache License 2.0](LICENSE).
