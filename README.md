@@ -1,8 +1,10 @@
+![Network Fingerprinter — Levencode Labs](assets/network-fingerprinter-banner.svg)
+
 # Network Fingerprinter
 
 **Passive network traffic fingerprinting, with a local PCAP-to-results workflow.**
 
-[English](README.md) · [Русский](README.ru.md) · [Docker guide](docs/docker.md) · [PCAP import details](docs/pcap-import.md)
+[English](README.md) · [Русский](README.ru.md) · **[User guide](USERGUIDE.md)** · [Руководство](USERGUIDE.ru.md) · [Docker operations](docs/docker.md) · [Levencode Labs](https://github.com/levencode-labs)
 
 Network Fingerprinter extracts selected TCP, TLS and HTTP observations to help inspect TCP flows and their OS/application fingerprints. It consists of an optional **Sensor** (selective TShark capture/export), an **Elasticsearch 8 Collector**, and a browser-based **Analyst** for importing captures, viewing streams and exploring statistics. **You do not need live capture to try it.**
 
@@ -49,9 +51,9 @@ The default Compose profile starts **without Sensor**, which makes importing exi
 
 - Named volumes: **`elasticsearch-data-v8`** and **`postgres-data`**. ES8 uses a **separate new volume**, not the old ES7 `elasticsearch-data` volume. **No ES7→ES8 migration is implemented.** Existing `.env` files may lack newer Kibana secrets; compare them with [`.env.example`](.env.example) before starting. Do not point ES8 at ES7 data or remove volumes containing data you need.
 - **Linux GitHub Actions** validates the default Compose/PG setup, Analyst API, real headless Chromium PCAP upload, and **synthetic** offline Sensor→ES8 indexing. Windows Docker Desktop is a local smoke target (image pulls may be affected by the host proxy), **not** an independently passed Windows E2E; macOS is not independently E2E-verified. Actual physical-interface capture, high traffic, production security and migration of historic data are **not** established.
-- The Analyst runs on Node 24 with compatibility code for legacy NestJS 6; the frontend still includes legacy Webpack 4 and numerous vulnerable dependencies; authentication uses bounded asynchronous scrypt with MD5 verification only for legacy accounts (except blocked historical root/root). See [security audit and administrator recovery](docs/SECURITY_AUDIT.md). **Do not treat the upgraded runtime as a security certification.**
+- The Analyst runs on Node 24 with compatibility code for legacy NestJS 6; the frontend still uses Webpack 4. Server dependency fixes in [#95](https://github.com/AlexanderLevenskikh/network-fingerprinter/issues/95) reduced but did not eliminate advisories (including critical TypeORM and high Nest/Axios paths); the browser build also retains legacy dependencies. Authentication uses bounded asynchronous scrypt, with MD5 verification only for eligible legacy accounts (historical root/root remains blocked). See [security audit and administrator recovery](docs/SECURITY_AUDIT.md). **Do not treat the upgraded runtime as a security certification.**
 
-For diagnostics, environment variables, bootstrap order, persistence, backup cautions and shutdown (including the **destructive** `down -v` distinction), use the [Docker operations guide](docs/docker.md). For import limits, HTTP responses and partial-indexing behavior, use the [PCAP import guide](docs/pcap-import.md). [Issues](https://github.com/AlexanderLevenskikh/network-fingerprinter/issues) · [CI runs](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions).
+For the full browser walkthrough, use the **[User Guide](USERGUIDE.md)**. For diagnostics, environment variables, bootstrap order, persistence, backup cautions and shutdown (including the **destructive** `down -v` distinction), use the [Docker operations guide](docs/docker.md). For import limits, HTTP responses and partial-indexing behavior, use the [PCAP import guide](docs/pcap-import.md). [Issues](https://github.com/AlexanderLevenskikh/network-fingerprinter/issues) · [CI runs](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions).
 
 ## License
 

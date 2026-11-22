@@ -1,8 +1,14 @@
 # Analyst security baseline and dependency follow-up (2026-11-22)
 
-This page accompanies the separate bilingual README work in draft PR #87. It is **not** a claim that the application or its supply chain is vulnerability-free.
+This document preserves the audit history from #87, #94, #97, #99 and #100. The earlier sections are **historical, version-specific snapshots** and may describe PRs before they were merged. It is **not** a claim that the application or its supply chain is vulnerability-free.
 
-## Authentication change in the security hardening branch
+## Current merged status (master 4926f7f, 2026-11-22)
+
+PRs [#99](https://github.com/AlexanderLevenskikh/network-fingerprinter/pull/99) and [#100](https://github.com/AlexanderLevenskikh/network-fingerprinter/pull/100) are merged. After the #100 exact-head audit ([run 44999535012](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44999535012)), server production has **8 advisories (1 critical, 2 high)** and server all has **69 (7 critical, 14 high)**. Client runtime remains **18 (0 critical, 15 high)** and client all **194 (26 critical, 68 high)**. These are advisory counts for specific lock scopes, **not a count of proven exploitable flaws** or a clean audit. The same #100 source head passed [Docker/Chromium/Sensor E2E 44999535027](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44999535027) and [Compose/PG 44999535029](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44999535029).
+
+The follow-up pinned `follow-redirects@1.16.3` and removed its high advisory, leaving eight server production package paths: `@nestjs/common`, `@nestjs/core`, `@nestjs/typeorm`, `axios`, `passport`, `typeorm`, `uuid`, `xml2js`. **TypeORM remains critical**; Nest common and Axios remain high. An attempted Axios 1.x override failed the existing TypeScript 3.6.3 compile ([run 44999285705](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44999285705)) and was **not shipped**. Coordinated TypeORM/Nest/TypeScript work is still required. No production security approval is implied.
+
+## Authentication changes (merged PR #94)
 
 * The server no longer creates an implicit `root/root` administrator. On clean Compose volumes, PostgreSQL creates the schema only; Analyst seeds the configured `APP_ADMIN_USERNAME` / `APP_ADMIN_PASSWORD` with scrypt-v2 at startup. Existing database users are not reset.
 * New passwords use asynchronous, randomly salted scrypt-v2 (`N=131072, r=8, p=1`, maxmem=256 MiB, 64-byte output) with one active KDF and at most four waiters per Analyst process. Valid historical MD5 and the previous scrypt-v1 login hashes migrate on successful authentication without changing `user_entity.passwordhash VARCHAR(255)`; incorrect credentials do not change stored hashes. Historical `root/root` MD5 credentials are *blocked* until an operator resets that account. This is a bounded local worker-pool limit, not an IP-based login rate limiter.
@@ -10,7 +16,7 @@ This page accompanies the separate bilingual README work in draft PR #87. It is 
 * User list, registration and removal reject non-administrators (HTTP 403, not a redirect). Existing sessions serialize only user IDs and reload current roles on every request; demotion is effective without a new login.
 * Session cookies now explicitly use HttpOnly and SameSite=Lax. The current in-process `express-session` MemoryStore is **not** a production-grade persistent session store. External deployment requires TLS, reviewed reverse-proxy trust and session persistence/rotation design.
 
-## Lockfile inventory on master 4dd6ad6f3a9043cbb67600ef7931ca182149f0bd
+## Historical lockfile inventory (master 4dd6ad6, superseded by #99/#100)
 
 The server uses npm lockfile v1 (804 top-level lock entries); client uses lockfile v3 (1,512 package path entries). Counts describe **lock entries, not security advisories**. Examples of precisely locked versions:
 
@@ -68,7 +74,7 @@ Replace `root` with the actual existing administrator username when appropriate.
 
 Local Compose uses HTTP on loopback, is not internet-hardened, and has no shared session store. Add TLS and reviewed reverse proxy, request-rate limits, durable session storage, CSRF policy and role-scoped credentials before external exposure. OWASP recommends scrypt `N=2^17,r=8,p=1`; this is used in v2. [OWASP password guidance](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html) and [Node.js 24 crypto](https://nodejs.org/download/release/v24.21.0/docs/api/crypto.html).
 
-Next bounded patch: upgrade the vulnerable Nest/Express/Multer runtime cohort as a separately tested compatibility migration, then address browser bundle and Webpack 4 tools. Re-run npm audits and the full Docker/Chromium, Compose/PostgreSQL and optional Sensor suites for each candidate.
+The Nest/Express/Multer dependency cohort was patched and tested in #99 and the follow-up in #100. **Next:** address TypeORM/Nest/Axios through separately tested compatibility migrations, then the browser bundle and Webpack 4 tools. Rerun lock-level npm audits and the full Docker/Chromium, Compose/PostgreSQL and optional Sensor suites for each candidate.
 
 ## Runtime critical-transitive patch (#97; separate from authentication #94)
 
@@ -107,7 +113,7 @@ validated**; coordinator decides closure. The remaining Nest/Express/body-parser
 Multer/qs suggestions (#76, #88, #92, #93) are **not** covered and must stay
 open. No blanket security or production-hardening claim is made.
 
-## Issue #95: nonmajor server dependency patch (PR #99, pending full E2E)
+## Issue #95: nonmajor server dependency patch (merged PR #99; historical candidate data)
 
 The patch retains NestJS 6.7.2 but updates its compatible Express/Multer descendants without a framework-major migration.
 It updates `express-session` 1.17.0 → **1.19.0**, overrides `qs` to
@@ -151,7 +157,7 @@ The HTTP cohort also removes audited paths for `node_modules/express`,
 Do not infer that all consumers of these packages are safe: this is an exact
 audit report for the lock, not a runtime reachability proof.
 
-**Remaining server production advisories require separate migrations:**
+**Remaining server production advisories at #99, before #100 follow-up (historical snapshot), require separate migrations:**
 
 * **Critical:** `node_modules/typeorm` (0.2.45) still has SQL-injection advisories
   including GHSA-fx4w-v43j-vc45 and GHSA-q2pj-6v73-8rgj. Advancing to a
@@ -174,5 +180,4 @@ claims, **not** justification to close #76/#88/#92 wholesale.
 
 The new synthetic regression checks cover session cookie flags, oversized
 multipart rejection, malformed JSON and continued authenticated operation.
-Until the exact final SHA completes clean Docker/Chromium/Sensor and
-Compose/PostgreSQL workflows, **do not merge or claim acceptance**.
+The exact #99 head later passed clean [Docker/Chromium/Sensor 44998824276](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44998824276) and [Compose/PG 44998824288](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44998824288); #100 passed its own exact-head checks before merge. These passing checks establish the tested demo behavior, **not** production security or closure of #95.

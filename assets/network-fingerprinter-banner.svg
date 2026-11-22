@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="title desc">
+  <title id="title">Network Fingerprinter — Levencode Labs</title>
+  <desc id="desc">Midnight-navy Levencode Labs banner featuring a gradient N, a network fingerprint, and the text Network Fingerprinter.</desc>
+  <defs>
+    <linearGradient id="brand" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#aa60fb"/>
+      <stop offset="46%" stop-color="#578aff"/>
+      <stop offset="75%" stop-color="#15d6e8"/>
+      <stop offset="100%" stop-color="#51edbe"/>
+    </linearGradient>
+    <linearGradient id="rim" x1="0%" y1="70%" x2="100%" y2="30%">
+      <stop offset="0%" stop-color="#a46aff"/>
+      <stop offset="52%" stop-color="#4aa9fb"/>
+      <stop offset="100%" stop-color="#59f1c4"/>
+    </linearGradient>
+    <radialGradient id="disk">
+      <stop offset="0%" stop-color="#193056"/>
+      <stop offset="100%" stop-color="#101d38"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="640" fill="#0b142c"/>
+  <rect x="34" y="36" width="1212" height="568" rx="31" fill="#0d1831" stroke="url(#rim)" stroke-width="4"/>
+  <circle cx="278" cy="319" r="170" fill="url(#disk)"/>
+  <circle cx="278" cy="319" r="171" fill="none" stroke="#20365b" stroke-width="1.5"/>
+  <path d="M192 424 V214 L342 424 V214" fill="none" stroke="url(#brand)" stroke-width="48" stroke-linecap="round" stroke-linejoin="round"/>
+  <g fill="none" stroke-linecap="round">
+    <path d="M346 247 C390 246 419 268 421 307" stroke="#58f0c7" stroke-width="10"/>
+    <path d="M348 268 C377 266 397 286 399 314" stroke="#49d9f2" stroke-width="9"/>
+    <path d="M346 292 C365 289 376 302 376 320 C376 347 357 356 357 379" stroke="#4fb7f6" stroke-width="9"/>
+    <path d="M348 319 C348 355 336 368 336 389" stroke="#72c5ff" stroke-width="8"/>
+    <path d="M210 385 L258 420 L297 373" stroke="#9a77f6" stroke-width="6"/>
+  </g>
+  <circle cx="210" cy="385" r="13" fill="#9d6cff"/>
+  <circle cx="258" cy="420" r="11" fill="#738ff9"/>
+  <circle cx="297" cy="373" r="9" fill="#38dafa"/>
+  <g fill="#4accfa">
+    <rect x="303" y="437" width="7" height="29" rx="3"/>
+    <rect x="319" y="422" width="7" height="44" rx="3"/>
+    <rect x="335" y="411" width="7" height="55" rx="3"/>
+    <rect x="351" y="425" width="7" height="41" rx="3"/>
+    <rect x="367" y="438" width="7" height="28" rx="3"/>
+  </g>
+  <text x="500" y="200" fill="#50efcf" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif" font-size="24" font-weight="700" letter-spacing="4">LEVENCODE LABS</text>
+  <text x="496" y="302" fill="#f5f7ff" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif" font-size="79" font-weight="750" letter-spacing="-2.5">Network</text>
+  <text x="496" y="395" fill="#f5f7ff" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif" font-size="75" font-weight="750" letter-spacing="-2.5">Fingerprinter</text>
+  <text x="500" y="461" fill="#afbedb" font-family="Inter,Segoe UI,Helvetica,Arial,sans-serif" font-size="26" font-weight="400">Passive traffic analysis · TCP / TLS / HTTP</text>
+  <rect x="500" y="514" width="67" height="8" rx="4" fill="#a16cff"/>
+  <rect x="575" y="514" width="67" height="8" rx="4" fill="#27ccf6"/>
+  <rect x="650" y="514" width="67" height="8" rx="4" fill="#51e8bd"/>
+</svg>
