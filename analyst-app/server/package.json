@@ -86,6 +86,8 @@
     "qs": "6.17.1",
     "express": "4.22.3",
     "body-parser": "1.20.9",
-    "multer": "2.5.0"
+    "multer": "2.5.0",
+    "axios": "1.21.1",
+    "follow-redirects": "1.16.3"
   }
 }
