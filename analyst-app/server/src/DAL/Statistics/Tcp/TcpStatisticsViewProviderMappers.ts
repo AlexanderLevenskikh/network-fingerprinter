@@ -1,4 +1,4 @@
-import { SearchResponse } from 'elasticsearch';
+import { SearchResponse } from '../../Elastic/ElasticResponse';
 import { ITcpHostStatisticsView } from './ITcpHostStatisticsView';
 import { TcpStreamViewProviderMappers } from '../../Stream/Tcp/TcpStreamViewProviderMappers';
 

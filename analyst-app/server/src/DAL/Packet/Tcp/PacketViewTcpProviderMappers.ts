@@ -1,4 +1,4 @@
-import { SearchResponse } from 'elasticsearch';
+import { SearchResponse } from '../../Elastic/ElasticResponse';
 import { IPacketViewTcp } from './IPacketViewTcp';
 import { mapPacketEntityToTcpPacketView } from '../../../Mappers/Packet/Tcp/PacketEntityToView';
 import { PacketViewTcpApplicationProtocol } from './PacketViewTcpApplicationProtocol';
