@@ -112,7 +112,8 @@ jobs:
       - name: Start isolated Elasticsearch 8 and one-shot template bootstrap
         run: |
           docker compose --env-file .env.example down -v --remove-orphans
-          timeout 480 docker compose --env-file .env.example up -d --wait --wait-timeout 420 elastic-init
+          timeout 420 docker compose --env-file .env.example up -d --wait --wait-timeout 360 elasticsearch
+          timeout 120 docker compose --env-file .env.example up --no-deps --exit-code-from elastic-init elastic-init
       - name: Verify single-event flush and shutdown delivery with synthetic offline tshark
         run: |
           timeout 90 docker compose --env-file .env.example --profile capture-linux run \
