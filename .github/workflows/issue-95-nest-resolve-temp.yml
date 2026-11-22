@@ -44,3 +44,5 @@ jobs:
             analyst-app/server/server-prod.exit
             analyst-app/server/server-all.exit
             analyst-app/server/SHA256SUMS
+
+# Revalidate consolidated Jest transform for exact source head.
