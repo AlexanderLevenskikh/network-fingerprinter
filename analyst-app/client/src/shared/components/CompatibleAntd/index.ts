@@ -1,7 +1,7 @@
 import React from 'react';
 import BaseText from 'antd/es/typography/Text';
 import BaseParagraph from 'antd/es/typography/Paragraph';
-import { Drawer as BaseDrawer } from 'antd';
+import BaseDrawer from 'antd/es/drawer';
 
 // Ant Design 4 supports these public props, but its forward-ref declarations
 // are incompletely understood by the retained TypeScript 3.7 compiler.
