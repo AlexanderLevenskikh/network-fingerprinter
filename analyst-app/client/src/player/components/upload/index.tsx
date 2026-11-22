@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Icon } from 'antd';
+import { InboxOutlined } from '@ant-design/icons';
 import { UploadChangeParam } from 'antd/es/upload';
 import { UploadFile } from 'antd/es/upload/interface';
 import Dragger from 'antd/es/upload/Dragger';
@@ -55,7 +55,7 @@ export const PlayerUpload: FC = () => {
                 height={ 250 }
                 showUploadList={ false }
             >
-                <p className="ant-upload-drag-icon"><Icon type="inbox" /></p>
+                <p className="ant-upload-drag-icon"><InboxOutlined /></p>
                 <p className="ant-upload-text">{ t(I18PlayerNsKeys.draggerTitle) }</p>
                 <p className="ant-upload-hint">{ t(I18PlayerNsKeys.draggerMessage) }</p>
             </Dragger>

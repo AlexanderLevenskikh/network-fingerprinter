@@ -1,4 +1,4 @@
-import { ColumnProps } from 'antd/lib/table';
+import { ColumnsType } from 'antd/es/table/interface';
 import { ITcpStreamView } from 'DAL/Stream/Tcp/ITcpStreamView';
 import { TFunction } from 'i18next';
 import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
@@ -16,7 +16,7 @@ export function createTcpStreamsListColumnsConfiguration(
     startDateTimeOrder: StreamDatesOrder | undefined,
     endDateTimeOrder: StreamDatesOrder | undefined,
     t: TFunction,
-): ColumnProps<ITcpStreamView>[] {
+): ColumnsType<ITcpStreamView> {
     const startDateTimeAntdOrder = getAntdDateTimeOrder(startDateTimeOrder);
     const endDateTimeAntdOrder = getAntdDateTimeOrder(endDateTimeOrder);
     return [

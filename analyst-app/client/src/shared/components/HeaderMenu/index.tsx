@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useHeaderMenu } from 'root/shared/components/HeaderMenu/hook';
 import Menu from 'antd/es/menu';
-import Icon from 'antd/es/icon';
+import { BranchesOutlined, BarChartOutlined, UploadOutlined, SelectOutlined } from '@ant-design/icons';
 import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
 import { RouterPages } from 'root/router/constants/pages';
 import { StreamsRouterTransport } from 'root/streams/constants/router/transport';
@@ -54,7 +54,7 @@ export const HeaderMenu: FC<IProps> = () => {
                 key={ MenuItemKey.TcpStream }
                 onClick={ onClickTcpStreams }
             >
-                <Icon type="branches" />
+                <BranchesOutlined />
                 <span>
                     TCP { t(I18MainNsKeys.menuStreamsLabel) }
                 </span>
@@ -63,7 +63,7 @@ export const HeaderMenu: FC<IProps> = () => {
                 key={ MenuItemKey.UdpStream }
                 onClick={ onClickUdpStreams }
             >
-                <Icon type="select" />
+                <SelectOutlined />
                 <span>
                     UDP { t(I18MainNsKeys.menuStreamsLabel) }
                 </span>
@@ -72,7 +72,7 @@ export const HeaderMenu: FC<IProps> = () => {
                 key={ MenuItemKey.Statistics }
                 title={
                     <>
-                        <Icon type="bar-chart" />
+                        <BarChartOutlined />
                         <span>
                             { t(I18MainNsKeys.menuStatisticsLabel) }
                         </span>
@@ -101,7 +101,7 @@ export const HeaderMenu: FC<IProps> = () => {
                 key={ MenuItemKey.Player }
                 onClick={ onClickUpload }
             >
-                <Icon type="upload" />
+                <UploadOutlined />
                 <span>
                     { t(I18MainNsKeys.menuPlayerLabel) }
                 </span>

@@ -17,7 +17,7 @@ export const TcpResponsesStatisticsList: FC<IProps> = () => {
             dataSource={ sources }
             loading={ loading }
             size='small'
-            onRowClick={ openDrawer }
+            onRow={ (record) => ({ onClick: () => openDrawer(record) }) }
             pagination={{
                 showSizeChanger: true,
                 showQuickJumper: true,

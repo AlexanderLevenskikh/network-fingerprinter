@@ -33,7 +33,7 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
 
     return (
         <Form { ...formItemLayout } className={ styles.form }>
-            <Row gutter={ 20 } type='flex' justify='start'>
+            <Row gutter={ 20 } justify='start'>
                 <Col span={ 10 }>
                     <Form.Item label={ t(I18StreamsNsKeys.filterSourceIp) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormSourceIp/>
@@ -45,7 +45,7 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Row gutter={ 20 } type='flex' justify='start'>
+            <Row gutter={ 20 } justify='start'>
                 <Col span={ 10 } >
                     <Form.Item label={ t(I18StreamsNsKeys.filterSourcePort) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormSourcePort />
@@ -57,7 +57,7 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Row gutter={ 20 } type='flex' justify='start'>
+            <Row gutter={ 20 } justify='start'>
                 <Col span={ 10 }>
                     <Form.Item label={ t(I18StreamsNsKeys.filterSourceMac) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormSourceMac />
@@ -69,7 +69,7 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Row gutter={ 20 } type='flex' justify='start'>
+            <Row gutter={ 20 } justify='start'>
                 <Col span={ 10 }>
                     <Form.Item label={ t(I18StreamsNsKeys.filterDateRange) } labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormDateTimeFrom />
@@ -78,7 +78,7 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
                     </Form.Item>
                 </Col>
             </Row>
-            <Row gutter={ 20 } type='flex' justify='start'>
+            <Row gutter={ 20 } justify='start'>
                 <Col span={ 10 }>
                     <Form.Item label='Sensor ID' labelAlign='left' className={ styles.item }>
                         <TcpStreamsFilterFormSensorId />
@@ -93,4 +93,3 @@ export const TcpStreamsFilterForm: FC<IProps> = () => {
         </Form>
     );
 };
-

@@ -1,8 +1,9 @@
 import React, { FC } from 'react';
-import { Col, Drawer, Row, Spin, Tag } from 'antd';
-import Text from 'antd/es/typography/Text';
+import { Col, Row, Spin, Tag } from 'antd';
+import { Drawer } from 'root/shared/components/CompatibleAntd';
+import { Text } from 'root/shared/components/CompatibleAntd';
 import { useTcpStatisticsRequestDetailsDrawer } from 'root/statistics/components/request/drawer/request/hook';
-import Paragraph from 'antd/es/typography/Paragraph';
+import { Paragraph } from 'root/shared/components/CompatibleAntd';
 import styles from '../styles.less';
 import { TcpStatisticsDetailsFingerprints } from 'root/statistics/components/shared/drawer/fingerprints';
 import classNames from 'classnames';

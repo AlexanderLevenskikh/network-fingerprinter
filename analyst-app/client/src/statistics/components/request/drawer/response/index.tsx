@@ -1,7 +1,8 @@
 import React, { FC } from 'react';
-import { Col, Drawer, Row, Spin } from 'antd';
-import Text from 'antd/es/typography/Text';
-import Paragraph from 'antd/es/typography/Paragraph';
+import { Col, Row, Spin } from 'antd';
+import { Drawer } from 'root/shared/components/CompatibleAntd';
+import { Text } from 'root/shared/components/CompatibleAntd';
+import { Paragraph } from 'root/shared/components/CompatibleAntd';
 import styles from '../styles.less';
 import { TcpStatisticsDetailsFingerprints } from 'root/statistics/components/shared/drawer/fingerprints';
 import classNames from 'classnames';

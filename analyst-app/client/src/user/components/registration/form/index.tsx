@@ -1,84 +1,57 @@
 import React, { FC } from 'react';
-import { Button, Checkbox, Form, Icon, Input, Tooltip } from 'antd';
+import { Button, Checkbox, Form, Input } from 'antd';
 import { useUserRegistrationForm } from 'root/user/components/registration/form/hook';
-import { FormComponentProps } from 'antd/es/form';
+import { IUserRegistrationModel } from 'root/user/model/registration';
 import { I18UserNsKeys } from 'root/i18n/resources/user/keys';
 
-interface IProps {
-}
-
-export const UserRegistrationForm: FC<IProps & FormComponentProps> = ({ form }) => {
+export const UserRegistrationForm: FC = () => {
     const { t, loading, close, register } = useUserRegistrationForm();
-    const { getFieldDecorator } = form;
-
+    const [ form ] = Form.useForm();
     const formItemLayout = {
-        labelCol: {
-            xs: { span: 24 },
-            sm: { span: 8 },
-        },
-        wrapperCol: {
-            xs: { span: 24 },
-            sm: { span: 16 },
-        },
+        labelCol: { xs: { span: 24 }, sm: { span: 8 } },
+        wrapperCol: { xs: { span: 24 }, sm: { span: 16 } },
     };
     const tailFormItemLayout = {
-        wrapperCol: {
-            xs: {
-                span: 24,
-                offset: 0,
-            },
-            sm: {
-                span: 16,
-                offset: 8,
-            },
-        },
-    };
-
-    const handleSubmit = (event: any) => {
-        event.preventDefault();
-        form.validateFieldsAndScroll((err, values) => {
-            if (!err) {
-                register(values);
-            }
-        });
+        wrapperCol: { xs: { span: 24, offset: 0 }, sm: { span: 16, offset: 8 } },
     };
 
     return (
-        <Form { ...formItemLayout } onSubmit={ handleSubmit }>
-            <Form.Item label={ t(I18UserNsKeys.userLoginLabel) }>
-                { getFieldDecorator('userName', {
-                    rules: [{ required: true, message: t(I18UserNsKeys.requiredField), whitespace: true }],
-                })(<Input/>) }
+        <Form
+            form={ form }
+            { ...formItemLayout }
+            initialValues={{ isAdmin: false }}
+            onFinish={ (values: IUserRegistrationModel) => register(values) }
+        >
+            <Form.Item name="userName" label={ t(I18UserNsKeys.userLoginLabel) }
+                rules={[{ required: true, message: t(I18UserNsKeys.requiredField), whitespace: true }]}>
+                <Input />
             </Form.Item>
-            <Form.Item label={ t(I18UserNsKeys.userPasswordLabel) } hasFeedback>
-                { getFieldDecorator('password', {
-                    rules: [{ required: true, message: t(I18UserNsKeys.requiredField) } ],
-                })(<Input.Password/>) }
+            <Form.Item name="password" label={ t(I18UserNsKeys.userPasswordLabel) } hasFeedback
+                rules={[{ required: true, message: t(I18UserNsKeys.requiredField) }]}>
+                <Input.Password />
             </Form.Item>
-            <Form.Item label={ t(I18UserNsKeys.firstUserNameLabel) }>
-                { getFieldDecorator('firstName')(<Input/>) }
+            <Form.Item name="firstName" label={ t(I18UserNsKeys.firstUserNameLabel) }>
+                <Input />
             </Form.Item>
-            <Form.Item label={ t(I18UserNsKeys.lastUserNameLabel) }>
-                { getFieldDecorator('lastName')(<Input/>) }
+            <Form.Item name="lastName" label={ t(I18UserNsKeys.lastUserNameLabel) }>
+                <Input />
             </Form.Item>
-            <Form.Item label={ t(I18UserNsKeys.middleUserNameLabel) }>
-                { getFieldDecorator('middleName')(<Input/>) }
+            <Form.Item name="middleName" label={ t(I18UserNsKeys.middleUserNameLabel) }>
+                <Input />
             </Form.Item>
-            <Form.Item label={ t(I18UserNsKeys.isUserAdminLabel) }>
-                { getFieldDecorator('isAdmin')(<Checkbox/>) }
+            <Form.Item name="isAdmin" valuePropName="checked" label={ t(I18UserNsKeys.isUserAdminLabel) }>
+                <Checkbox />
             </Form.Item>
             <Form.Item { ...tailFormItemLayout }>
                 <Button type="primary" htmlType="submit" disabled={ loading }>
                     { t(I18UserNsKeys.registerButtonLabel) }
                 </Button>
                 &nbsp;
-                <Button onClick={ close }>
-                    { t(I18UserNsKeys.cancelButtonLabel) }
-                </Button>
+                <Button onClick={ close }>{ t(I18UserNsKeys.cancelButtonLabel) }</Button>
             </Form.Item>
         </Form>
     );
 };
 
-export const WrappedUserRegistrationForm = Form.create<IProps & FormComponentProps>({ name: 'register' })(UserRegistrationForm);
-
+// Keep the original exported component name used by the registration modal.
+export const WrappedUserRegistrationForm = UserRegistrationForm;

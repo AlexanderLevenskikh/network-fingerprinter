@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import Text from 'antd/es/typography/Text';
+import { Text } from 'root/shared/components/CompatibleAntd';
 import { useTranslation } from 'react-i18next';
 import { I18nNamespace } from 'root/i18n/resources/namespaces';
 import { I18StreamsNsKeys } from 'root/i18n/resources/streams/keys';
 import { Tag } from 'antd';
-import Paragraph from 'antd/es/typography/Paragraph';
+import { Paragraph } from 'root/shared/components/CompatibleAntd';
 
 interface IProps {
     label: string;

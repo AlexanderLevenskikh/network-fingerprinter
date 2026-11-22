@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import Menu from 'antd/es/menu';
-import Icon from 'antd/es/icon';
+import { UserOutlined } from '@ant-design/icons';
 import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
 import SubMenu from 'antd/es/menu/SubMenu';
 import { useHeaderUserMenu } from 'root/shared/components/HeaderUserMenu/hook';
@@ -29,7 +29,7 @@ export const HeaderUserMenu: FC<IProps> = () => {
                 key={ MenuItemKey.User }
                 title={
                     <>
-                        <Icon type="user" />
+                        <UserOutlined />
                         <span>
                             { name }
                         </span>

@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import Sider from 'antd/es/layout/Sider';
-import { Icon, Menu } from 'antd';
+import { Menu } from 'antd';
+import { LoginOutlined, LogoutOutlined } from '@ant-design/icons';
 import { useStatisticsSider } from 'root/statistics/components/sider/hook';
 import { TcpStatisticsTabsEnum } from 'root/statistics/constants/router/tab';
 import { I18MainNsKeys } from 'root/i18n/resources/main/keys';
@@ -35,7 +36,7 @@ export const StatisticsSider: FC<IProps> = () => {
                     key={ MenuItemKey.StatisticsBySource }
                     onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Request) }
                 >
-                    <Icon type="logout" />
+                    <LogoutOutlined />
                     <span>
                         { t(I18MainNsKeys.menuStatisticsRequestsLabel) }
                     </span>
@@ -44,7 +45,7 @@ export const StatisticsSider: FC<IProps> = () => {
                     key={ MenuItemKey.StatisticsByDestination }
                     onClick={ () => onClickStatistics(TcpStatisticsTabsEnum.Response) }
                 >
-                    <Icon type="login" />
+                    <LoginOutlined />
                     <span>
                         { t(I18MainNsKeys.menuStatisticsResponsesLabel) }
                     </span>

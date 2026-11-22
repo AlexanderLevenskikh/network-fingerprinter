@@ -1,4 +1,4 @@
-import { ColumnProps } from 'antd/lib/table';
+import { ColumnsType } from 'antd/es/table/interface';
 import { TFunction } from 'i18next';
 import React from 'react';
 import { ITcpHostStatisticsView } from 'DAL/Statistics/Tcp/ITcpHostStatisticsView';
@@ -7,7 +7,7 @@ import styles from '../styles.less';
 
 export function createTcpResponsesStatisticsColumnsConfiguration(
     t: TFunction,
-): ColumnProps<ITcpHostStatisticsView>[] {
+): ColumnsType<ITcpHostStatisticsView> {
     return [
         {
             title: t(I18StatisticsNsKeys.listResponseIpColumnTitle),
