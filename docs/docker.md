@@ -3,7 +3,7 @@
 The default local profile is exercised in Linux GitHub Actions using synthetic
 PCAP samples and an isolated Chromium/Playwright browser. The Analyst image
 runs **Node.js 24** (with a compatibility shim for legacy NestJS 6) and pg 8;
-the client remains on legacy Webpack 4 and Elasticsearch/Kibana remain on 7.4.1.
+the client remains on legacy Webpack 4; Elasticsearch and Kibana are pinned to 8.19.25.
 This is a validated local demonstration path, **not a production security audit**.
 Results depend on a completed successful E2E run of the exact revision being deployed.
 
@@ -11,8 +11,7 @@ Results depend on a completed successful E2E run of the exact revision being dep
 
 Requirements: Docker Engine + Compose v2 (Docker Desktop uses Linux containers),
 at least 4 GiB available to Docker, and free local ports 3000, 5601, 9200.
-On Apple Silicon the 7.4.1 Elasticsearch/Kibana images are
-forced to `linux/amd64` and therefore require emulation.
+Elasticsearch and Kibana 8.19.25 support native amd64 and arm64 images.
 
 From the repository root, **without creating or editing any files**:
 
@@ -51,16 +50,14 @@ network. This replaces three hardcoded 192.168.x.x addresses.
 - PostgreSQL initializes its schema and the configured admin on an **empty**
   named volume. An existing database is not overwritten.
 - Kibana waits for Elasticsearch and the template; `kibana-init` creates the
-  `packets-*` index pattern after Kibana starts serving requests.
+  `packets-*` data view through the Kibana 8 API. Its successful one-shot exit\n  is required before Analyst starts; CI checks the saved view's fields.
 - `analyst` waits for a healthy PostgreSQL and Elasticsearch, and a successful
-  Elasticsearch initialization. The analyst healthcheck requests `/login`.
-- Persistent data uses `elasticsearch-data` and `postgres-data` Docker named
+  Elasticsearch and Kibana initialization. The analyst healthcheck requests `/login`.
+- Persistent data uses `elasticsearch-data-v8` and `postgres-data` Docker named
   volumes. No manual mkdir, chmod, or `$PWD/data` mount is needed.
 
 The project is **not yet production-hardened**: the analyst's
-existing password verification still uses unsalted MD5, and the stack remains
-on Elasticsearch 7.4 and old frontend/backend dependencies. Node 24 alone does
-not modernize those dependencies. Network-level authentication is not a substitute for TLS,
+existing password verification still uses unsalted MD5, and some frontend/backend\ndependencies remain old. Elasticsearch 8 and Node 24 do not by themselves\nmodernize or secure the application. Network-level authentication is not a substitute for TLS,
 RBAC, and modern password hashing.
 
 ## Live capture (Linux only, opt-in)
@@ -86,7 +83,7 @@ on any network requires proper authorization.
 
 Check the initialized template:
 
-    docker compose exec elasticsearch curl -fsS -u "elastic:YOUR_ELASTIC_PASSWORD" http://127.0.0.1:9200/_template/packets
+    docker compose exec elasticsearch curl -fsS -u "elastic:YOUR_ELASTIC_PASSWORD" http://127.0.0.1:9200/_index_template/packets
 
 For test PCAP import, sign in to the web UI and use its Upload PCAP view.
 The synthetic Linux E2E checks authenticate, import 2 matching packets,
@@ -104,6 +101,27 @@ Shutdown without losing database data:
 **Destructive, removes both named data volumes and all stored captures/users:**
 
     docker compose down -v
+
+## Elasticsearch 8 data boundary and existing installations
+
+This step pins both Elasticsearch and Kibana to **8.19.25** and uses Python
+Elasticsearch client 8.x for Sensor and a read-only ES8 HTTP adapter for Analyst.
+Existing Node 24 PCAP import handling is kept. The dedicated Compose volume
+`elasticsearch-data-v8` intentionally does **not** reinterpret Elasticsearch 7
+index data. No ES7→ES8 data migration is implemented.
+
+Older copied `.env` files might lack `KIBANA_SYSTEM_PASSWORD`,
+`KIBANA_SECURITY_KEY` or `KIBANA_OBJECTS_KEY`: compare against the current
+`.env.example` and add distinct values before starting. The old
+`elasticsearch-data` volume is left untouched and is **not** migrated.
+An existing `postgres-data` volume is preserved as before; application
+credentials used only on first database bootstrap are not reapplied when that
+volume already exists. Do not use `down -v` against data you need to retain.
+Back up data and plan any migration separately.
+
+Linux CI validates synthetic PCAP imports and synthetic offline TShark decoding
+and indexing on an isolated ES8 instance. This does not establish production
+security, live-interface capture, sustained throughput, or ES7 migration safety.
 
 ## Platform/runtime notes
 
