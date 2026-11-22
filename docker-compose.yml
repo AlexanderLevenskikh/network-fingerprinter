@@ -4,19 +4,20 @@ name: network-fingerprinter
 # intentionally left at their original versions pending the Step 3 migration.
 services:
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION:-7.4.1}
-    platform: linux/amd64
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION:-8.19.25}
     restart: unless-stopped
     environment:
       discovery.type: single-node
       xpack.security.enabled: "true"
-      xpack.monitoring.collection.enabled: "true"
+      # Local demo uses HTTP; production requires TLS and role-scoped users.
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
       ES_JAVA_OPTS: "-Xms${ES_HEAP:-512m} -Xmx${ES_HEAP:-512m}"
     ports:
       - "${BIND_ADDRESS:-127.0.0.1}:${ELASTIC_PORT:-9200}:9200"
     volumes:
-      - elasticsearch-data:/usr/share/elasticsearch/data
+      - elasticsearch-data-v8:/usr/share/elasticsearch/data
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS --user \"elastic:$${ELASTIC_PASSWORD}\" \"http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow&timeout=5s\" > /dev/null"]
       interval: 10s
@@ -31,6 +32,7 @@ services:
     entrypoint: ["/bin/sh", "/bootstrap/init-template.sh"]
     environment:
       ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+      KIBANA_SYSTEM_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:?Set KIBANA_SYSTEM_PASSWORD in .env}
     volumes:
       - ./deploy/elasticsearch/init-template.sh:/bootstrap/init-template.sh:ro
       - ./deploy/elasticsearch/packets-template.json:/bootstrap/packets-template.json:ro
@@ -59,15 +61,16 @@ services:
       start_period: 30s
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:${ELK_VERSION:-7.4.1}
-    platform: linux/amd64
+    image: docker.elastic.co/kibana/kibana:${ELK_VERSION:-8.19.25}
     restart: unless-stopped
     environment:
       SERVER_NAME: kibana
       SERVER_HOST: "0.0.0.0"
       ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
-      ELASTICSEARCH_USERNAME: elastic
-      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+      ELASTICSEARCH_USERNAME: kibana_system
+      ELASTICSEARCH_PASSWORD: ${KIBANA_SYSTEM_PASSWORD:?Set KIBANA_SYSTEM_PASSWORD in .env}
+      XPACK_SECURITY_ENCRYPTIONKEY: ${KIBANA_SECURITY_KEY:?Set KIBANA_SECURITY_KEY in .env}
+      XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: ${KIBANA_OBJECTS_KEY:?Set KIBANA_OBJECTS_KEY in .env}
     ports:
       - "${BIND_ADDRESS:-127.0.0.1}:${KIBANA_PORT:-5601}:5601"
     depends_on:
@@ -99,7 +102,6 @@ services:
     build:
       context: ./analyst-app
       dockerfile: Dockerfile
-    platform: linux/amd64
     restart: unless-stopped
     environment:
       APP_ID: ${APP_ID:-1}
@@ -134,7 +136,6 @@ services:
     build:
       context: ./sensor/tshark
       dockerfile: Dockerfile
-    platform: linux/amd64
     restart: unless-stopped
     network_mode: host
     cap_add:
@@ -153,5 +154,5 @@ services:
         condition: service_completed_successfully
 
 volumes:
-  elasticsearch-data:
+  elasticsearch-data-v8:
   postgres-data:

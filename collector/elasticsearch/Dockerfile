@@ -1,7 +1,3 @@
-ARG ELK_VERSION
-
-# https://github.com/elastic/elasticsearch-docker
+# Legacy module context; root Compose uses the same image directly.
+ARG ELK_VERSION=8.19.25
 FROM docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
-
-# Add your elasticsearch plugins setup here
-# Example: RUN elasticsearch-plugin install analysis-icu
