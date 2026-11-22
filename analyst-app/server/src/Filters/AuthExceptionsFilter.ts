@@ -16,6 +16,11 @@ export class AuthExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     if (exception instanceof UnauthorizedException || exception instanceof ForbiddenException) {
+      if (request.path && request.path.startsWith('/api/user/')) {
+        const status = exception.getStatus();
+        response.status(status).json({ statusCode: status, message: exception.message });
+        return;
+      }
       response.redirect('/');
       return;
     }
