@@ -1,0 +1,36 @@
+name: Compose configuration and PostgreSQL bootstrap
+
+on:
+  pull_request:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate default and Linux capture Compose models
+        run: |
+          docker compose --env-file .env.example config --quiet
+          docker compose --env-file .env.example --profile capture-linux config --quiet
+      - name: Check shell syntax and Elasticsearch template
+        run: |
+          sh -n deploy/postgres/20-bootstrap-admin.sh
+          sh -n deploy/elasticsearch/init-template.sh
+          sh -n deploy/kibana/init-data-view.sh
+          python3 -m json.tool deploy/elasticsearch/packets-template.json >/dev/null
+      - name: Start PostgreSQL and verify first-run seed
+        run: |
+          docker compose --env-file .env.example up -d --wait postgres
+          expected="$(printf %s 'local-admin-change-me' | md5sum | cut -d' ' -f1)"
+          actual="$(docker compose --env-file .env.example exec -T postgres psql -U fingerprinter -d analytics -Atc "SELECT passwordhash FROM user_entity WHERE username='admin';")"
+          test "$expected" = "$actual"
+          n_root="$(docker compose --env-file .env.example exec -T postgres psql -U fingerprinter -d analytics -Atc "SELECT count(*) FROM user_entity WHERE username='root';")"
+          test "$n_root" = 0
+      - name: Clean up CI containers and demo data
+        if: always()
+        run: docker compose --env-file .env.example down -v --remove-orphans

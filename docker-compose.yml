@@ -1,0 +1,157 @@
+name: network-fingerprinter
+
+# Step 2: orchestration only. Legacy Elasticsearch/Node/Python dependencies are
+# intentionally left at their original versions pending the Step 3 migration.
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION:-7.4.1}
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "true"
+      xpack.monitoring.collection.enabled: "true"
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+      ES_JAVA_OPTS: "-Xms${ES_HEAP:-512m} -Xmx${ES_HEAP:-512m}"
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${ELASTIC_PORT:-9200}:9200"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS --user \"elastic:$${ELASTIC_PASSWORD}\" \"http://127.0.0.1:9200/_cluster/health?wait_for_status=yellow&timeout=5s\" > /dev/null"]
+      interval: 10s
+      timeout: 10s
+      retries: 30
+      start_period: 45s
+
+  elastic-init:
+    image: curlimages/curl:8.16.0
+    restart: "no"
+    read_only: true
+    entrypoint: ["/bin/sh", "/bootstrap/init-template.sh"]
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+    volumes:
+      - ./deploy/elasticsearch/init-template.sh:/bootstrap/init-template.sh:ro
+      - ./deploy/elasticsearch/packets-template.json:/bootstrap/packets-template.json:ro
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:${POSTGRES_VERSION:-16.16-alpine}
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-fingerprinter}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-analytics}
+      APP_ADMIN_USERNAME: ${APP_ADMIN_USERNAME:-admin}
+      APP_ADMIN_PASSWORD: ${APP_ADMIN_PASSWORD:?Set APP_ADMIN_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./analyst-app/db/init.sql:/docker-entrypoint-initdb.d/10-schema.sql:ro
+      - ./deploy/postgres/20-bootstrap-admin.sh:/docker-entrypoint-initdb.d/20-bootstrap-admin.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\" > /dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:${ELK_VERSION:-7.4.1}
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      SERVER_NAME: kibana
+      SERVER_HOST: "0.0.0.0"
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+      ELASTICSEARCH_USERNAME: elastic
+      ELASTICSEARCH_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${KIBANA_PORT:-5601}:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      elastic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null http://127.0.0.1:5601/login"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 45s
+
+  kibana-init:
+    image: curlimages/curl:8.16.0
+    restart: "no"
+    read_only: true
+    entrypoint: ["/bin/sh", "/bootstrap/init-data-view.sh"]
+    environment:
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+    volumes:
+      - ./deploy/kibana/init-data-view.sh:/bootstrap/init-data-view.sh:ro
+    depends_on:
+      kibana:
+        condition: service_healthy
+
+  analyst:
+    build:
+      context: ./analyst-app
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    environment:
+      APP_ID: ${APP_ID:-1}
+      ELASTIC_HOST: elasticsearch:9200
+      ELASTIC_USERNAME: elastic
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: ${POSTGRES_USER:-fingerprinter}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-analytics}
+      SESSION_SECRET: ${SESSION_SECRET:?Set SESSION_SECRET in .env}
+    ports:
+      - "${BIND_ADDRESS:-127.0.0.1}:${ANALYST_PORT:-3000}:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      elastic-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS -o /dev/null http://127.0.0.1:3000/login"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  # Physical NIC capture requires Linux host networking. Docker Desktop on
+  # macOS/Windows cannot guarantee capture of host physical interfaces.
+  sensor:
+    profiles: ["capture-linux"]
+    build:
+      context: ./sensor/tshark
+      dockerfile: Dockerfile
+    platform: linux/amd64
+    restart: unless-stopped
+    network_mode: host
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      ELASTIC_HOST: 127.0.0.1:${ELASTIC_PORT:-9200}
+      ELASTIC_USERNAME: elastic
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD:?Set ELASTIC_PASSWORD in .env}
+      SENSOR_ID: ${SENSOR_ID:-1}
+      SENSOR_INTERFACE: ${SENSOR_INTERFACE:-}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      elastic-init:
+        condition: service_completed_successfully
+
+volumes:
+  elasticsearch-data:
+  postgres-data:

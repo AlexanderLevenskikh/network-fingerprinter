@@ -1,3 +1,18 @@
 node_modules
+**/node_modules
 .idea
 *.log
+
+# Credentials and machine-specific overrides must not be tracked.
+.env
+**/.env
+.env.*
+**/.env.*
+!.env.example
+!**/.env.example
+
+# Local captures and generated artifacts.
+*.pcap
+*.pcapng
+**/temp/
+**/dist/

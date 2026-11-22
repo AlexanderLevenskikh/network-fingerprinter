@@ -1,0 +1,62 @@
+name: Analyst synthetic PCAP end-to-end
+
+on:
+  pull_request:
+    paths:
+      - 'analyst-app/**'
+      - 'docker-compose.yml'
+      - '.env.example'
+      - 'deploy/**'
+      - 'tests/**'
+      - '.github/workflows/analyst-e2e.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  synthetic-pcap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify loopback-only host ports
+        run: |
+          docker compose --env-file .env.example config --format json > /tmp/compose-model.json
+          python3 - <<'PY'
+          import json
+          model = json.load(open('/tmp/compose-model.json'))
+          for name, service in model['services'].items():
+              for port in service.get('ports', []):
+                  assert port.get('host_ip') == '127.0.0.1', (name, port)
+          print('PASS published ports are loopback-only')
+          PY
+      - name: Build from source without pre-existing Compose containers
+        run: docker compose --env-file .env.example build --no-cache analyst
+      - name: Start clean default profile
+        run: |
+          docker compose --env-file .env.example down -v --remove-orphans
+          timeout 720 docker compose --env-file .env.example up -d --wait --wait-timeout 600
+      - name: Authenticate and upload synthetic SYN/SYN-ACK capture
+        env:
+          APP_ADMIN_PASSWORD: local-admin-change-me
+        run: timeout 240 python3 tests/smoke_analyst.py
+      - name: Browser upload retry after error (isolated Playwright container)
+        env:
+          APP_ADMIN_PASSWORD: local-admin-change-me
+        run: |
+          timeout 240 docker run --rm --network host --ipc=host \
+            -v "$PWD:/work" -w /work \
+            -e APP_ADMIN_PASSWORD \
+            mcr.microsoft.com/playwright:v1.56.1-noble \
+            sh -c 'npm install --prefix /tmp/nf-playwright --no-audit --no-fund playwright@1.56.1 && NODE_PATH=/tmp/nf-playwright/node_modules node tests/browser_player_upload.cjs'
+      - name: Sanitized diagnostics after failure
+        if: failure()
+        run: |
+          docker compose --env-file .env.example ps -a || true
+          docker compose --env-file .env.example logs --no-color --tail=120 analyst postgres elasticsearch kibana 2>&1 |
+            sed -E 's/(password|passwd|secret|authorization|cookie|token)([=: ]+)[^ ,;]+/\1=[REDACTED]/Ig' |
+            tail -n 400 || true
+      - name: Always remove synthetic data and containers
+        if: always()
+        run: docker compose --env-file .env.example down -v --remove-orphans
