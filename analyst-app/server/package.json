@@ -79,5 +79,9 @@
     },
     "coverageDirectory": "./coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "thenify": "3.3.1",
+    "proxy-addr": "2.0.8"
   }
 }
