@@ -7,7 +7,7 @@ import tempfile
 import time
 from pathlib import Path
 
-from elasticsearch import Elasticsearch
+from elasticsearch import ApiError, Elasticsearch
 from delivery import deliver_packets
 from tshark import decode_ek
 
@@ -40,12 +40,21 @@ with tempfile.TemporaryDirectory() as tmp:
     idx = "packets-2026-01-01"
 
     def matching():
-        client.indices.refresh(index=idx, ignore_unavailable=True)
-        if not client.indices.exists(index=idx):
-            return 0
-        response = client.search(index=idx, size=10, query={"match_all": {}})
-        return sum(1 for hit in response["hits"]["hits"]
-                   if hit["_source"].get("sensorId") == "sensor-ci")
+        try:
+            client.indices.refresh(index=idx, ignore_unavailable=True)
+            if not client.indices.exists(index=idx):
+                return 0
+            response = client.search(index=idx, size=10, query={"match_all": {}})
+            return sum(1 for hit in response["hits"]["hits"]
+                       if hit["_source"].get("sensorId") == "sensor-ci")
+        except ApiError as exc:
+            # A newly bootstrapped ES index can temporarily report HTTP 503
+            # while its primary shard becomes available. Only this transient
+            # status is retried within the existing bounded 12/8-second gates;
+            # every other error and any persistent 503 still fails the test.
+            if exc.meta.status == 503:
+                return 0
+            raise
 
     def slowly_produced_packets():
         yield dict(rows[0])
