@@ -117,7 +117,7 @@ jobs:
       - name: Verify single-event flush and shutdown delivery with synthetic offline tshark
         run: |
           timeout 90 docker compose --env-file .env.example --profile capture-linux run \
-            -T --rm --no-deps \
+            -T --rm --no-deps -e PYTHONPATH=/usr/share/tshark \
             -v "$PWD/tests/smoke_sensor_es.py:/tmp/smoke_sensor_es.py:ro" \
             --entrypoint python sensor /tmp/smoke_sensor_es.py
       - name: Report sanitized container status on failure
