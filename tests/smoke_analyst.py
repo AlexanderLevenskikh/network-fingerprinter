@@ -78,6 +78,11 @@ status, url, _ = request("/api/auth/login", body, {"Content-Type": "application/
 if status != 200 or url.rstrip("/") != BASE:
     raise RuntimeError("Login did not redirect to authenticated app")
 print("PASS authenticated login")
+cookies = list(jar)
+assert len(cookies) == 1 and cookies[0].name == "connect.sid", cookies
+assert cookies[0].has_nonstandard_attr("HttpOnly"), cookies[0]
+assert cookies[0].get_nonstandard_attr("SameSite") == "Lax", cookies[0]
+print("PASS session cookie remains HttpOnly and SameSite=Lax after dependency patch")
 
 
 def upload(data, filename="synthetic.pcap", timeout=120):
@@ -183,6 +188,16 @@ except urllib.error.HTTPError as exc:
     print("PASS missing PCAP rejected with HTTP 4xx")
 else:
     raise RuntimeError("Missing PCAP was accepted")
+
+# Oversized multipart input must be rejected before tshark, and must not poison
+# the authenticated session or the following normal upload.
+try:
+    upload(b"x" * (10 * 1024 * 1024 + 1), "oversized.pcap", timeout=45)
+except urllib.error.HTTPError as exc:
+    assert 400 <= exc.code < 500, exc.code
+    print("PASS oversized multipart PCAP rejected with HTTP 4xx")
+else:
+    raise RuntimeError("Oversized multipart PCAP was accepted")
 
 status, _, response = upload(pcap_bytes(), "retry.pcap")
 assert status == 201 and json.loads(response) == {"status": "indexed", "indexedPackets": 2}
