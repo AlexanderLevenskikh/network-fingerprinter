@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import { UserModel } from './UserModel';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../../Entities/User';
@@ -10,11 +10,30 @@ import uuid = require('uuid');
 import { hashPassword, isHistoricalDefaultCredential, needsPasswordRehash, verifyPassword } from '../Auth/PasswordHash';
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
     constructor(
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
     ) {}
+
+    async onModuleInit(): Promise<void> {
+        // Fresh Compose database: seed through Node's modern KDF rather than SQL MD5.
+        // Never insert the historical root/root account or overwrite existing rows.
+        if (await this.userRepository.count()) { return; }
+        const username = process.env.APP_ADMIN_USERNAME;
+        const password = process.env.APP_ADMIN_PASSWORD;
+        if (!username || username.length > 100 || !password || password.length < 12 ||
+            username === 'root' && password === 'root') {
+            throw new Error('Configured initial administrator credentials are required');
+        }
+        await this.userRepository.insert({
+            userid: '00000000-0000-0000-0000-000000000000',
+            username,
+            passwordhash: await hashPassword(password),
+            isadmin: true,
+            firstname: 'Administrator',
+        });
+    }
 
     public async findOne(username: string): Promise<UserModel | undefined> {
         const user = await this.userRepository.findOne({ username });
