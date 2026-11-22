@@ -36,6 +36,16 @@ export class AuthExceptionFilter implements ExceptionFilter {
       response.status(status).json({ statusCode: status, message });
       return;
     }
+    // Preserve HTTP client errors on API routes. Redirecting a malformed
+    // JSON request would turn an invalid body into a misleading HTTP 200.
+    if (request.path && request.path.startsWith('/api/user/')) {
+      const status = exception.getStatus();
+      const raw = exception.getResponse();
+      const message = typeof raw === 'object' && raw && (raw as any).message
+        ? (raw as any).message : exception.message;
+      response.status(status).json({ statusCode: status, message });
+      return;
+    }
     response.redirect('/error');
   }
 }
