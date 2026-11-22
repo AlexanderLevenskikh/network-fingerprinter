@@ -83,3 +83,39 @@ assert postgres("WITH changed AS (UPDATE user_entity SET isadmin = false WHERE u
 status, body = request(ordinary, "/api/user/list")
 assert status == 403, ("revoked role in existing session", status, body[:200])
 print("PASS role elevation and revocation visible in an existing Passport session")
+
+# Reproduce a historical default account using synthetic database fixtures.
+postgres("INSERT INTO user_entity (userid,username,passwordhash,isadmin,firstname) VALUES ('11111111-1111-1111-1111-111111111111','root',md5('root'),true,'Historic fixture');")
+unsafe = session()
+login(unsafe, "root", "root")
+status, _ = request(unsafe, "/api/user/current")
+assert status == 403, ("historical root/root unexpectedly authenticated", status)
+assert postgres("SELECT passwordhash FROM user_entity WHERE username='root';") == "63a9f0ea7bb98050796b649e85481845"
+print("PASS historical root/root denied and unchanged")
+
+# Exercise targeted operator recovery using the shipped tool, not a database reset.
+recovered_password = "new-synthetic-admin-password"
+subprocess.run(
+    ["docker", "compose", "--env-file", ".env.example", "exec", "-T", "analyst",
+     "node", "-r", "./node24-compat.cjs", "scripts/reset-admin.cjs", "root"],
+    input=recovered_password + "\n", capture_output=True, text=True, check=True,
+)
+assert postgres("SELECT split_part(passwordhash, '$', 1) FROM user_entity WHERE username='root';") == "scrypt-v2"
+recovered = session()
+login(recovered, "root", recovered_password)
+status, _ = request(recovered, "/api/user/list")
+assert status == 200, ("operator recovery", status)
+print("PASS targeted recovery of historic admin without changing other users")
+
+# Legitimate legacy MD5 credentials migrate only after a successful login.
+postgres("INSERT INTO user_entity (userid,username,passwordhash,isadmin,firstname) VALUES ('22222222-2222-2222-2222-222222222222','legacy-fixture',md5('legacy-fixture-password'),false,'Fixture');")
+initial = postgres("SELECT passwordhash FROM user_entity WHERE username='legacy-fixture';")
+invalid = session()
+login(invalid, "legacy-fixture", "incorrect-credential")
+status, _ = request(invalid, "/api/user/current")
+assert status == 403
+assert postgres("SELECT passwordhash FROM user_entity WHERE username='legacy-fixture';") == initial
+legitimate = session()
+login(legitimate, "legacy-fixture", "legacy-fixture-password")
+assert postgres("SELECT split_part(passwordhash, '$', 1) FROM user_entity WHERE username='legacy-fixture';") == "scrypt-v2"
+print("PASS legitimate historical MD5 upgraded only after successful login")
