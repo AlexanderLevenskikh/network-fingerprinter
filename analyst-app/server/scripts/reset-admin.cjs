@@ -21,11 +21,17 @@ async function main() {
   });
   try {
     await client.connect();
-    const result = await client.query(
-      'UPDATE user_entity SET passwordhash = $1 WHERE username = $2 AND isadmin = true',
-      [passwordhash, username],
-    );
-    if (result.rowCount !== 1) throw new Error('Exactly one existing admin row required; no update applied');
+    await client.query('BEGIN');
+    try {
+      const rows = await client.query('SELECT userid FROM user_entity WHERE username = $1 AND isadmin = true FOR UPDATE', [username]);
+      if (rows.rowCount !== 1) throw new Error('Exactly one existing admin row required');
+      const updated = await client.query('UPDATE user_entity SET passwordhash = $1 WHERE userid = $2', [passwordhash, rows.rows[0].userid]);
+      if (updated.rowCount !== 1) throw new Error('Unexpected admin update count');
+      await client.query('COMMIT');
+    } catch (error) {
+      await client.query('ROLLBACK');
+      throw error;
+    }
     process.stdout.write('PASS password reset for exactly one existing administrator\n');
   } finally {
     await client.end().catch(() => {});
