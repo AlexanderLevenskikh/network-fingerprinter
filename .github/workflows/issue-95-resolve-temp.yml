@@ -1,5 +1,9 @@
 name: Temporary issue 95 official npm lock resolver
 on:
+  pull_request:
+    paths:
+      - 'analyst-app/server/package.json'
+      - '.github/workflows/issue-95-resolve-temp.yml'
   push:
     branches:
       - security/issue-95-server-runtime-cohort-20261122
