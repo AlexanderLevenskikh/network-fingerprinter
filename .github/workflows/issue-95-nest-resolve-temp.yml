@@ -46,3 +46,5 @@ jobs:
             analyst-app/server/SHA256SUMS
 
 # Revalidate consolidated Jest transform for exact source head.
+
+# Validate corrected single Jest configuration.

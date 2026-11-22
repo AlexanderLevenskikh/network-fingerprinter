@@ -9,9 +9,3 @@ module.exports = {
     testEnvironment: 'node',
     cacheDirectory: '<rootDir>/.jest-cache',
 };
-: 'ts-jest',
-    },
-    coverageDirectory: '../coverage',
-    testEnvironment: 'node',
-    cacheDirectory: '<rootDir>/.jest-cache',
-};
