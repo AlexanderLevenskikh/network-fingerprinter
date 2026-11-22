@@ -1,5 +1,7 @@
 # Network fingerprinter
 
+**Updated in November 2026.** Analyst runs on Node.js 24 LTS with a single Docker Compose setup. It shows import results for each PCAP file and lets you retry after an error. See [Installation](#installation).
+
 > Network fingerprinter is a scalable, easy to deploy network traffic inspection system for purely passive OS and application fingerprinting
 
 *Read this in other languages: [English](README.md), [Russian](README.ru.md).*
