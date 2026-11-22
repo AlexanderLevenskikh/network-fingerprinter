@@ -27,7 +27,7 @@ jobs:
           npm config set registry https://registry.npmjs.org/
           npm ci --ignore-scripts --no-audit --no-fund
           set +e
-          npm audit fix --package-lock-only --lockfile-version=1 --ignore-scripts --no-fund > candidate.log 2>&1
+          npm audit fix --legacy-peer-deps --package-lock-only --lockfile-version=1 --ignore-scripts --no-fund > candidate.log 2>&1
           status=$?
           set -e
           echo "audit_fix_exit=$status" >> candidate.log
