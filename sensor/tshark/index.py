@@ -4,10 +4,10 @@ import sys
 from uuid import uuid4
 
 import click
-from elasticsearch import Elasticsearch, helpers
+from elasticsearch import Elasticsearch
 
 from tshark import capture
-from elk_utils import index_packets
+from delivery import deliver_packets
 
 
 @click.command()
@@ -32,11 +32,11 @@ def main(elastic_url, sensor_id, interface, packet_filter, chunk_length):
         retry_on_timeout=True,
     )
     try:
-        helpers.bulk(
+        deliver_packets(
             client,
-            index_packets(capture(interface, sensor_id, packet_filter, str(uuid4()))),
+            capture(interface, sensor_id, packet_filter, str(uuid4())),
             chunk_size=chunk_length,
-            raise_on_error=True,
+            flush_interval=1.0,
         )
     except KeyboardInterrupt:
         return
