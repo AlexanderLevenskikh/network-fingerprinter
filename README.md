@@ -25,7 +25,13 @@ Prerequisites: Docker Engine with Compose v2 (or Docker Desktop with **Linux con
 3. Open the **Player / PCAP upload** screen, select or drop a **PCAP** capture (up to **10 MiB per file**) containing TCP SYN/SYN-ACK, TLS ClientHello or HTTP messages. The UI reports **processing**, **indexed packet count**, **no matching packets (0)** or **error** separately for each file. A failed upload can be retried; there is no persistent import history.
 4. Open **TCP streams** to see the imported connections, addresses and available fingerprints. Use **Statistics** for aggregate client/server views. A valid capture with no relevant packets imports successfully but creates no matching stream; an invalid capture displays an error rather than a false success.
 
-**No PCAP handy?** Use your own *authorized* non-sensitive capture or the reproducible **synthetic PCAP** workflow exercised in [Linux E2E checks](.github/workflows/) (SYN/SYN-ACK, 0 matches, multiple TCP streams and a 102-packet boundary case). The tests do not ship real user traffic. See [import API semantics and edge cases](docs/pcap-import.md).
+**No PCAP handy?** On Linux/macOS with Python 3, after the stack is healthy you can run the repository's **synthetic-only smoke** from the root:
+
+```sh
+APP_ADMIN_PASSWORD=local-admin-change-me python3 tests/smoke_analyst.py
+```
+
+In PowerShell: `$env:APP_ADMIN_PASSWORD='local-admin-change-me'; python tests/smoke_analyst.py`. The script **also imports synthetic packets into your local demo** (2 matching SYN/SYN-ACK packets, a 102-packet boundary case, a 0-match case and error/retry checks) and writes `tests/browser_retry.pcap`; open **Player / PCAP upload** and select that generated file to observe a fresh per-file result, then view **TCP streams**. The synthetic source/destination addresses are documentation-only TEST-NET ranges, not real hosts. The workflow is exercised by [Linux E2E](.github/workflows/analyst-e2e.yml); Windows execution of this Python command is not independently E2E-verified. For other files, only use captures you are authorized to analyze. See [import API semantics](docs/pcap-import.md).
 
 The sample passwords and HTTP endpoints are **loopback-only demo defaults**. Never expose them to a LAN or the Internet. For a persistent **local** installation, copy `.env.example` to gitignored `.env`, change **all** example passwords and `SESSION_SECRET`, and use `docker compose up -d --build` instead. Initial admin credentials apply only when the PostgreSQL volume is empty.
 
