@@ -106,3 +106,73 @@ replacement coverage in this PR **only after the new commit is merged and
 validated**; coordinator decides closure. The remaining Nest/Express/body-parser/
 Multer/qs suggestions (#76, #88, #92, #93) are **not** covered and must stay
 open. No blanket security or production-hardening claim is made.
+
+## Issue #95: nonmajor server dependency patch (PR #99, pending full E2E)
+
+The patch retains NestJS 6.7.2 but updates its compatible Express/Multer descendants without a framework-major migration.
+It updates `express-session` 1.17.0 → **1.19.0**, overrides `qs` to
+**6.17.1**, overrides Express to **4.22.3**, body-parser to **1.20.9** and Multer to **2.5.0**, and refreshes the permitted transitive dependency tree using
+`npm audit fix --legacy-peer-deps --package-lock-only --lockfile-version=1`.
+The resulting **exact v1 lock** was generated against the official npm registry
+on Node 24.22.3, then independently installed with `npm ci` and compiled
+with `npm run build` in the temporary Linux workflow. The temporary workflow
+was deleted after its artifact was committed. Lock migration changes many
+transitive entries (173 existing/added/removed top-level entry names); it is
+**not** a framework migration or proof of full safety.
+
+Raw evidence: [master audit #44996722909](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44996722909),
+[lock/session candidate #44997555909](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44997555909)
+(artifact `14744880988`),
+[nonmajor advisory candidate #44997981819](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44997981819)
+(artifact `14744019402`), and [HTTP cohort resolver #44998247396](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions/runs/44998247396) (artifact `14744249152`). The first `npm audit fix` attempt without legacy peer
+resolution failed with **ERESOLVE**: `@nestjs/elasticsearch@6.0.1` declares
+`elasticsearch@^15`, while the app installs `16.5.0`.
+The second audit-fix run returns audit exit 1 because findings remain; its
+job is green because the output and `npm ci`/TypeScript build were collected,
+**not** because the audit was clean.
+
+| Exact lock audit scope | Before #99 (total / critical / high) | #99 candidate (total / critical / high) |
+| --- | --- | --- |
+| Server production | 42 / 5 / 20 | **9 / 1 / 3** |
+| Server including dev/build | 126 / 20 / 44 | **70 / 7 / 15** |
+| Client runtime (unchanged) | 18 / 0 / 15 | 18 / 0 / 15 |
+| Client including dev/build (unchanged) | 194 / 26 / 68 | 194 / 26 / 68 |
+
+Among the verified paths removed from server production npm audit are
+`node_modules/qs`, `node_modules/express-session`, `node_modules/on-headers`,
+`node_modules/handlebars`, `node_modules/minimist`,
+`node_modules/mkdirp`, `node_modules/optimist`, `node_modules/lodash`,
+`node_modules/shelljs`, `node_modules/js-yaml` and `node_modules/node-fetch`.
+The HTTP cohort also removes audited paths for `node_modules/express`,
+`node_modules/body-parser`, `node_modules/multer`, `node_modules/busboy`,
+`node_modules/dicer`, `node_modules/path-to-regexp`,
+`node_modules/cookie`, `node_modules/send`,
+`node_modules/serve-static` and `node_modules/@nestjs/platform-express`.
+Do not infer that all consumers of these packages are safe: this is an exact
+audit report for the lock, not a runtime reachability proof.
+
+**Remaining server production advisories require separate migrations:**
+
+* **Critical:** `node_modules/typeorm` (0.2.45) still has SQL-injection advisories
+  including GHSA-fx4w-v43j-vc45 and GHSA-q2pj-6v73-8rgj. Advancing to a
+  repaired supported TypeORM version requires migration of the existing
+  TypeORM/Nest adapter, repositories and PostgreSQL behavior.
+* **High:** `node_modules/@nestjs/common`, `node_modules/axios` and
+  `node_modules/follow-redirects` remain through the old Nest common HTTP client.
+  All remaining high paths still require coordinated Nest common/core migration.
+* **Moderate:** `@nestjs/core`, `@nestjs/typeorm`, `passport`,
+  `uuid` and `xml2js` remain. No low server production finding remains.
+
+**Legacy PR disposition:** #76's Express 4.18.2 part is superseded by
+4.22.3, but its Nest 9 proposal is not. #88's body-parser 2.4.0 major is
+**not** installed: body-parser 1.20.9 closes the audited 1.x vulnerabilities,
+while its Nest 12 proposal is still outstanding. #92's Multer 2.5.0 installed
+path is matched, but its Nest 12 proposal is not; preserve that distinction.
+#93's qs 6.17.1 path is matched, but Nest 12 and Jest 30.5.2 are not included;
+that PR was already closed when inspected. These are partial/mixed replacement
+claims, **not** justification to close #76/#88/#92 wholesale.
+
+The new synthetic regression checks cover session cookie flags, oversized
+multipart rejection, malformed JSON and continued authenticated operation.
+Until the exact final SHA completes clean Docker/Chromium/Sensor and
+Compose/PostgreSQL workflows, **do not merge or claim acceptance**.
