@@ -57,6 +57,15 @@ status, body = request(admin, "/api/user/register", registration, method="POST",
 assert status == 201, ("admin registration", status, body[:200])
 print("PASS administrator can manage synthetic users")
 
+# A truncated JSON document must be a client error, not an HTTP 500.
+bad_payload = b'['
+status, body = request(admin, "/api/user/register", bad_payload, method="POST",
+                       content_type="application/json")
+assert 400 <= status < 500, ("invalid JSON body", status, body[:200])
+status, body = request(admin, "/api/user/list")
+assert status == 200, ("session continuity", status, body[:200])
+print("PASS invalid JSON returns 4xx and authenticated session remains usable")
+
 ordinary = session()
 login(ordinary, FIXTURE_USER, FIXTURE_PASSWORD)
 status, body = request(ordinary, "/api/user/list")
