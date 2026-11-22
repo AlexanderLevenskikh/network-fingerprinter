@@ -1,0 +1,57 @@
+name: Temporary issue 96 Webpack 5 dependency resolver
+on:
+  push:
+    branches: [security/issue-96-webpack5-build-20261122]
+    paths: ['.github/workflows/issue-96-webpack5-resolve-temp.yml', 'analyst-app/client/**']
+permissions:
+  contents: read
+jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.3'
+          registry-url: https://registry.npmjs.org
+      - name: Resolve Webpack 5 toolchain and compile real prod/dev bundles
+        working-directory: analyst-app/client
+        run: |
+          set -euo pipefail
+          npm config set registry https://registry.npmjs.org/
+          npm install --legacy-peer-deps --package-lock-only --lockfile-version=3 --ignore-scripts --no-audit --no-fund
+          npm ci --no-audit --no-fund
+          set +e
+          npm run build:prod > webpack-prod.log 2>&1
+          prod_status=$?
+          npm run build:dev > webpack-dev.log 2>&1
+          dev_status=$?
+          echo "$prod_status" > webpack-prod.exit
+          echo "$dev_status" > webpack-dev.exit
+          npm audit --omit=dev --json > client-runtime.json
+          echo $? > client-runtime.exit
+          npm audit --json > client-all.json
+          echo $? > client-all.exit
+          set -e
+          sha256sum package.json package-lock.json > SHA256SUMS
+          tail -n 200 webpack-prod.log
+          test "$prod_status" -eq 0
+          test "$dev_status" -eq 0
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue-96-webpack5-candidate
+          if-no-files-found: warn
+          path: |
+            analyst-app/client/package.json
+            analyst-app/client/package-lock.json
+            analyst-app/client/webpack-prod.log
+            analyst-app/client/webpack-dev.log
+            analyst-app/client/webpack-prod.exit
+            analyst-app/client/webpack-dev.exit
+            analyst-app/client/client-runtime.json
+            analyst-app/client/client-all.json
+            analyst-app/client/client-runtime.exit
+            analyst-app/client/client-all.exit
+            analyst-app/client/SHA256SUMS

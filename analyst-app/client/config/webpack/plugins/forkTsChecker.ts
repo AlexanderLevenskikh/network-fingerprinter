@@ -1,20 +1,11 @@
 import ForkTsCheckerWebpackPlugin from 'fork-ts-checker-webpack-plugin';
-import { Plugin } from 'webpack';
+import { WebpackPluginInstance } from 'webpack';
 
-export const webpackForkTsCheckerPlugin = (tsconfigPath: string): Plugin => {
+export const webpackForkTsCheckerPlugin = (tsconfigPath: string): WebpackPluginInstance => {
     return new ForkTsCheckerWebpackPlugin({
-        tsconfig: tsconfigPath,
-        reportFiles: [
-            'src/**/*.{ts,tsx}',
-            '!src/**/test.ts',
-            '!src/**/api/fake/**/*',
-        ],
-        async: true,
-        useTypescriptIncrementalApi: false,
-        checkSyntacticErrors: true,
-        memoryLimit: 4096,
-        watch: [
-            'src/**/*',
-        ],
+        typescript: {
+            configFile: tsconfigPath,
+            diagnosticOptions: { semantic: true, syntactic: true },
+        },
     });
 };
