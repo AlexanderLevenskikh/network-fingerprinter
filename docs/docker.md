@@ -49,7 +49,8 @@ network. This replaces three hardcoded 192.168.x.x addresses.
   healthcheck passes. It must exit with code zero before the analyst starts.
 - PostgreSQL initializes the schema on an **empty** named volume. Analyst then creates the configured administrator with scrypt-v2 on its first startup if no users exist. An existing database is not overwritten.
 - Kibana waits for Elasticsearch and the template; `kibana-init` creates the
-  `packets-*` data view through the Kibana 8 API. Its successful one-shot exit\n  is required before Analyst starts; CI checks the saved view's fields.
+  `packets-*` data view through the Kibana 8 API. Its successful one-shot exit
+  is required before Analyst starts; CI checks the saved view's fields.
 - `analyst` waits for a healthy PostgreSQL and Elasticsearch, and a successful
   Elasticsearch and Kibana initialization. The analyst healthcheck requests `/login`.
 - Persistent data uses `elasticsearch-data-v8` and `postgres-data` Docker named

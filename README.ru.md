@@ -1,8 +1,10 @@
+![Network Fingerprinter — Levencode Labs](assets/network-fingerprinter-banner.svg)
+
 # Network Fingerprinter
 
 **Пассивный фингерпринтинг сетевого трафика: от локального PCAP до результата в браузере.**
 
-[Русский](README.ru.md) · [English](README.md) · [Docker: эксплуатация](docs/docker.md) · [Импорт PCAP](docs/pcap-import.md)
+[Русский](README.ru.md) · [English](README.md) · **[Руководство пользователя](USERGUIDE.ru.md)** · [User guide](USERGUIDE.md) · [Эксплуатация Docker](docs/docker.md) · [Levencode Labs](https://github.com/levencode-labs)
 
 Network Fingerprinter выделяет из сетевого трафика признаки TCP, TLS и HTTP для анализа TCP-потоков и отпечатков ОС/приложений. Система состоит из необязательного **Sensor** (выборочный захват через TShark), **Collector** на Elasticsearch 8 и веб-приложения **Analyst** для импорта записанного трафика, просмотра потоков и статистики. **Для первого запуска перехват трафика не нужен.**
 
@@ -49,9 +51,9 @@ APP_ADMIN_PASSWORD=local-admin-change-me python3 tests/smoke_analyst.py
 
 - Named volumes: **`elasticsearch-data-v8`** и **`postgres-data`**. ES8 использует **новый отдельный том** и не открывает старый `elasticsearch-data` от ES7. **Миграция ES7→ES8 не реализована.** В старом `.env` могут отсутствовать новые секреты Kibana: сверьте с [`.env.example`](.env.example). Не подключайте старые данные ES7 к ES8 и не удаляйте тома, если они нужны.
 - В **Linux GitHub Actions** проверены Compose/PG, Analyst API, настоящий Chromium с загрузкой синтетических PCAP и **синтетическая** индексация Sensor→ES8 без захвата физического интерфейса. Windows Docker Desktop — только локальная smoke-проверка (скачивание образов может зависеть от прокси), а **не** пройденный Windows E2E; macOS отдельно не проверена E2E. Live capture с реального интерфейса, большая нагрузка, безопасность production и миграция старых данных **не подтверждены**.
-- Analyst работает на Node 24 с совместимостью для старого NestJS 6; во фронтенде остаётся Webpack 4, а хранение паролей пока не соответствует требованиям production. Обновлённые версии **не означают** аудит безопасности.
+- Analyst работает на Node 24 с совместимостью для старого NestJS 6; во фронтенде остаётся Webpack 4. Патчи в [#95](https://github.com/AlexanderLevenskikh/network-fingerprinter/issues/95) сократили, но не устранили server advisories (в том числе критический TypeORM и высокие Nest/Axios); клиентские зависимости также требуют отдельной работы. Пароли новых пользователей хешируются через асинхронный scrypt, но постоянное хранилище сессий, TLS, rate limiting и другие меры для внешней публикации ещё не реализованы. Обновлённые версии **не означают** сертификат безопасности.
 
-Диагностика, переменные окружения, порядок инициализации, тома и выключение (включая **опасный** `down -v`) — в [Docker-руководстве](docs/docker.md). Лимиты, HTTP-ответы и частичная индексация при ошибке — в [руководстве по импорту PCAP](docs/pcap-import.md). [Issues](https://github.com/AlexanderLevenskikh/network-fingerprinter/issues) · [CI](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions).
+Пошаговый сценарий работы — в **[руководстве пользователя](USERGUIDE.ru.md)**. Диагностика, переменные окружения, порядок инициализации, тома и выключение (включая **опасный** `down -v`) — в [Docker-руководстве](docs/docker.md). Лимиты, HTTP-ответы и частичная индексация при ошибке — в [руководстве по импорту PCAP](docs/pcap-import.md). [Issues](https://github.com/AlexanderLevenskikh/network-fingerprinter/issues) · [CI](https://github.com/AlexanderLevenskikh/network-fingerprinter/actions).
 
 ## Лицензия
 
