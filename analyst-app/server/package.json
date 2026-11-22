@@ -44,7 +44,7 @@
     "uuid": "^3.3.3"
   },
   "devDependencies": {
-    "@nestjs/cli": "6.9.0",
+    "@nestjs/cli": "12.0.15",
     "@nestjs/schematics": "6.7.0",
     "@nestjs/testing": "6.7.1",
     "@types/elasticsearch": "5.0.36",
