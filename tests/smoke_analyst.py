@@ -38,14 +38,14 @@ def packet(source, dest, source_port, dest_port, flags, seq, ack):
     return eth + ip + tcp
 
 
-def pcap_bytes():
-    packets = [
-        packet(SRC, DST, 54321, 443, 2, 100, 0),
-        packet(DST, SRC, 443, 54321, 18, 200, 101),
+def pcap_bytes(flags=(2, 18), frames=None):
+    packets = frames if frames is not None else [
+        packet(SRC, DST, 54321, 443, flags[0], 100, 0),
+        packet(DST, SRC, 443, 54321, flags[1], 200, 101),
     ]
     out = bytearray(struct.pack("<IHHIIII", 0xA1B2C3D4, 2, 4, 0, 0, 65535, 1))
     for i, payload in enumerate(packets):
-        out += struct.pack("<IIII", 1700000000, i * 100000, len(payload), len(payload))
+        out += struct.pack("<IIII", 1700000000 + i // 10, (i % 10) * 100000, len(payload), len(payload))
         out += payload
     return bytes(out)
 
@@ -79,17 +79,44 @@ if status != 200 or url.rstrip("/") != BASE:
     raise RuntimeError("Login did not redirect to authenticated app")
 print("PASS authenticated login")
 
-boundary = "nf-" + uuid.uuid4().hex
-capture = pcap_bytes()
-payload = (
-    ("--" + boundary + "\r\nContent-Disposition: form-data; name=\"file\"; filename=\"synthetic.pcap\"\r\n"
-     "Content-Type: application/vnd.tcpdump.pcap\r\n\r\n").encode()
-    + capture + ("\r\n--" + boundary + "--\r\n").encode()
+
+def upload(data, filename="synthetic.pcap", timeout=120):
+    boundary = "nf-" + uuid.uuid4().hex
+    payload = (
+        (f'--{boundary}\r\nContent-Disposition: form-data; name="file"; filename="{filename}"\r\n'
+         'Content-Type: application/vnd.tcpdump.pcap\r\n\r\n').encode()
+        + data + (f'\r\n--{boundary}--\r\n').encode()
+    )
+    return request("/api/player/upload", payload,
+                   {"Content-Type": "multipart/form-data; boundary=" + boundary}, timeout=timeout)
+
+
+status, _, response = upload(pcap_bytes())
+parsed = json.loads(response)
+assert status == 201 and parsed == {"status": "indexed", "indexedPackets": 2}, (status, parsed)
+print("PASS synthetic PCAP reports exactly two indexed packets")
+
+# Assert the exact _source representation consumed by the legacy TCP mapper.
+# The index mapping may coerce these string values to integers internally.
+env = dict(line.strip().split("=", 1) for line in Path(".env.example").read_text().splitlines()
+           if "=" in line and not line.lstrip().startswith("#"))
+import base64
+auth = base64.b64encode(("elastic:" + env["ELASTIC_PASSWORD"].strip('"')).encode()).decode()
+es_request = urllib.request.Request(
+    "http://127.0.0.1:9200/packets-*/_search",
+    data=b'{"size":10,"query":{"match_all":{}}}',
+    headers={"Authorization": "Basic " + auth, "Content-Type": "application/json"},
 )
-status, _, response = request("/api/player/upload", payload, {"Content-Type": "multipart/form-data; boundary=" + boundary}, timeout=120)
-if status < 200 or status >= 300:
-    raise RuntimeError("PCAP upload returned non-success status")
-print("PASS synthetic PCAP upload API")
+with urllib.request.urlopen(es_request, timeout=15) as es_response:
+    hits = json.load(es_response)["hits"]["hits"]
+tcp_layers = [hit["_source"]["layers"]["tcp"] for hit in hits
+              if hit.get("_source", {}).get("layers", {}).get("tcp")]
+assert len(tcp_layers) >= 2, "Expected both synthetic TCP packets in Elasticsearch"
+assert any(layer.get("tcp_flags_tcp_flags_syn") == "1" for layer in tcp_layers), tcp_layers
+assert any(layer.get("tcp_flags_tcp_flags_ack") == "0" for layer in tcp_layers), tcp_layers
+assert any(layer.get("tcp_flags_tcp_flags_ack") == "1" for layer in tcp_layers), tcp_layers
+print("PASS TCP flag _source preserves string '1'/'0' for legacy mapper")
+
 
 deadline = time.monotonic() + 90
 while True:
@@ -108,20 +135,58 @@ while True:
         raise RuntimeError("Synthetic TCP stream did not appear in Analyst API")
     time.sleep(3)
 
-# A malformed PCAP must not produce a successful import response.
-bad_boundary = "nf-" + uuid.uuid4().hex
-bad_header = (
-    f'--{bad_boundary}\r\n'
-    'Content-Disposition: form-data; name="file"; filename="invalid.pcap"\r\n'
-    'Content-Type: application/vnd.tcpdump.pcap\r\n\r\n'
-).encode()
-bad_payload = bad_header + b"not a pcap" + f"\r\n--{bad_boundary}--\r\n".encode()
+# Cross the former 100-packet editcap boundary with two distinct TCP 5-tuples.
+# 100 repeated SYN packets belong to connection A; packets 101-102 belong to B.
+# Re-decoding each fragment independently incorrectly assigns tcp.stream 0 to B.
+many_frames = [packet(SRC, DST, 55001, 443, 2, 100 + i, 0) for i in range(100)]
+many_frames += [
+    packet(SRC, DST, 55002, 8443, 2, 500, 0),
+    packet(DST, SRC, 8443, 55002, 18, 600, 501),
+]
+status, _, response = upload(pcap_bytes(frames=many_frames), "multi-stream.pcap")
+assert status == 201 and json.loads(response) == {"status": "indexed", "indexedPackets": 102}, response
+print("PASS 102 matching packets indexed across the old chunk boundary")
+
+deadline = time.monotonic() + 90
+while True:
+    status, _, data = request("/api/stream/tcp/list?current=1&take=100")
+    streams = json.loads(data)["streams"]
+    a = [s for s in streams if s.get("sourceIp") == SRC and s.get("destinationIp") == DST
+         and str(s.get("sourcePort")) == "55001" and str(s.get("destinationPort")) == "443"]
+    b = [s for s in streams if s.get("sourceIp") == SRC and s.get("destinationIp") == DST
+         and str(s.get("sourcePort")) == "55002" and str(s.get("destinationPort")) == "8443"]
+    if a and b:
+        assert a[0]["streamId"] != b[0]["streamId"], (a[0], b[0])
+        print("PASS two distinct stream IDs and correct endpoints across 100-packet boundary")
+        break
+    if time.monotonic() >= deadline:
+        raise RuntimeError("Two independent cross-boundary TCP streams not visible in API")
+    time.sleep(3)
+
+status, _, response = upload(pcap_bytes(flags=(16, 16)), "no-matches.pcap")
+assert status == 201 and json.loads(response) == {"status": "no_matches", "indexedPackets": 0}
+print("PASS valid no-match capture reports zero indexed packets")
+
 try:
-    request("/api/player/upload", bad_payload,
-            {"Content-Type": "multipart/form-data; boundary=" + bad_boundary}, timeout=30)
+    upload(b"not a pcap", "invalid.pcap", timeout=30)
 except urllib.error.HTTPError as exc:
-    if exc.code < 400:
-        raise RuntimeError("Invalid PCAP was accepted")
-    print("PASS malformed PCAP import fails with HTTP", exc.code)
+    body = json.loads(exc.read())
+    assert 400 <= exc.code < 500 and body.get("message"), (exc.code, body)
+    print("PASS malformed PCAP rejected with clear HTTP 4xx")
 else:
     raise RuntimeError("Invalid PCAP import was reported as successful")
+
+try:
+    request("/api/player/upload", b"", {"Content-Type": "multipart/form-data; boundary=empty"}, timeout=30)
+except urllib.error.HTTPError as exc:
+    assert 400 <= exc.code < 500, exc.code
+    print("PASS missing PCAP rejected with HTTP 4xx")
+else:
+    raise RuntimeError("Missing PCAP was accepted")
+
+status, _, response = upload(pcap_bytes(), "retry.pcap")
+assert status == 201 and json.loads(response) == {"status": "indexed", "indexedPackets": 2}
+print("PASS successful upload immediately after failed import")
+
+# Reuse the same synthetic capture for the browser retry (no external traffic).
+Path('tests/browser_retry.pcap').write_bytes(pcap_bytes())
