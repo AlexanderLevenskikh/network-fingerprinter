@@ -1,0 +1,48 @@
+name: Temporary TypeORM removal lock resolution
+on:
+  push:
+    branches: [security/issue-95-remove-typeorm-pg-20261122]
+    paths:
+      - '.github/workflows/issue-95-pg-resolve-temp.yml'
+      - 'analyst-app/server/**'
+permissions:
+  contents: read
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.22.3'
+          registry-url: https://registry.npmjs.org
+      - name: Resolve precise npm v1 lock and validate user service
+        working-directory: analyst-app/server
+        run: |
+          set -euo pipefail
+          npm config set registry https://registry.npmjs.org/
+          npm install --package-lock-only --lockfile-version=1 --ignore-scripts --no-audit --no-fund
+          npm ci --ignore-scripts --no-audit --no-fund
+          npm run build
+          node -r ./node24-compat.cjs node_modules/jest/bin/jest.js --runInBand --testPathPattern='(UserService|UserController|PasswordHash|SessionSerializer).spec.ts'
+          set +e
+          npm audit --omit=dev --json > server-prod.json
+          echo $? > server-prod.exit
+          npm audit --json > server-all.json
+          echo $? > server-all.exit
+          set -e
+          sha256sum package.json package-lock.json > SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: issue-95-no-typeorm-lock
+          if-no-files-found: warn
+          path: |
+            analyst-app/server/package-lock.json
+            analyst-app/server/package.json
+            analyst-app/server/server-prod.json
+            analyst-app/server/server-all.json
+            analyst-app/server/server-prod.exit
+            analyst-app/server/server-all.exit
+            analyst-app/server/SHA256SUMS

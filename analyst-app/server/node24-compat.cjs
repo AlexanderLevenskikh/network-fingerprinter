@@ -1,8 +1,7 @@
 'use strict';
 
-// NestJS 6 @nestjs/typeorm uses util.isNullOrUndefined at module initialization.
-// Node.js 24 removed that deprecated helper. Keep the compatibility shim scoped
-// to the Analyst server process until the separate framework migration.
+// A scoped compatibility shim remains for legacy NestJS 6 ecosystem packages. 
+// PostgreSQL user persistence no longer relies on TypeORM.
 const util = require('node:util');
 if (typeof util.isNullOrUndefined !== 'function') {
   util.isNullOrUndefined = value => value === null || value === undefined;
